@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heizkosten 2025/26 – Sachsen-Anhalt &amp; Thüringen</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --clr-bg: #f5f6f8;
+    --clr-card: #ffffff;
+    --clr-text: #1a1a2e;
+    --clr-muted: #6b7280;
+    --clr-accent: #1e3a5f;
+    --clr-highlight: #c0392b;
+    --clr-sa: #2563eb;
+    --clr-th: #dc2626;
+    --clr-border: #e5e7eb;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    line-height: 1.6;
+  }
+
+  .header {
+    background: var(--clr-accent);
+    color: white;
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  .card {
+    background: var(--clr-card);
+    border: 1px solid var(--clr-border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-number {
+    background: var(--clr-accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--clr-accent);
+    line-height: 1.3;
+  }
+
+  .card .subtitle {
+    font-size: 0.85rem;
+    color: var(--clr-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .chart-container {
+    position: relative;
+    width: 100%;
+    max-height: 420px;
+  }
+
+  .key-finding {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 0.75rem 1rem;
+    margin-top: 1.25rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+  }
+
+  .key-finding strong {
+    color: var(--clr-highlight);
+  }
+
+  .source {
+    font-size: 0.75rem;
+    color: var(--clr-muted);
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--clr-border);
+  }
+
+  .tab-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--clr-border);
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: var(--font);
+    color: var(--clr-muted);
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--clr-accent);
+    color: var(--clr-accent);
+  }
+
+  .tab-btn.active {
+    background: var(--clr-accent);
+    color: white;
+    border-color: var(--clr-accent);
+  }
+
+  .household-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .household-card {
+    background: #f8fafc;
+    border: 1px solid var(--clr-border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .household-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .household-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .household-label {
+    font-size: 0.8rem;
+    color: var(--clr-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .household-type {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    color: var(--clr-accent);
+  }
+
+  .household-cost {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clr-highlight);
+  }
+
+  .household-cost-label {
+    font-size: 0.75rem;
+    color: var(--clr-muted);
+  }
+
+  .household-change {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .tooltip-custom {
+    font-family: var(--font) !important;
+  }
+
+  /* === GRAFIK 4: Ursachen-Analyse Thüringen === */
+  .cause-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .cause-item {
+    background: #f8fafc;
+    border: 1px solid var(--clr-border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+    position: relative;
+  }
+
+  .cause-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .cause-item .cause-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cause-item h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--clr-accent);
+    margin-bottom: 0.4rem;
+  }
+
+  .cause-item p {
+    font-size: 0.82rem;
+    color: var(--clr-muted);
+    line-height: 1.5;
+  }
+
+  .cause-item .cause-stat {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .cause-stat.red { background: #fee2e2; color: #dc2626; }
+  .cause-stat.blue { background: #dbeafe; color: #2563eb; }
+  .cause-stat.amber { background: #fef3c7; color: #d97706; }
+  .cause-stat.green { background: #dcfce7; color: #16a34a; }
+
+  .temp-comparison {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .temp-box {
+    flex: 1;
+    min-width: 140px;
+    background: #f8fafc;
+    border: 1px solid var(--clr-border);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .temp-box .temp-label {
+    font-size: 0.75rem;
+    color: var(--clr-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .temp-box .temp-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .temp-box .temp-value.warm { color: #f97316; }
+  .temp-box .temp-value.cold { color: #2563eb; }
+  .temp-box .temp-value.frost { color: #7c3aed; }
+
+  .temp-box .temp-note {
+    font-size: 0.7rem;
+    color: var(--clr-muted);
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .cause-grid { grid-template-columns: 1fr; }
+  }
+
+  .footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--clr-muted);
+    border-top: 1px solid var(--clr-border);
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.35rem; }
+    .card { padding: 1.25rem; }
+    .household-cards { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Heizkosten in Sachsen-Anhalt &amp; Thüringen</h1>
+  <p>Datenbasierte Infografiken zur Heizsaison 2024/25 und Januar 2026 – Verbrauch, Kosten und Hintergründe</p>
+</div>
+
+<div class="container">
+
+  <!-- GRAFIK 1: Verbrauchssteigerung nach Bundesländern -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">1</div>
+      <div>
+        <h2>Heizverbrauch im Januar 2026: Der Osten heizt deutlich mehr</h2>
+        <div class="subtitle">Verbrauchssteigerung im Januar 2026 gegenüber Januar 2025 in Prozent – nach Bundesland</div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="chart1"></canvas>
+    </div>
+    <div class="key-finding">
+      <strong>Thüringen (+34,5 %)</strong> verzeichnet die stärkste Verbrauchssteigerung bundesweit. In westlichen Bundesländern wie NRW (+2,2 %) blieb der Anstieg moderat. Ursache: Der Januar 2026 war mit –0,8 °C deutlich kälter als der milde Januar 2025 (2,0 °C).
+    </div>
+    <div class="source">Quelle: Techem, Februar 2026 | Basis: Verbrauchsdaten aus rund 324.000 Wohnungen in Sachsen, Sachsen-Anhalt und Thüringen</div>
+  </div>
+
+  <!-- GRAFIK 2: Kostenvergleich nach Energieträgern -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">2</div>
+      <div>
+        <h2>Was kostet Heizen? Vergleich der Energieträger</h2>
+        <div class="subtitle">Jährliche Heizkosten für eine 70-m²-Wohnung im Mehrfamilienhaus</div>
+      </div>
+    </div>
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchView('yearly')">Jahreskosten 2025</button>
+      <button class="tab-btn" onclick="switchView('kwh')">Preis pro kWh</button>
+      <button class="tab-btn" onclick="switchView('trend')">Trend 2021–2025</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="chart2"></canvas>
+    </div>
+    <div class="key-finding">
+      <strong>Fernwärme</strong> ist mit 1.245 €/Jahr der teuerste Energieträger – rund <strong>75 % teurer</strong> als eine Wärmepumpe (715 €). Gas-Heizkosten steigen 2025 voraussichtlich um 15 %.
+    </div>
+    <div class="source">Quelle: Heizspiegel 2025 (co2online), ista Heizkostenabrechnung 2024</div>
+  </div>
+
+  <!-- GRAFIK 3: Preiszusammensetzung -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">3</div>
+      <div>
+        <h2>Warum wird Heizen teurer? Die Kostentreiber</h2>
+        <div class="subtitle">CO₂-Preis-Entwicklung und Kostenzusammensetzung einer Gasrechnung</div>
+      </div>
+    </div>
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchCostView('co2')">CO₂-Preis seit 2021</button>
+      <button class="tab-btn" onclick="switchCostView('breakdown')">Kostenaufschlüsselung Gas</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="chart3"></canvas>
+    </div>
+
+    <h3 style="font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--clr-accent);">Was bedeutet das für meinen Geldbeutel?</h3>
+
+    <div class="household-cards">
+      <div class="household-card">
+        <div class="household-icon">🏠</div>
+        <div class="household-label">Single-Wohnung</div>
+        <div class="household-type">40 m² · Gas</div>
+        <div class="household-cost">590 €</div>
+        <div class="household-cost-label">pro Jahr (2025)</div>
+        <div class="household-change">+89 €/Jahr</div>
+      </div>
+      <div class="household-card">
+        <div class="household-icon">👨‍👩‍👧</div>
+        <div class="household-label">Kleinfamilie</div>
+        <div class="household-type">70 m² · Gas</div>
+        <div class="household-cost">1.030 €</div>
+        <div class="household-cost-label">pro Jahr (2025)</div>
+        <div class="household-change">+155 €/Jahr</div>
+      </div>
+      <div class="household-card">
+        <div class="household-icon">🏡</div>
+        <div class="household-label">Einfamilienhaus</div>
+        <div class="household-type">130 m² · Gas</div>
+        <div class="household-cost">1.770 €</div>
+        <div class="household-cost-label">pro Jahr (2025)</div>
+        <div class="household-change">+266 €/Jahr</div>
+      </div>
+    </div>
+
+    <div class="key-finding" style="margin-top: 1.25rem;">
+      Der <strong>CO₂-Preis</strong> hat sich seit 2021 von 25 auf 55 €/Tonne mehr als verdoppelt. Ab 2027 wird er durch den EU-Emissionshandel bestimmt – Experten rechnen mit bis zu <strong>120 €/Tonne bis 2030</strong>.
+    </div>
+    <div class="source">Quelle: Bundesministerium für Wirtschaft und Klimaschutz, Heizspiegel 2025, PIK Potsdam</div>
+  </div>
+
+  <!-- GRAFIK 4: Warum heizt Thüringen am meisten? -->
+  <div class="card" id="card-ursachen">
+    <div class="card-header">
+      <div class="card-number" style="background: #dc2626;">4</div>
+      <div>
+        <h2>Warum heizt Thüringen am meisten? Die Ursachen im Überblick</h2>
+        <div class="subtitle">Vier Faktoren erklären, warum der Freistaat bundesweit den höchsten Verbrauchsanstieg verzeichnet</div>
+      </div>
+    </div>
+
+    <!-- Temperaturvergleich -->
+    <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--clr-accent);">Hauptursache: Temperaturschock im Januar 2026</h3>
+    <p style="font-size: 0.85rem; color: var(--clr-muted); margin-bottom: 0.75rem;">
+      Der Januar 2026 war mit –0,8 °C deutschlandweit der erste zu kalte Monat seit über vier Jahren. Für Thüringen mit seiner Höhenlage wirkt sich dieser Unterschied besonders drastisch aus.
+    </p>
+
+    <div class="temp-comparison">
+      <div class="temp-box">
+        <div class="temp-label">Januar 2024</div>
+        <div class="temp-value warm">+2,0 °C</div>
+        <div class="temp-note">deutlich zu mild</div>
+      </div>
+      <div class="temp-box">
+        <div class="temp-label">Januar 2025</div>
+        <div class="temp-value warm">+2,0 °C</div>
+        <div class="temp-note">Thüringen: 2,0 °C</div>
+      </div>
+      <div class="temp-box">
+        <div class="temp-label">Januar 2026</div>
+        <div class="temp-value frost">–0,8 °C</div>
+        <div class="temp-note">erster kalter Monat seit 4,3 Jahren</div>
+      </div>
+      <div class="temp-box" style="border: 2px solid #dc2626;">
+        <div class="temp-label">Differenz Jan 25 → 26</div>
+        <div class="temp-value cold">–2,8 °C</div>
+        <div class="temp-note">= +34,5 % mehr Heizenergie in TH</div>
+      </div>
+    </div>
+
+    <!-- Ursachen-Chart: Verbrauch nach Energieträger Thüringen vs. Bund -->
+    <h3 style="font-size: 0.95rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--clr-accent);">Verbrauch pro m² nach Energieträger: Thüringen vs. Bundesdurchschnitt</h3>
+    <div class="chart-container" style="max-height: 300px;">
+      <canvas id="chart4"></canvas>
+    </div>
+
+    <!-- Vier Ursachen-Karten -->
+    <h3 style="font-size: 0.95rem; margin-top: 1.5rem; margin-bottom: 0.25rem; color: var(--clr-accent);">Die vier Faktoren im Detail</h3>
+
+    <div class="cause-grid">
+      <div class="cause-item">
+        <div class="cause-icon">🏔️</div>
+        <h4>1. Höhenlage &amp; Mittelgebirge</h4>
+        <p>Der Thüringer Wald (bis 982 m) wirkt als „Kälteinsel" mit Jahresmitteln von nur 5–7 °C. Inversionslagen erzeugen stabile Kaltluftseen in den Tälern, die den Heizbedarf zusätzlich steigern.</p>
+        <span class="cause-stat red">5–7 °C Jahresmittel im Th. Wald</span>
+      </div>
+
+      <div class="cause-item">
+        <div class="cause-icon">🌡️</div>
+        <h4>2. Temperatursturz Jan 2026</h4>
+        <p>Nach zwei milden Wintern (Jan 2024/25: je +2,0 °C) brach der Januar 2026 mit –0,8 °C die 52 Monate währende Serie „zu warmer" Monate. In Höhenlagen Thüringens lagen die Werte noch deutlich tiefer.</p>
+        <span class="cause-stat blue">–2,8 °C Differenz zum Vorjahr</span>
+      </div>
+
+      <div class="cause-item">
+        <div class="cause-icon">🏗️</div>
+        <h4>3. Hoher Fernwärme-Anteil</h4>
+        <p>25 % der Thüringer Haushalte heizen mit Fernwärme (Bundesdurchschnitt: 15 %). Fernwärme zeigt bei Kälte den stärksten Verbrauchsanstieg: +45,1 % in Thüringen – der höchste Wert bundesweit.</p>
+        <span class="cause-stat amber">+45,1 % Fernwärme-Verbrauch</span>
+      </div>
+
+      <div class="cause-item">
+        <div class="cause-icon">🏠</div>
+        <h4>4. Gebäudestruktur</h4>
+        <p>66,3 % der Wohngebäude sind Einfamilienhäuser mit größerer Außenfläche und höherem Wärmeverlust. Trotz guter Sanierungsquote nach der Wende fehlt es bei Gebäuden ohne Fernwärme an modernen Heizlösungen.</p>
+        <span class="cause-stat green">66,3 % Einfamilienhäuser</span>
+      </div>
+    </div>
+
+    <div class="key-finding" style="margin-top: 1.25rem;">
+      <strong>Fazit:</strong> Der Verbrauchsanstieg in Thüringen ist primär witterungsbedingt – verstärkt durch die klimatisch exponierte Lage des Bundeslandes. Schon 1 °C kältere Außentemperatur kann den Heizbedarf um rund 6 % steigern. Bei –2,8 °C Differenz zum Vorjahr und der besonderen Höhenlage Thüringens erklärt sich der Spitzenwert von +34,5 %.
+    </div>
+    <div class="source">Quellen: Techem Heizsaison-Bilanz 2024/25, DWD Klimadaten, Thüringer Ministerium für Umwelt/Energie, TLUBN, co2online/Heizspiegel, Verivox Bundesländervergleich</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Datenstand: Februar 2026 · Alle Angaben ohne Gewähr · Quellen: Techem, co2online (Heizspiegel), DWD, BMWK
+</div>
+
+<script>
+// =========================================
+// CHART 1: Verbrauchssteigerung Bundesländer
+// =========================================
+const ctx1 = document.getElementById('chart1').getContext('2d');
+
+const laender = [
+  'Thüringen', 'Brandenburg', 'Berlin', 'Sachsen', 'Sachsen-Anhalt',
+  'Schleswig-H.', 'Niedersachsen', 'Bayern', 'Baden-Württ.', 'Hessen', 'Saarland', 'NRW'
+];
+const steigerung = [34.5, 29.2, 18.1, 16.5, 10.5, 9.8, 7.5, 6.2, 4.3, 4.1, 3.5, 2.2];
+
+const barColors = laender.map((l) => {
+  if (l === 'Thüringen') return '#dc2626';
+  if (l === 'Sachsen-Anhalt') return '#2563eb';
+  if (['Brandenburg', 'Berlin', 'Sachsen'].includes(l)) return '#f97316';
+  return '#94a3b8';
+});
+
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: laender,
+    datasets: [{
+      data: steigerung,
+      backgroundColor: barColors,
+      borderRadius: 4,
+      barPercentage: 0.7,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `+${ctx.parsed.x} % Verbrauchssteigerung`
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        max: 40,
+        ticks: {
+          callback: (v) => `+${v} %`,
+          font: { size: 12 }
+        },
+        grid: { color: '#f0f0f0' }
+      },
+      y: {
+        ticks: {
+          font: { size: 13, weight: (ctx) => {
+            const label = laender[ctx.index];
+            return (label === 'Thüringen' || label === 'Sachsen-Anhalt') ? 'bold' : 'normal';
+          }}
+        },
+        grid: { display: false }
+      }
+    }
+  }
+});
+
+// =========================================
+// CHART 2: Kostenvergleich Energieträger
+// =========================================
+let chart2Instance = null;
+
+function createChart2(type) {
+  const ctx2 = document.getElementById('chart2').getContext('2d');
+  if (chart2Instance) chart2Instance.destroy();
+
+  let config;
+
+  if (type === 'yearly') {
+    config = {
+      type: 'bar',
+      data: {
+        labels: ['Fernwärme', 'Erdgas', 'Heizöl', 'Wärmepumpe'],
+        datasets: [{
+          label: 'Jahreskosten 2025 (€)',
+          data: [1245, 1180, 1055, 715],
+          backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e'],
+          borderRadius: 6,
+          barPercentage: 0.55,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.parsed.y.toLocaleString('de-DE')} € pro Jahr`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1400,
+            ticks: {
+              callback: (v) => v.toLocaleString('de-DE') + ' €',
+              font: { size: 12 }
+            },
+            grid: { color: '#f0f0f0' }
+          },
+          x: {
+            ticks: { font: { size: 13, weight: 'bold' } },
+            grid: { display: false }
+          }
+        }
+      }
+    };
+  } else if (type === 'kwh') {
+    config = {
+      type: 'bar',
+      data: {
+        labels: ['Fernwärme', 'Erdgas', 'Heizöl', 'Strom (WP)'],
+        datasets: [{
+          label: 'Cent pro kWh (2025)',
+          data: [14.0, 12.0, 9.5, 8.5],
+          backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e'],
+          borderRadius: 6,
+          barPercentage: 0.55,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.parsed.y} Cent/kWh`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 18,
+            ticks: {
+              callback: (v) => v + ' ct',
+              font: { size: 12 }
+            },
+            grid: { color: '#f0f0f0' }
+          },
+          x: {
+            ticks: { font: { size: 13, weight: 'bold' } },
+            grid: { display: false }
+          }
+        }
+      }
+    };
+  } else if (type === 'trend') {
+    config = {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [
+          {
+            label: 'Erdgas',
+            data: [615, 1050, 1150, 885, 1030],
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249,115,22,0.1)',
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            tension: 0.3,
+          },
+          {
+            label: 'Fernwärme',
+            data: [780, 870, 1000, 1055, 1245],
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239,68,68,0.1)',
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            tension: 0.3,
+          },
+          {
+            label: 'Heizöl',
+            data: [700, 1350, 1200, 1065, 1055],
+            borderColor: '#eab308',
+            backgroundColor: 'rgba(234,179,8,0.1)',
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            tension: 0.3,
+          },
+          {
+            label: 'Wärmepumpe',
+            data: [850, 950, 880, 680, 715],
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,0.1)',
+            borderWidth: 2.5,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            tension: 0.3,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { usePointStyle: true, padding: 16, font: { size: 12 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('de-DE')} €`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 500,
+            max: 1500,
+            ticks: {
+              callback: (v) => v.toLocaleString('de-DE') + ' €',
+              font: { size: 12 }
+            },
+            grid: { color: '#f0f0f0' }
+          },
+          x: {
+            ticks: { font: { size: 13 } },
+            grid: { display: false }
+          }
+        }
+      }
+    };
+  }
+
+  chart2Instance = new Chart(ctx2, config);
+}
+
+function switchView(type) {
+  document.querySelectorAll('.card:nth-child(2) .tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  createChart2(type);
+}
+
+createChart2('yearly');
+
+// =========================================
+// CHART 3: Kostentreiber / CO2-Preis
+// =========================================
+let chart3Instance = null;
+
+function createChart3(type) {
+  const ctx3 = document.getElementById('chart3').getContext('2d');
+  if (chart3Instance) chart3Instance.destroy();
+
+  let config;
+
+  if (type === 'co2') {
+    config = {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025', '2026*'],
+        datasets: [{
+          label: 'CO₂-Preis (€/Tonne)',
+          data: [25, 30, 30, 45, 55, 60],
+          backgroundColor: [
+            '#94a3b8', '#94a3b8', '#94a3b8',
+            '#f97316', '#dc2626', '#991b1b'
+          ],
+          borderRadius: 6,
+          barPercentage: 0.55,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.parsed.y} € pro Tonne CO₂`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 80,
+            ticks: {
+              callback: (v) => v + ' €',
+              font: { size: 12 }
+            },
+            grid: { color: '#f0f0f0' }
+          },
+          x: {
+            ticks: { font: { size: 13 } },
+            grid: { display: false }
+          }
+        }
+      }
+    };
+  } else if (type === 'breakdown') {
+    config = {
+      type: 'doughnut',
+      data: {
+        labels: ['Beschaffung & Vertrieb', 'Netzentgelte', 'CO₂-Preis', 'Steuern & Abgaben', 'Messkosten'],
+        datasets: [{
+          data: [38, 25, 12, 18, 7],
+          backgroundColor: ['#1e3a5f', '#2563eb', '#dc2626', '#f97316', '#94a3b8'],
+          borderWidth: 2,
+          borderColor: '#fff',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              usePointStyle: true,
+              padding: 14,
+              font: { size: 12 },
+              generateLabels: (chart) => {
+                const data = chart.data;
+                return data.labels.map((label, i) => ({
+                  text: `${label} (${data.datasets[0].data[i]} %)`,
+                  fillStyle: data.datasets[0].backgroundColor[i],
+                  strokeStyle: '#fff',
+                  lineWidth: 2,
+                  pointStyle: 'circle',
+                  index: i,
+                }));
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.parsed} %`
+            }
+          }
+        }
+      }
+    };
+  }
+
+  chart3Instance = new Chart(ctx3, config);
+}
+
+function switchCostView(type) {
+  document.querySelectorAll('.card:nth-child(3) .tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  createChart3(type);
+}
+
+createChart3('co2');
+
+// =========================================
+// CHART 4: Thüringen vs. Bund nach Energieträger
+// =========================================
+const ctx4 = document.getElementById('chart4').getContext('2d');
+
+new Chart(ctx4, {
+  type: 'bar',
+  data: {
+    labels: ['Heizöl', 'Erdgas', 'Fernwärme'],
+    datasets: [
+      {
+        label: 'Thüringen (kWh/m²)',
+        data: [94.3, 85.6, 52.7],
+        backgroundColor: '#dc2626',
+        borderRadius: 6,
+        barPercentage: 0.6,
+        categoryPercentage: 0.65,
+      },
+      {
+        label: 'Bundesdurchschnitt (kWh/m²)',
+        data: [82.6, 78.3, 59.4],
+        backgroundColor: '#94a3b8',
+        borderRadius: 6,
+        barPercentage: 0.6,
+        categoryPercentage: 0.65,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: { usePointStyle: true, padding: 16, font: { size: 12 } }
+      },
+      tooltip: {
+        callbacks: {
+          label: (c) => {
+            const thData = [94.3, 85.6, 52.7];
+            const deData = [82.6, 78.3, 59.4];
+            const idx = c.dataIndex;
+            const diff = c.datasetIndex === 0
+              ? `(+${((thData[idx] / deData[idx] - 1) * 100).toFixed(1)} % über Bundesdurchschnitt)`
+              : '';
+            return `${c.dataset.label}: ${c.parsed.y} kWh/m² ${diff}`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 110,
+        ticks: {
+          callback: (v) => v + ' kWh/m²',
+          font: { size: 11 }
+        },
+        grid: { color: '#f0f0f0' }
+      },
+      x: {
+        ticks: { font: { size: 13, weight: 'bold' } },
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
