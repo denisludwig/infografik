@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>420 Euro mehr – Eine Heizkostenabrechnung aus Thüringen</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --clr-bg: #fafafa;
+  --clr-dark: #0f172a;
+  --clr-accent: #1e3a5f;
+  --clr-red: #dc2626;
+  --clr-orange: #f97316;
+  --clr-green: #16a34a;
+  --clr-blue: #2563eb;
+  --clr-muted: #64748b;
+  --clr-light: #f1f5f9;
+  --clr-border: #e2e8f0;
+  --font: 'Georgia', 'Times New Roman', serif;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--clr-bg);
+  color: var(--clr-dark);
+  line-height: 1.8;
+  font-size: 18px;
+}
+
+/* ==================== HERO ==================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(transparent, var(--clr-bg));
+}
+
+.hero .kicker {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  max-width: 800px;
+}
+
+.hero h1 .highlight {
+  color: #f87171;
+}
+
+.hero .subtitle {
+  font-size: 1.15rem;
+  color: #cbd5e1;
+  max-width: 560px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 140px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #94a3b8;
+  animation: bounce 2s ease infinite;
+}
+
+.scroll-hint::after {
+  content: '↓';
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 0.25rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ==================== CHAPTERS ==================== */
+.chapter {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.chapter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter-number {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--clr-muted);
+  margin-bottom: 0.5rem;
+}
+
+.chapter h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--clr-accent);
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.chapter p {
+  margin-bottom: 1.25rem;
+  color: #334155;
+}
+
+.chapter p strong {
+  color: var(--clr-dark);
+}
+
+/* ==================== BILL (Rechnung) ==================== */
+.bill {
+  background: white;
+  border: 1px solid var(--clr-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 480px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  font-family: var(--font-sans);
+  position: relative;
+}
+
+.bill::before {
+  content: 'HEIZKOSTENABRECHNUNG';
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--clr-muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--clr-border);
+}
+
+.bill-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--clr-muted);
+  margin-bottom: 1.5rem;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+}
+
+.bill-row:last-of-type { border-bottom: none; }
+
+.bill-row .label { color: #475569; }
+.bill-row .value { font-weight: 600; color: var(--clr-dark); }
+
+.bill-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--clr-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.bill-total .label {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.bill-total .value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--clr-red);
+}
+
+.bill-diff {
+  text-align: right;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--clr-red);
+  font-weight: 600;
+}
+
+/* ==================== WIDE SECTIONS ==================== */
+.wide-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.wide-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chart-card {
+  background: white;
+  border: 1px solid var(--clr-border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.chart-card h3 {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--clr-accent);
+  margin-bottom: 0.4rem;
+}
+
+.chart-card .chart-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--clr-muted);
+  margin-bottom: 1rem;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-height: 420px;
+}
+
+/* ==================== PULL QUOTE ==================== */
+.pull-quote {
+  border-left: 4px solid var(--clr-red);
+  padding: 1.25rem 1.5rem;
+  margin: 2.5rem 0;
+  background: #fef2f2;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #991b1b;
+  line-height: 1.6;
+}
+
+.pull-quote cite {
+  display: block;
+  font-style: normal;
+  font-size: 0.8rem;
+  color: var(--clr-muted);
+  margin-top: 0.5rem;
+}
+
+/* ==================== KEY INSIGHT ==================== */
+.key-insight {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 0.85rem 1.15rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.key-insight strong { color: var(--clr-red); }
+
+/* ==================== TEMP BOXES ==================== */
+.temp-row {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.temp-card {
+  flex: 1;
+  min-width: 130px;
+  background: white;
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  font-family: var(--font-sans);
+}
+
+.temp-card .tc-label {
+  font-size: 0.7rem;
+  color: var(--clr-muted);
+  margin-bottom: 0.2rem;
+}
+
+.temp-card .tc-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.tc-value.warm { color: var(--clr-orange); }
+.tc-value.cold { color: var(--clr-blue); }
+.tc-value.frost { color: #7c3aed; }
+
+.temp-card .tc-note {
+  font-size: 0.65rem;
+  color: var(--clr-muted);
+  margin-top: 0.15rem;
+}
+
+/* ==================== CAUSE CARDS ==================== */
+.cause-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.cause-card {
+  background: white;
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  font-family: var(--font-sans);
+  transition: transform 0.2s;
+}
+
+.cause-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+.cause-card .cc-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.cause-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--clr-accent); margin-bottom: 0.3rem; }
+.cause-card p { font-size: 0.8rem; color: var(--clr-muted); line-height: 1.45; margin-bottom: 0.4rem; }
+
+.cc-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.cc-tag.red { background: #fee2e2; color: #dc2626; }
+.cc-tag.blue { background: #dbeafe; color: #2563eb; }
+.cc-tag.amber { background: #fef3c7; color: #d97706; }
+.cc-tag.green { background: #dcfce7; color: #16a34a; }
+
+/* ==================== WP SECTION ==================== */
+.wp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-sans);
+}
+
+.wp-stat {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.wp-stat .ws-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-green);
+}
+
+.ws-value.blue { color: var(--clr-blue); }
+.ws-value.red { color: var(--clr-red); }
+
+.wp-stat .ws-label {
+  font-size: 0.72rem;
+  color: var(--clr-muted);
+  line-height: 1.3;
+  margin-top: 0.15rem;
+}
+
+.wp-timeline {
+  display: flex;
+  gap: 0;
+  margin: 1.25rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+  font-family: var(--font-sans);
+}
+
+.wp-tl-item {
+  flex: 1;
+  padding: 0.65rem 0.4rem;
+  text-align: center;
+  border-right: 1px solid var(--clr-border);
+}
+
+.wp-tl-item:last-child { border-right: none; }
+.wp-tl-item.hi { background: #f0fdf4; }
+.wp-tl-item.lo { background: #fef2f2; }
+.wp-tl-item .tl-yr { font-size: 0.65rem; font-weight: 700; color: var(--clr-muted); }
+.wp-tl-item .tl-val { font-size: 1rem; font-weight: 700; color: var(--clr-accent); margin: 0.1rem 0; }
+.wp-tl-item .tl-lbl { font-size: 0.6rem; color: var(--clr-muted); }
+
+.foerder-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-family: var(--font-sans);
+}
+
+.foerder-box {
+  background: white;
+  border: 1px solid var(--clr-border);
+  border-radius: 8px;
+  padding: 0.65rem;
+  text-align: center;
+}
+
+.foerder-box .fb-pct {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--clr-green);
+}
+
+.foerder-box .fb-label {
+  font-size: 0.65rem;
+  color: var(--clr-muted);
+  line-height: 1.2;
+  margin-top: 0.1rem;
+}
+
+/* ==================== TAB BUTTONS ==================== */
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--clr-border);
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  color: var(--clr-muted);
+  transition: all 0.2s;
+}
+
+.tab-btn:hover { border-color: var(--clr-accent); color: var(--clr-accent); }
+
+.tab-btn.active {
+  background: var(--clr-accent);
+  color: white;
+  border-color: var(--clr-accent);
+}
+
+/* ==================== DIVIDER ==================== */
+.divider {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.divider hr {
+  border: none;
+  border-top: 1px solid var(--clr-border);
+}
+
+/* ==================== OUTRO ==================== */
+.outro {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  color: white;
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+
+.outro h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.outro p {
+  max-width: 560px;
+  margin: 0 auto 1.5rem;
+  color: #cbd5e1;
+  font-size: 1rem;
+}
+
+.outro-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+}
+
+.outro-actions a {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  background: white;
+  color: var(--clr-accent);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: transform 0.2s;
+}
+
+.outro-actions a:hover { transform: translateY(-2px); }
+
+/* ==================== SOURCE ==================== */
+.source-line {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  color: var(--clr-muted);
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--clr-muted);
+  border-top: 1px solid var(--clr-border);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .hero h1 { font-size: 1.8rem; }
+  .bill { padding: 1.25rem; margin: 1.5rem 0.5rem; }
+  .cause-cards { grid-template-columns: 1fr; }
+  .wp-stats { grid-template-columns: 1fr; }
+  .foerder-row { grid-template-columns: 1fr 1fr; }
+  .temp-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================= -->
+<!-- HERO                                          -->
+<!-- ============================================= -->
+<div class="hero">
+  <div class="kicker">Datenrecherche · Heizkosten 2025/26</div>
+  <h1><span class="highlight">420 Euro mehr.</span><br>Eine Heizkostenabrechnung aus Thüringen.</h1>
+  <p class="subtitle">Warum Thüringen im Januar 2026 so viel geheizt hat wie kein anderes Bundesland – und was das für Mieter, Hausbesitzer und die Energiewende bedeutet.</p>
+  <div class="scroll-hint">Scrollen, um die Geschichte zu lesen</div>
+</div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 1: Der Schock                         -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 1</div>
+  <h2>Die Rechnung, die alles verändert</h2>
+  <p>Als Familie Berger* aus Erfurt im Februar 2026 ihre Heizkostenabrechnung öffnet, traut sie ihren Augen nicht. 130&nbsp;Quadratmeter, Einfamilienhaus, Gasheizung. Die Zahlen auf dem Papier erzählen eine Geschichte, die hunderttausende Thüringer in diesem Winter teilen.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="bill">
+    <div class="bill-header">
+      <span>Familie Berger · Erfurt</span>
+      <span>Abrechnungszeitraum: Jan 2026</span>
+    </div>
+    <div class="bill-row">
+      <span class="label">Wohnfläche</span>
+      <span class="value">130 m²</span>
+    </div>
+    <div class="bill-row">
+      <span class="label">Heizart</span>
+      <span class="value">Erdgas (Zentralheizung)</span>
+    </div>
+    <div class="bill-row">
+      <span class="label">Verbrauch Jan 2025</span>
+      <span class="value">2.180 kWh</span>
+    </div>
+    <div class="bill-row">
+      <span class="label">Verbrauch Jan 2026</span>
+      <span class="value">2.930 kWh (+34,4 %)</span>
+    </div>
+    <div class="bill-row">
+      <span class="label">Vorjahr (Jan 2025)</span>
+      <span class="value">147,50 €</span>
+    </div>
+    <div class="bill-total">
+      <span class="label">Januar 2026</span>
+      <span class="value">182,50 €</span>
+    </div>
+    <div class="bill-diff">+35,00 € in einem Monat · hochgerechnet +420 €/Jahr</div>
+  </div>
+  <p style="max-width: 480px; margin: 0 auto; text-align: center; font-family: var(--font-sans); font-size: 0.8rem; color: var(--clr-muted);">* Fiktives Beispiel auf Basis realer Durchschnittswerte (Heizspiegel 2025, Techem)</p>
+</div>
+
+<div class="chapter" data-anim>
+  <p>420 Euro mehr im Jahr. Für eine Familie, die ohnehin schon knapp kalkuliert, ist das kein Rundungsfehler – das ist ein Monatsbudget für Lebensmittel. Doch was Familie Berger noch nicht weiß: Sie leben im teuersten Heiz-Bundesland Deutschlands.</p>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 2: Der Vergleich                      -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 2</div>
+  <h2>Warum gerade Thüringen?</h2>
+  <p>Daten des Energiedienstleisters Techem zeigen: Thüringen verzeichnet im Januar 2026 die stärkste Verbrauchssteigerung aller Bundesländer. <strong>+34,5 Prozent</strong> mehr Heizenergie als im Vorjahresmonat. In Nordrhein-Westfalen waren es gerade einmal 2,2 Prozent.</p>
+  <p>Die Kluft verläuft entlang einer unsichtbaren Linie – und die hat mit Geografie, Gebäuden und Geschichte zu tun.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>Verbrauchssteigerung im Januar 2026 nach Bundesland</h3>
+    <div class="chart-subtitle">Veränderung gegenüber Januar 2025 in Prozent · Quelle: Techem</div>
+    <div class="chart-container">
+      <canvas id="chartLaender"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <div class="pull-quote">
+    „Im Osten wurde im Januar bis zu 15-mal stärker geheizt als im Westen. Das ist kein Zufall – es ist Geografie, verstärkt durch den Gebäudebestand."
+    <cite>Heizspiegel-Analyse, co2online, 2026</cite>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 3: Der Temperatursturz                -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 3</div>
+  <h2>Der kälteste Januar seit vier Jahren</h2>
+  <p>Die wichtigste Ursache liegt auf der Hand – und vor der Haustür. Der Januar 2026 beendete eine beispiellose Serie: <strong>52 Monate in Folge</strong> war jeder Monat in Deutschland wärmer als das langjährige Mittel gewesen. Dann kam der Bruch.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="temp-row">
+    <div class="temp-card">
+      <div class="tc-label">Januar 2024</div>
+      <div class="tc-value warm">+2,0 °C</div>
+      <div class="tc-note">deutlich zu mild</div>
+    </div>
+    <div class="temp-card">
+      <div class="tc-label">Januar 2025</div>
+      <div class="tc-value warm">+2,0 °C</div>
+      <div class="tc-note">Thüringen: 2,0 °C</div>
+    </div>
+    <div class="temp-card">
+      <div class="tc-label">Januar 2026</div>
+      <div class="tc-value frost">–0,8 °C</div>
+      <div class="tc-note">erster kalter Monat seit 4,3 Jahren</div>
+    </div>
+    <div class="temp-card" style="border: 2px solid var(--clr-red);">
+      <div class="tc-label">Differenz Jan 25 → 26</div>
+      <div class="tc-value cold">–2,8 °C</div>
+      <div class="tc-note">= +34,5 % mehr Heizenergie in TH</div>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <p>Für Thüringen ist dieser Sturz besonders schmerzhaft. Der Thüringer Wald, das Schiefergebirge und die Ausläufer des Harzes machen das Bundesland zu einer der kältesten Regionen Deutschlands. Auf dem Großen Beerberg (982 m) liegt das Jahresmittel bei unter 5 °C – eine „Kälteinsel" mitten in Deutschland.</p>
+  <p>Hinzu kommen <strong>Inversionslagen</strong>: In den langen Winternächten bilden sich in den Talkesseln stabile Kaltluftseen. Die warme Luft liegt oben, die kalte Luft sitzt unten fest – manchmal tagelang. Während auf dem Inselsberg zweistellige Plusgrade herrschen, kriecht das Thermometer im Thüringer Becken nicht über den Gefrierpunkt.</p>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 4: Die vier Faktoren                  -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 4</div>
+  <h2>Vier Gründe, warum Thüringen so viel heizt</h2>
+  <p>Der Temperatursturz allein erklärt nicht den Spitzenwert. Vier Faktoren wirken zusammen – und verstärken sich gegenseitig.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="cause-cards">
+    <div class="cause-card">
+      <div class="cc-icon">🏔️</div>
+      <h4>Höhenlage &amp; Mittelgebirge</h4>
+      <p>Thüringer Wald, Rhön, Harz: Jahresmittel von 5–7 °C in den Höhenlagen. Inversionslagen verstärken die Kälte in Talkesseln.</p>
+      <span class="cc-tag red">5–7 °C Jahresmittel</span>
+    </div>
+    <div class="cause-card">
+      <div class="cc-icon">🌡️</div>
+      <h4>Temperatursturz 2026</h4>
+      <p>–2,8 °C kälter als im Vorjahr. Faustregel: 1 °C weniger = ca. 6 % mehr Heizenergie. Bei fast 3 °C Unterschied potenziert sich der Effekt.</p>
+      <span class="cc-tag blue">–2,8 °C Differenz</span>
+    </div>
+    <div class="cause-card">
+      <div class="cc-icon">🏗️</div>
+      <h4>Hoher Fernwärme-Anteil</h4>
+      <p>25 % der Thüringer Haushalte heizen mit Fernwärme (Bund: 15 %). Bei Kälte steigt der Fernwärme-Verbrauch überproportional: +45,1 % in Thüringen.</p>
+      <span class="cc-tag amber">25 % Fernwärme-Anteil</span>
+    </div>
+    <div class="cause-card">
+      <div class="cc-icon">🏠</div>
+      <h4>Gebäudestruktur</h4>
+      <p>66,3 % Einfamilienhäuser mit großer Außenfläche und hohem Wärmeverlust. Viele fossile Heizungen aus den 90ern erreichen bald ihr Austausch-Alter.</p>
+      <span class="cc-tag green">66,3 % Einfamilienhäuser</span>
+    </div>
+  </div>
+  <div class="source-line">Quellen: Techem, DWD, TLUBN, Thüringer Ministerium für Umwelt/Energie</div>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>Verbrauch pro m²: Thüringen vs. Bundesdurchschnitt</h3>
+    <div class="chart-subtitle">Heizenergieverbrauch nach Energieträger in kWh pro Quadratmeter</div>
+    <div class="chart-container" style="max-height: 300px;">
+      <canvas id="chartThVsBund"></canvas>
+    </div>
+    <div class="source-line">Quelle: co2online, Heizspiegel 2025</div>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 5: Was kostet Heizen wirklich?        -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 5</div>
+  <h2>Was Heizen wirklich kostet – und wer am meisten zahlt</h2>
+  <p>Die Rechnung von Familie Berger ist kein Einzelfall. Wer mit Fernwärme heizt, zahlt 2025 im Schnitt <strong>1.245 Euro pro Jahr</strong> für eine 70-Quadratmeter-Wohnung. Fernwärme – einst als soziale Errungenschaft der DDR gefeiert – ist mittlerweile der teuerste Energieträger am Markt.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>Jährliche Heizkosten nach Energieträger (70 m², 2025)</h3>
+    <div class="chart-subtitle">Mehrfamilienhaus · Quelle: Heizspiegel 2025</div>
+    <div class="tab-nav" id="tabs-energy">
+      <button class="tab-btn active" onclick="switchEnergy('bar')">Jahreskosten</button>
+      <button class="tab-btn" onclick="switchEnergy('trend')">Trend 2021–2025</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="chartEnergy"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <p>Hinter den steigenden Preisen steckt ein Cocktail aus Marktkräften und politischen Entscheidungen. Der <strong>CO₂-Preis</strong> hat sich seit 2021 mehr als verdoppelt – von 25 auf 55 Euro pro Tonne. Ab 2027 wird er durch den EU-Emissionshandel bestimmt. Experten rechnen mit bis zu 120 Euro pro Tonne bis 2030.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>CO₂-Preis: Die tickende Uhr</h3>
+    <div class="chart-subtitle">Entwicklung des nationalen CO₂-Preises in Euro pro Tonne</div>
+    <div class="tab-nav" id="tabs-co2">
+      <button class="tab-btn active" onclick="switchCO2('co2')">CO₂-Preis</button>
+      <button class="tab-btn" onclick="switchCO2('donut')">Kostenaufschlüsselung Gas</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="chartCO2"></canvas>
+    </div>
+    <div class="source-line">Quellen: BMWK, Heizspiegel 2025, PIK Potsdam</div>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 6: Die Wärmepumpe                     -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 6</div>
+  <h2>Der Ausweg: Die günstigste Heizung ist noch viel zu selten</h2>
+  <p>Es gibt eine Heizart, die all das nicht betrifft. Keinen CO₂-Preis. Keine Gaspreisschwankungen. Keine Abhängigkeit von fossilen Importen. Die <strong>Wärmepumpe</strong> kostet eine Familie wie die Bergers nur 715 Euro im Jahr – weniger als die Hälfte von Fernwärme.</p>
+  <p>Paradoxerweise ist ausgerechnet Sachsen-Anhalt bei Wärmepumpen im Neubau bundesweiter Spitzenreiter: <strong>82,9 Prozent</strong> aller neuen Wohngebäude werden dort mit Wärmepumpe ausgestattet. Im Gebäudebestand aber dominieren weiter Gas und Öl.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="wp-stats">
+    <div class="wp-stat">
+      <div class="ws-value">715 €</div>
+      <div class="ws-label">Jahreskosten 70 m² (2025)<br>günstigste Heizart</div>
+    </div>
+    <div class="wp-stat">
+      <div class="ws-value blue">82,9 %</div>
+      <div class="ws-label">WP im Neubau<br>Sachsen-Anhalt (Nr. 1)</div>
+    </div>
+    <div class="wp-stat">
+      <div class="ws-value red">~5 %</div>
+      <div class="ws-label">WP im Bestand<br>SA &amp; Thüringen</div>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <p>Der Markt hat ein turbulentes Jahr hinter sich. Nach dem Rekord 2023 (356.000 Stück) brach der Absatz 2024 um 46 Prozent ein – verunsichert durch das Hin und Her um das Heizungsgesetz und das Ende der Ampel-Koalition. 2025 kam das Comeback: <strong>+55 Prozent</strong>, getragen von der KfW-Förderung.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>Absatzentwicklung Wärmepumpen in Deutschland</h3>
+    <div class="chart-subtitle">Verkaufte Einheiten pro Jahr · Quelle: BWP</div>
+    <div class="wp-timeline">
+      <div class="wp-tl-item">
+        <div class="tl-yr">2022</div>
+        <div class="tl-val">236.000</div>
+        <div class="tl-lbl">Stück</div>
+      </div>
+      <div class="wp-tl-item hi">
+        <div class="tl-yr">2023</div>
+        <div class="tl-val">356.000</div>
+        <div class="tl-lbl">Rekord</div>
+      </div>
+      <div class="wp-tl-item lo">
+        <div class="tl-yr">2024</div>
+        <div class="tl-val">193.000</div>
+        <div class="tl-lbl">–46 %</div>
+      </div>
+      <div class="wp-tl-item hi">
+        <div class="tl-yr">2025</div>
+        <div class="tl-val">299.000</div>
+        <div class="tl-lbl">+55 %</div>
+      </div>
+      <div class="wp-tl-item" style="background:#ecfdf5; border-left: 2px dashed var(--clr-green);">
+        <div class="tl-yr">2026*</div>
+        <div class="tl-val">~410.000</div>
+        <div class="tl-lbl">Prognose</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <p>Der langfristige Vergleich ist eindeutig. Über 20 Jahre gerechnet spart eine Wärmepumpe im Einfamilienhaus <strong>40.000 bis 100.000 Euro</strong> gegenüber einer Gasheizung – je nach Sanierungsstand. In einem unsanierten Haus verursacht Gas über 20 Jahre Kosten von rund 120.000 Euro. Mit Wärmepumpe und Sanierung: 16.000 Euro.</p>
+</div>
+
+<div class="wide-section" data-anim>
+  <div class="chart-card">
+    <h3>Vollkosten über 20 Jahre: Einfamilienhaus, 130 m²</h3>
+    <div class="chart-subtitle">Energiekosten saniert vs. unsaniert · Quelle: co2online, Ariadne-Projekt</div>
+    <div class="tab-nav" id="tabs-wp">
+      <button class="tab-btn active" onclick="switchWP('total')">Gesamtkosten 20 Jahre</button>
+      <button class="tab-btn" onclick="switchWP('annual')">Jahresvergleich 2025</button>
+    </div>
+    <div class="chart-container" style="max-height: 380px;">
+      <canvas id="chartWP"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" data-anim>
+  <p>Die Förderung macht den Umstieg attraktiv wie nie: Bis zu <strong>70 Prozent</strong> der Kosten übernimmt der Staat – maximal 21.000 Euro Zuschuss.</p>
+
+  <div class="foerder-row">
+    <div class="foerder-box">
+      <div class="fb-pct">30 %</div>
+      <div class="fb-label">Grundförderung<br>für alle</div>
+    </div>
+    <div class="foerder-box">
+      <div class="fb-pct">+20 %</div>
+      <div class="fb-label">Klimageschwin-<br>digkeitsbonus</div>
+    </div>
+    <div class="foerder-box">
+      <div class="fb-pct">+30 %</div>
+      <div class="fb-label">Einkommens-<br>bonus</div>
+    </div>
+    <div class="foerder-box">
+      <div class="fb-pct" style="color: var(--clr-accent);">= max. 70 %</div>
+      <div class="fb-label">Höchstförder-<br>satz</div>
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <strong>Für die Bergers gerechnet:</strong> Bei maximaler Förderung kostet der Umstieg auf eine Luft-Wärmepumpe netto rund 9.000–12.000 Euro. Die jährliche Ersparnis gegenüber Gas: rund 530 Euro. Amortisation: unter 8 Jahre.
+  </div>
+  <div class="source-line">Quellen: Heizspiegel 2025 (co2online), Destatis, BWP Branchenstudie 2025, KfW, Ariadne (PIK)</div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ============================================= -->
+<!-- KAPITEL 7: Outro                              -->
+<!-- ============================================= -->
+<div class="chapter" data-anim>
+  <div class="chapter-number">Kapitel 7</div>
+  <h2>Was Sie jetzt tun können</h2>
+  <p>Ob Mieter oder Eigenheimbesitzer – es gibt Stellschrauben, an denen jeder drehen kann. Der Heizspiegel zeigt: <strong>90 Prozent der Haushalte</strong> könnten ihre Kosten im Schnitt um 400 Euro pro Jahr senken. Allein durch richtiges Lüften, eine optimierte Heizkurve und bewussten Warmwasserverbrauch lassen sich kurzfristig 10 Prozent sparen.</p>
+  <p>Für Familie Berger hat der Schock auf der Rechnung etwas ausgelöst. Sie haben sich für eine Energieberatung angemeldet. Und sie denken zum ersten Mal ernsthaft über eine Wärmepumpe nach.</p>
+</div>
+
+<div class="outro">
+  <h2>Prüfen Sie Ihre Heizkosten</h2>
+  <p>Der Heizspiegel von co2online zeigt Ihnen, ob Sie zu viel bezahlen – und was Sie sparen können.</p>
+  <div class="outro-actions">
+    <a href="https://www.heizspiegel.de" target="_blank" rel="noopener">Heizspiegel prüfen →</a>
+    <a href="https://www.kfw.de/inlandsfoerderung/Heizungsf%C3%B6rderung/" target="_blank" rel="noopener">KfW-Förderung →</a>
+    <a href="https://www.verbraucherzentrale-energieberatung.de" target="_blank" rel="noopener">Energieberatung →</a>
+  </div>
+</div>
+
+<div class="footer">
+  Datenstand: Februar 2026 · Alle Angaben ohne Gewähr · Quellen: Techem, co2online (Heizspiegel), DWD, BMWK, BWP, Ariadne/PIK, Destatis
+</div>
+
+<!-- ============================================= -->
+<!-- JAVASCRIPT                                    -->
+<!-- ============================================= -->
+<script>
+// ==================== SCROLL ANIMATION ====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('[data-anim], .chapter, .wide-section').forEach(el => observer.observe(el));
+
+// ==================== CHART: Bundesländer ====================
+const ctxL = document.getElementById('chartLaender').getContext('2d');
+const laender = ['Thüringen','Brandenburg','Berlin','Sachsen','Sachsen-Anhalt','Schleswig-H.','Niedersachsen','Bayern','Baden-Württ.','Hessen','Saarland','NRW'];
+const steigerung = [34.5,29.2,18.1,16.5,10.5,9.8,7.5,6.2,4.3,4.1,3.5,2.2];
+const lColors = laender.map(l => l==='Thüringen'?'#dc2626':l==='Sachsen-Anhalt'?'#2563eb':['Brandenburg','Berlin','Sachsen'].includes(l)?'#f97316':'#94a3b8');
+
+new Chart(ctxL, {
+  type:'bar',
+  data:{ labels:laender, datasets:[{ data:steigerung, backgroundColor:lColors, borderRadius:4, barPercentage:0.7 }] },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>`+${c.parsed.x} % Verbrauchssteigerung` } } },
+    scales:{
+      x:{ beginAtZero:true, max:40, ticks:{ callback:v=>`+${v} %`, font:{size:12} }, grid:{color:'#f0f0f0'} },
+      y:{ ticks:{ font:{ size:13, weight:c=>['Thüringen','Sachsen-Anhalt'].includes(laender[c.index])?'bold':'normal' } }, grid:{display:false} }
+    }
+  }
+});
+
+// ==================== CHART: Thüringen vs. Bund ====================
+const ctxTB = document.getElementById('chartThVsBund').getContext('2d');
+new Chart(ctxTB, {
+  type:'bar',
+  data:{
+    labels:['Heizöl','Erdgas','Fernwärme'],
+    datasets:[
+      { label:'Thüringen (kWh/m²)', data:[94.3,85.6,52.7], backgroundColor:'#dc2626', borderRadius:6, barPercentage:0.6, categoryPercentage:0.65 },
+      { label:'Bundesdurchschnitt (kWh/m²)', data:[82.6,78.3,59.4], backgroundColor:'#94a3b8', borderRadius:6, barPercentage:0.6, categoryPercentage:0.65 }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'top', labels:{usePointStyle:true,padding:14,font:{size:12}} }, tooltip:{ callbacks:{ label:c=>`${c.dataset.label}: ${c.parsed.y} kWh/m²` } } },
+    scales:{
+      y:{ beginAtZero:true, max:110, ticks:{callback:v=>v+' kWh/m²',font:{size:11}}, grid:{color:'#f0f0f0'} },
+      x:{ ticks:{font:{size:13,weight:'bold'}}, grid:{display:false} }
+    }
+  }
+});
+
+// ==================== CHART: Energy costs ====================
+let chartE = null;
+function createChartE(type) {
+  const ctx = document.getElementById('chartEnergy').getContext('2d');
+  if(chartE) chartE.destroy();
+  let cfg;
+  if(type==='bar') {
+    cfg = {
+      type:'bar',
+      data:{ labels:['Fernwärme','Erdgas','Heizöl','Pellets','Wärmepumpe'], datasets:[{ data:[1245,1180,1055,740,715], backgroundColor:['#ef4444','#f97316','#eab308','#84cc16','#22c55e'], borderRadius:6, barPercentage:0.55 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>`${c.parsed.y.toLocaleString('de-DE')} € pro Jahr` } } },
+        scales:{ y:{beginAtZero:true,max:1400,ticks:{callback:v=>v.toLocaleString('de-DE')+' €',font:{size:12}},grid:{color:'#f0f0f0'}}, x:{ticks:{font:{size:13,weight:'bold'}},grid:{display:false}} }
+      }
+    };
+  } else {
+    cfg = {
+      type:'line',
+      data:{
+        labels:['2021','2022','2023','2024','2025'],
+        datasets:[
+          {label:'Fernwärme',data:[780,870,1000,1055,1245],borderColor:'#ef4444',borderWidth:2.5,pointRadius:5,fill:false,tension:0.3},
+          {label:'Erdgas',data:[615,1050,1150,885,1030],borderColor:'#f97316',borderWidth:2.5,pointRadius:5,fill:false,tension:0.3},
+          {label:'Heizöl',data:[700,1350,1200,1065,1055],borderColor:'#eab308',borderWidth:2.5,pointRadius:5,fill:false,tension:0.3},
+          {label:'Wärmepumpe',data:[850,950,880,680,715],borderColor:'#22c55e',borderWidth:2.5,pointRadius:5,fill:false,tension:0.3}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top',labels:{usePointStyle:true,padding:14,font:{size:12}}}, tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toLocaleString('de-DE')} €`}} },
+        scales:{ y:{min:500,max:1500,ticks:{callback:v=>v.toLocaleString('de-DE')+' €',font:{size:12}},grid:{color:'#f0f0f0'}}, x:{ticks:{font:{size:13}},grid:{display:false}} }
+      }
+    };
+  }
+  chartE = new Chart(ctx, cfg);
+}
+function switchEnergy(t) { document.querySelectorAll('#tabs-energy .tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); createChartE(t); }
+createChartE('bar');
+
+// ==================== CHART: CO2 ====================
+let chartC = null;
+function createChartC(type) {
+  const ctx = document.getElementById('chartCO2').getContext('2d');
+  if(chartC) chartC.destroy();
+  let cfg;
+  if(type==='co2') {
+    cfg = {
+      type:'bar',
+      data:{ labels:['2021','2022','2023','2024','2025','2026*'], datasets:[{ data:[25,30,30,45,55,60], backgroundColor:['#94a3b8','#94a3b8','#94a3b8','#f97316','#dc2626','#991b1b'], borderRadius:6, barPercentage:0.55 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.parsed.y} € pro Tonne CO₂`}} },
+        scales:{ y:{beginAtZero:true,max:80,ticks:{callback:v=>v+' €',font:{size:12}},grid:{color:'#f0f0f0'}}, x:{ticks:{font:{size:13}},grid:{display:false}} }
+      }
+    };
+  } else {
+    cfg = {
+      type:'doughnut',
+      data:{ labels:['Beschaffung & Vertrieb','Netzentgelte','CO₂-Preis','Steuern & Abgaben','Messkosten'], datasets:[{ data:[38,25,12,18,7], backgroundColor:['#1e3a5f','#2563eb','#dc2626','#f97316','#94a3b8'], borderWidth:2, borderColor:'#fff' }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'right', labels:{ usePointStyle:true, padding:12, font:{size:11}, generateLabels:ch=>ch.data.labels.map((l,i)=>({text:`${l} (${ch.data.datasets[0].data[i]} %)`,fillStyle:ch.data.datasets[0].backgroundColor[i],strokeStyle:'#fff',lineWidth:2,pointStyle:'circle',index:i})) } }, tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed} %`}} }
+      }
+    };
+  }
+  chartC = new Chart(ctx, cfg);
+}
+function switchCO2(t) { document.querySelectorAll('#tabs-co2 .tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); createChartC(t); }
+createChartC('co2');
+
+// ==================== CHART: Wärmepumpe 20 Jahre ====================
+let chartW = null;
+function createChartW(type) {
+  const ctx = document.getElementById('chartWP').getContext('2d');
+  if(chartW) chartW.destroy();
+  let cfg;
+  if(type==='total') {
+    cfg = {
+      type:'bar',
+      data:{
+        labels:['Erd-Wärmepumpe','Luft-Wärmepumpe','Holzpellets','Fernwärme','Gasheizung','Ölheizung'],
+        datasets:[
+          {label:'Saniert (20 J.)',data:[13000,17000,16000,21000,28000,41000],backgroundColor:'#22c55e',borderRadius:4,barPercentage:0.55,categoryPercentage:0.7},
+          {label:'Unsaniert (20 J.)',data:[23500,31300,32000,49000,55500,67000],backgroundColor:'#ef4444',borderRadius:4,barPercentage:0.55,categoryPercentage:0.7}
+        ]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top',labels:{usePointStyle:true,padding:14,font:{size:12}}}, tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.x.toLocaleString('de-DE')} €`}} },
+        scales:{ x:{beginAtZero:true,max:75000,ticks:{callback:v=>(v/1000)+'T €',font:{size:11}},grid:{color:'#f0f0f0'}}, y:{ticks:{font:{size:12}},grid:{display:false}} }
+      }
+    };
+  } else {
+    cfg = {
+      type:'bar',
+      data:{ labels:['Wärmepumpe','Pellets','Heizöl','Erdgas','Fernwärme'], datasets:[{ data:[715,740,1055,1180,1245], backgroundColor:['#22c55e','#84cc16','#eab308','#f97316','#ef4444'], borderRadius:6, barPercentage:0.55 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>{const s=c.parsed.y-715;return `${c.parsed.y.toLocaleString('de-DE')} €/Jahr${s>0?` (+${s} € gg. WP)`:' (günstigste)'}`;}}} },
+        scales:{ y:{beginAtZero:true,max:1400,ticks:{callback:v=>v.toLocaleString('de-DE')+' €',font:{size:12}},grid:{color:'#f0f0f0'}}, x:{ticks:{font:{size:12,weight:'bold'}},grid:{display:false}} }
+      }
+    };
+  }
+  chartW = new Chart(ctx, cfg);
+}
+function switchWP(t) { document.querySelectorAll('#tabs-wp .tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); createChartW(t); }
+createChartW('total');
+</script>
+
+</body>
+</html>
