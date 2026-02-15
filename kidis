@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Slides: KI Hype vs Realität</title>
+    <style>
+        /* Grundlegendes Reset & Font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap');
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            gap: 40px;
+            margin: 0;
+        }
+
+        /* Container für die Slides */
+        .slide {
+            width: 600px; /* Feste Breite für gute Screenshot-Qualität */
+            height: 600px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+
+        /* Design-Elemente */
+        .accent-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(34,211,238,0.15) 0%, rgba(34,211,238,0) 70%);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+        }
+
+        .slide-content {
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Typografie */
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin: 0 0 20px 0;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #38bdf8; /* Helles Cyan */
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        p {
+            font-size: 1.5rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .highlight {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .warning {
+            color: #f87171; /* Rot für Warnungen */
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            z-index: 1;
+        }
+        
+        .arrow-indicator {
+            font-size: 1.2rem;
+            color: #38bdf8;
+        }
+
+        /* Spezifische Layouts */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+        
+        .split-item strong {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .split-item span {
+            font-size: 1.1rem;
+            color: #94a3b8;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide">
+        <div class="accent-blob"></div>
+        <div class="slide-content">
+            <h2>Die KI-Debatte</h2>
+            <h1>Platzt die<br>KI-Blase?<br>Oder fangen wir gerade erst an?</h1>
+            <p style="margin-top: 30px;">Warum Kritiker vor dem "Finanz-Crash" warnen, aber Entwickler trotzdem produktiver sind als je zuvor.</p>
+        </div>
+        <div class="footer">
+            <span>Meinung</span>
+            <span class="arrow-indicator">➔</span>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="accent-blob" style="top:auto; bottom:-100px; left:-100px;"></div>
+        <div class="slide-content">
+            <h2>Die Makro-Sicht</h2>
+            <h1>Die 3-Billionen Dollar Wette.</h1>
+            <p>Kritiker wie Gary Marcus warnen: LLMs treffen auf eine technologische Mauer.</p>
+            <div class="split-layout">
+                <p style="font-size: 1.3rem;">📉 <strong>Das Risiko:</strong><br>Mehr Daten ≠ mehr Intelligenz.<br>Wenn KI nicht zur perfekten "Superintelligenz" wird, rechnen sich die riesigen Rechenzentren nicht.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Die Warnung</span>
+            <span class="arrow-indicator">➔</span>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="accent-blob"></div>
+        <div class="slide-content">
+            <h2>Die Mikro-Sicht</h2>
+            <h1>Die Realität im Maschinenraum.</h1>
+            <p>Während Investoren zittern, passiert an der Basis (z.B. Webentwicklung) etwas anderes:</p>
+            <div class="split-layout" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3);">
+                <p style="font-size: 1.3rem; color: #e0f2fe;">🚀 <strong>Der Nutzen:</strong><br>Keine Entlassungen, sondern <em>Superkräfte</em>. Ein Freelancer schafft plötzlich die Arbeit von zwei Leuten. Routineaufgaben übernimmt die KI, die Architektur der Mensch.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Die Praxis</span>
+            <span class="arrow-indicator">➔</span>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="accent-blob" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.1;"></div>
+        <div class="slide-content">
+            <h2>Die Auflösung</h2>
+            <h1>Augmentation vs. Automation</h1>
+            <p>Das Missverständnis liegt in der Erwartungshaltung.</p>
+            
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;">
+                <div class="split-layout" style="margin:0; background: rgba(248, 113, 113, 0.1);">
+                    <div class="split-item">
+                        <strong style="color: #fca5a5;">❌ Der Hype (Automation)</strong>
+                        <span>"KI ersetzt den Mitarbeiter komplett." (Funktioniert oft nicht, Gefahr durch Halluzinationen).</span>
+                    </div>
+                </div>
+                
+                <div class="split-layout" style="margin:0; background: rgba(34, 197, 94, 0.1);">
+                    <div class="split-item">
+                        <strong style="color: #86efac;">✅ Die Praxis (Augmentation)</strong>
+                        <span>"KI als Exoskelett für den Experten." (Mensch prüft, KI führt aus = Echter Mehrwert).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Der Unterschied</span>
+            <span class="arrow-indicator">➔</span>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="accent-blob"></div>
+        <div class="slide-content">
+            <h2>Fazit</h2>
+            <h1>Warte nicht auf die perfekte KI.</h1>
+            <p>Die Finanz-Blase mag platzen – aber das Werkzeug bleibt.</p>
+            <p style="margin-top: 20px; border-left: 4px solid #38bdf8; padding-left: 20px; font-style: italic;">
+                "Wer KI heute als Werkzeug nutzt, gewinnt. Wer darauf wartet, dass sie den Job komplett übernimmt, wird enttäuscht."
+            </p>
+            <p style="margin-top: 40px; font-size: 1.1rem; color: #94a3b8;">Wie nutzt ihr KI? Als Copilot oder Autopilot? 👇</p>
+        </div>
+        <div class="footer">
+            <span>Diskussion</span>
+            <span class="arrow-indicator">Ende</span>
+        </div>
+    </div>
+
+</body>
+</html>
