@@ -1,386 +1,163 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDR Sachsen – Regionale Berichterstattung KW 7/2026</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --mdr-blue: #003366;
-            --mdr-blue-light: #0066cc;
-            --mdr-accent: #e8640a;
-            --cov-0: #eaf2f8;
-            --cov-1: #c3daea;
-            --cov-2: #6aaed6;
-            --cov-3: #3182bd;
-            --cov-4: #08519c;
-            --cov-5: #003366;
-            --bg: #fafbfc;
-            --text: #1a1a2e;
-            --text-muted: #666;
-            --border: #e5e7eb;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Source Sans 3', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        .header {
-            background: linear-gradient(135deg, var(--mdr-blue) 0%, #1a5276 100%);
-            color: white;
-            padding: 1.25rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .header-logo {
-            font-family: 'Source Serif 4', Georgia, serif;
-            font-size: 2rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            background: white;
-            color: var(--mdr-blue);
-            padding: 0.1rem 0.5rem;
-            border-radius: 3px;
-        }
-        .header-divider {
-            width: 1px;
-            height: 2rem;
-            background: rgba(255,255,255,0.3);
-        }
-        .header-info {}
-        .header-title {
-            font-size: 1rem;
-            font-weight: 600;
-            opacity: 0.95;
-        }
-        .header-sub {
-            font-size: 0.8rem;
-            font-weight: 300;
-            opacity: 0.75;
-            margin-top: 0.1rem;
-        }
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            height: calc(100vh - 72px);
-            overflow: hidden;
-        }
-        .map-container {
-            position: relative;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            overflow: hidden;
-        }
-        #sachsen-map {
-            width: 100%;
-            height: 100%;
-            max-height: calc(100vh - 110px);
-            object-fit: contain;
-        }
-        /* SVG text override */
-        #sachsen-map text {
-            font-family: 'Source Sans 3', -apple-system, sans-serif !important;
-        }
-        /* Hide the big SVG title */
-        #sachsen-map > g:last-child { display: none; }
-        .kreis-path {
-            cursor: pointer;
-            transition: filter 0.15s ease;
-        }
-        .kreis-path:hover {
-            filter: brightness(0.82) saturate(1.3);
-        }
-        .kreis-path.active {
-            filter: brightness(0.75) saturate(1.5);
-            stroke: var(--mdr-accent) !important;
-            stroke-width: 1.5px !important;
-        }
-        .count-label {
-            font-family: 'Source Sans 3', sans-serif;
-            font-size: 10px;
-            font-weight: 700;
-            text-anchor: middle;
-            dominant-baseline: middle;
-            pointer-events: none;
-        }
-        /* Total badge on map */
-        .total-badge {
-            position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
-            background: var(--mdr-blue);
-            color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,51,102,0.3);
-            min-width: 130px;
-        }
-        .total-badge-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.8;
-            margin-bottom: 0.2rem;
-        }
-        .total-badge-value {
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .total-badge-sub {
-            font-size: 0.7rem;
-            opacity: 0.75;
-            margin-top: 0.2rem;
-        }
-        /* Legend */
-        .legend {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 1.5rem;
-            background: white;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
-        .legend-title {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-        }
-        .legend-scale {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-        }
-        .legend-swatch {
-            width: 26px;
-            height: 14px;
-            border-radius: 2px;
-        }
-        .legend-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-            gap: 2px;
-        }
-        .legend-labels span {
-            width: 26px;
-            text-align: center;
-        }
-        /* ─── Sidebar ─── */
-        .sidebar {
-            background: white;
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .sidebar-header {
-            padding: 1rem 1.25rem 0.75rem;
-            border-bottom: 1px solid var(--border);
-            background: #f8fafc;
-            flex-shrink: 0;
-        }
-        .sidebar-header h2 {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            margin-bottom: 0.3rem;
-        }
-        .selected-region-name {
-            font-family: 'Source Serif 4', Georgia, serif;
-            font-size: 1.2rem;
-            color: var(--mdr-blue);
-        }
-        /* Overview table */
-        .overview-section {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.75rem 1.25rem;
-        }
-        .overview-group {
-            margin-bottom: 1rem;
-        }
-        .overview-group-title {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: var(--mdr-blue);
-            font-weight: 700;
-            padding: 0.4rem 0 0.3rem;
-            border-bottom: 2px solid var(--mdr-blue);
-            margin-bottom: 0.25rem;
-            display: flex;
-            justify-content: space-between;
-        }
-        .overview-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.35rem 0.4rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .overview-row:hover { background: #f0f5fa; }
-        .overview-row.active { background: #dbeaf7; }
-        .overview-row.is-stadt .row-name { font-weight: 600; }
-        .row-name {
-            font-size: 0.85rem;
-            flex: 1;
-        }
-        .row-dots {
-            display: flex;
-            gap: 2px;
-            margin: 0 0.5rem;
-        }
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-        }
-        .dot-filled { background: var(--mdr-blue); }
-        .dot-empty { background: #d0dde8; }
-        .row-count {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--mdr-blue);
-            min-width: 1.5rem;
-            text-align: right;
-        }
-        .overview-subtotal {
-            display: flex;
-            justify-content: flex-end;
-            padding: 0.25rem 0.4rem;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            margin-top: 0.1rem;
-        }
-        .overview-subtotal span { font-weight: 600; color: var(--mdr-blue); margin-left: 0.35rem; }
-        .overview-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.6rem 0.4rem;
-            border-top: 2px solid var(--mdr-blue);
-            margin-top: 0.25rem;
-        }
-        .overview-total .total-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--mdr-blue);
-        }
-        .overview-total .total-val {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--mdr-blue);
-        }
-        /* Detail panel */
-        .detail-panel {
-            flex-shrink: 0;
-            border-top: 2px solid var(--mdr-blue);
-            padding: 0.75rem 1.25rem;
-            background: #f8fafc;
-            max-height: 40vh;
-            overflow-y: auto;
-            display: none;
-        }
-        .detail-panel.visible { display: block; }
-        .detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.6rem;
-        }
-        .detail-region-name {
-            font-weight: 700;
-            color: var(--mdr-blue);
-            font-size: 0.9rem;
-        }
-        .detail-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-muted);
-            padding: 0 0.25rem;
-        }
-        .detail-close:hover { color: var(--text); }
-        .detail-count {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        .beitragsart-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.3rem 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.8rem;
-        }
-        .beitragsart-row:last-child { border-bottom: none; }
-        .beitragsart-count {
-            font-weight: 600;
-            color: var(--mdr-blue);
-        }
-        .detail-meldungen {
-            margin-top: 0.5rem;
-        }
-        .detail-meldung-item {
-            padding: 0.35rem 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.78rem;
-        }
-        .detail-meldung-item:last-child { border-bottom: none; }
-        .detail-meldung-ort {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        .detail-tag {
-            display: inline-block;
-            padding: 0.1rem 0.4rem;
-            background: #dbeaf7;
-            color: var(--mdr-blue);
-            border-radius: 3px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin-right: 0.3rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDR Sachsen – Regionale Berichterstattung KW 7/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --mdr-blue:#003366; --mdr-blue-l:#0066cc; --mdr-accent:#e8640a;
+    --bg:#fafbfc; --text:#1a1a2e; --muted:#666; --border:#e5e7eb;
+    --amber-dark:#bf360c; --teal-dark:#006064;
+    --green-dark:#1b5e20; --purple-dark:#4a148c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Source Sans 3',-apple-system,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,var(--mdr-blue) 0%,#1a5276 100%);color:white;padding:1rem 1.75rem;display:flex;align-items:center;gap:1.25rem;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header-logo{font-family:'Source Serif 4',Georgia,serif;font-size:1.8rem;font-weight:600;background:white;color:var(--mdr-blue);padding:.05rem .45rem;border-radius:3px}
+.header-divider{width:1px;height:2rem;background:rgba(255,255,255,.3)}
+.header-title{font-size:.95rem;font-weight:600;opacity:.95}
+.header-sub{font-size:.75rem;font-weight:300;opacity:.72;margin-top:.1rem}
+
+/* ── Filter Bar ── */
+.filter-bar{background:white;border-bottom:2px solid var(--border);padding:.5rem 1.75rem;flex-shrink:0;display:flex;flex-direction:column;gap:.4rem}
+.filter-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.filter-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;white-space:nowrap;margin-right:.25rem}
+.filter-cat{padding:.3rem .75rem;border-radius:20px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:.8rem;font-family:inherit;font-weight:400;color:var(--text);transition:all .15s;white-space:nowrap}
+.filter-cat:hover{border-color:#aaa}
+.filter-cat.active-gesamt{background:var(--mdr-blue);border-color:var(--mdr-blue);color:white;font-weight:600}
+.filter-cat.active-beitragsart{background:#bf360c;border-color:#bf360c;color:white;font-weight:600}
+.filter-cat.active-medienquelle{background:#006064;border-color:#006064;color:white;font-weight:600}
+.filter-cat.active-verbreitung{background:#4a148c;border-color:#4a148c;color:white;font-weight:600}
+
+.filter-values-row{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;padding:.1rem 0 .2rem 0;display:none}
+.filter-values-row.visible{display:flex}
+.filter-val-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:.1rem}
+.filter-val{padding:.2rem .6rem;border-radius:12px;border:1.5px solid;background:white;cursor:pointer;font-size:.75rem;font-family:inherit;transition:all .15s;white-space:nowrap}
+.filter-val:hover{filter:brightness(.95)}
+.filter-val.active{color:white!important;font-weight:600}
+/* Beitragsart */
+.fv-beitragsart{color:#bf360c;border-color:#bf360c}
+.fv-beitragsart.active{background:#bf360c}
+/* Medienquelle */
+.fv-medienquelle{color:#006064;border-color:#006064}
+.fv-medienquelle.active{background:#006064}
+/* Verbreitung */
+.fv-regional{color:#2e7d32;border-color:#2e7d32}
+.fv-regional.active{background:#2e7d32}
+.fv-landesweit{color:#4a148c;border-color:#4a148c}
+.fv-landesweit.active{background:#4a148c}
+
+/* ── Main Container ── */
+.main-container{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr 360px;overflow:hidden}
+
+/* ── Map ── */
+.map-container{position:relative;background:white;display:flex;align-items:center;justify-content:center;padding:1.25rem;overflow:hidden}
+#sachsen-map{width:100%;height:100%;object-fit:contain}
+#sachsen-map text{font-family:'Source Sans 3',-apple-system,sans-serif!important}
+
+.kreis-path{cursor:pointer;transition:filter .15s ease}
+.kreis-path:hover{filter:brightness(.82) saturate(1.3)}
+.kreis-path.active{filter:brightness(.75) saturate(1.5);stroke:var(--mdr-accent)!important;stroke-width:1.5px!important}
+
+.count-label{font-size:10px;font-weight:700;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+
+/* ── Map badges ── */
+.map-badge{position:absolute;top:1.25rem;left:1.25rem;padding:.65rem .9rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.18);min-width:120px;transition:background .3s}
+.badge-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;opacity:.82;margin-bottom:.15rem}
+.badge-value{font-size:1.8rem;font-weight:700;line-height:1}
+.badge-sub{font-size:.68rem;opacity:.75;margin-top:.15rem}
+.badge-filter{font-size:.68rem;margin-top:.25rem;font-weight:600;opacity:.9;padding:.12rem .4rem;background:rgba(255,255,255,.2);border-radius:10px;display:inline-block}
+
+.legend{position:absolute;bottom:1.25rem;left:1.25rem;background:white;padding:.65rem .9rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid var(--border)}
+.legend-title{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.35rem}
+.legend-scale{display:flex;gap:2px}
+.legend-swatch{width:26px;height:13px;border-radius:2px}
+.legend-labels{display:flex;font-size:.6rem;color:var(--muted);margin-top:.2rem;gap:2px}
+.legend-labels span{width:26px;text-align:center}
+
+/* ── Sidebar ── */
+.sidebar{background:white;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:.85rem 1.25rem .65rem;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0}
+.sidebar-header h2{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem}
+.selected-rname{font-family:'Source Serif 4',Georgia,serif;font-size:1.1rem;color:var(--mdr-blue)}
+
+.overview-section{flex:1;overflow-y:auto;padding:.65rem 1.1rem}
+.overview-group{margin-bottom:.9rem}
+.overview-group-title{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--mdr-blue);font-weight:700;padding:.35rem 0 .25rem;border-bottom:2px solid var(--mdr-blue);margin-bottom:.2rem;display:flex;justify-content:space-between}
+.overview-row{display:flex;align-items:center;padding:.3rem .35rem;border-radius:4px;cursor:pointer;transition:background .12s;gap:.35rem}
+.overview-row:hover{background:#f0f5fa}
+.overview-row.active{background:#dbeaf7}
+.overview-row.is-stadt .row-name{font-weight:600}
+.row-name{font-size:.82rem;flex:1;line-height:1.2}
+.row-bar-wrap{width:60px;height:6px;background:#e8eef4;border-radius:3px;flex-shrink:0}
+.row-bar{height:6px;border-radius:3px;transition:width .3s,background .3s}
+.row-count{font-size:.88rem;font-weight:700;color:var(--mdr-blue);min-width:1.4rem;text-align:right;flex-shrink:0}
+.row-count.zero{color:#bbb;font-weight:400}
+.overview-subtotal{display:flex;justify-content:flex-end;padding:.2rem .35rem;font-size:.7rem;color:var(--muted);border-top:1px solid var(--border);margin-top:.1rem}
+.overview-subtotal span{font-weight:600;color:var(--mdr-blue);margin-left:.3rem}
+.overview-total{display:flex;justify-content:space-between;align-items:center;padding:.5rem .35rem;border-top:2px solid var(--mdr-blue);margin-top:.2rem}
+.total-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mdr-blue)}
+.total-val{font-size:1.15rem;font-weight:700;color:var(--mdr-blue)}
+
+/* ── Detail panel ── */
+.detail-panel{flex-shrink:0;border-top:2px solid var(--mdr-blue);padding:.7rem 1.1rem;background:#f8fafc;max-height:38vh;overflow-y:auto;display:none}
+.detail-panel.visible{display:block}
+.detail-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem}
+.detail-rname{font-weight:700;color:var(--mdr-blue);font-size:.88rem}
+.detail-close{background:none;border:none;cursor:pointer;font-size:.95rem;color:var(--muted);padding:0 .2rem}
+.detail-close:hover{color:var(--text)}
+.detail-count{font-size:.72rem;color:var(--muted);margin-bottom:.4rem}
+.ba-row{display:flex;justify-content:space-between;padding:.28rem 0;border-bottom:1px solid var(--border);font-size:.78rem}
+.ba-row:last-of-type{border-bottom:none}
+.ba-cnt{font-weight:600;color:var(--mdr-blue)}
+.mld-list{margin-top:.5rem}
+.mld-item{padding:.3rem 0;border-bottom:1px solid var(--border);font-size:.76rem}
+.mld-item:last-child{border-bottom:none}
+.mld-meta{font-size:.68rem;color:var(--muted);margin-top:.12rem}
+.tag{display:inline-block;padding:.1rem .38rem;border-radius:10px;font-size:.63rem;font-weight:600;margin-right:.3rem;color:white}
+.tag-beitragsart{background:#003366}
+.tag-quelle{background:#555}
+.tag-verbreitung-r{background:#2e7d32}
+.tag-verbreitung-l{background:#4a148c}
+</style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-logo">MDR</div>
-        <div class="header-divider"></div>
-        <div class="header-info">
-            <div class="header-title">Regionale Berichterstattung Sachsen</div>
-            <div class="header-sub">KW 7 · 09.02.2026 · Meldungen nach Landkreisen</div>
-        </div>
-    </header>
 
-    <div class="main-container">
-        <div class="map-container">
+<header class="header">
+    <div class="header-logo">MDR</div>
+    <div class="header-divider"></div>
+    <div class="header-info">
+        <div class="header-title">Regionale Berichterstattung Sachsen</div>
+        <div class="header-sub">KW 7 · 09.02.2026 · Meldungen nach Landkreisen</div>
+    </div>
+</header>
 
-            <svg id="sachsen-map" viewBox="0 0 739 573" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+<!-- ── Filter Bar ── -->
+<div class="filter-bar" id="filter-bar">
+    <div class="filter-row">
+        <span class="filter-label">Ansicht:</span>
+        <button class="filter-cat active-gesamt" data-cat="gesamt" onclick="setCategory('gesamt')">Meldungen gesamt</button>
+        <button class="filter-cat" data-cat="beitragsart" onclick="setCategory('beitragsart')">Beitragsart</button>
+        <button class="filter-cat" data-cat="medienquelle" onclick="setCategory('medienquelle')">Medienquelle</button>
+        <button class="filter-cat" data-cat="verbreitung" onclick="setCategory('verbreitung')">Verbreitungsgebiet</button>
+    </div>
+    <div class="filter-values-row" id="filter-vals-row">
+        <!-- filled by JS -->
+    </div>
+</div>
+
+<!-- ── Main ── -->
+<div class="main-container">
+
+    <div class="map-container">
+        <svg id="sachsen-map" viewBox="0 0 739 573" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g id="Kreise">
         <g id="Direktionsbezirk-Chemnitz" serif:id="Direktionsbezirk Chemnitz">
             <path id="Vogtlandkreis" class="kreis-path" d="M172.537,481.22L172.152,474.693L150.65,459.33L150.266,458.564L142.969,441.664L143.354,440.902L144.887,438.98L153.721,434.757L157.561,429.38L148.729,425.546L143.361,426.697L140.666,422.857L138.744,424.773L133.754,422.085L132.984,418.63L135.287,408.261L137.594,407.496L128.377,402.119L130.682,395.974L124.537,390.214L120.312,387.908L120.701,381.765L111.867,385.99L106.107,381.38L104.953,387.146L96.886,394.437L93.051,396.357L93.435,399.814L87.672,400.191L82.297,399.814L77.687,396.357L67.707,400.58L56.953,416.709L68.47,417.857L68.47,421.697L63.097,421.703L58.871,424.773L55.043,420.164L50.81,420.164L49.656,428.23L43.513,430.917L39.291,430.917L35.451,424.773L39.672,414.785L32.761,399.814L25.852,405.185L28.152,409.025L17.4,416.32L12.793,418.63L14.328,426.308L3.961,431.685L1.271,435.525L4.727,444.744L18.168,448.58L22.393,453.959L22.393,458.564L7.416,470.085L5.881,472.386L8.184,475.078L15.097,475.845L13.562,478.917L19.707,481.99L21.24,490.437L23.929,488.517L28.922,491.589L28.144,495.814L29.304,501.185L27,505.791L40.054,509.632L41.209,513.857L55.799,513.857L57.72,517.697L74.615,516.164L78.072,516.164L82.297,520.773L80.379,525.765L81.912,534.214L92.666,535.748L97.271,539.205L93.049,539.974L91.894,544.197L100.727,562.63L104.568,569.158L112.25,571.076L116.086,570.693L118.777,547.263L118.393,540.357L121.082,532.292L129.527,525.38L138.744,509.251L144.506,502.724L149.113,504.646L151.416,501.574L150.648,495.046L156.793,485.83L172.537,481.22Z" style="fill:rgb(213,240,244);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
@@ -496,333 +273,429 @@
 </svg>
 
 
-            <div class="total-badge">
-                <div class="total-badge-label">Gesamt Meldungen</div>
-                <div class="total-badge-value" id="map-total">27</div>
-                <div class="total-badge-sub">KW 7 · Sachsen gesamt</div>
-            </div>
-
-            <div class="legend">
-                <div class="legend-title">Meldungen pro Region</div>
-                <div class="legend-scale">
-                    <div class="legend-swatch" style="background:var(--cov-0)"></div>
-                    <div class="legend-swatch" style="background:var(--cov-1)"></div>
-                    <div class="legend-swatch" style="background:var(--cov-2)"></div>
-                    <div class="legend-swatch" style="background:var(--cov-3)"></div>
-                    <div class="legend-swatch" style="background:var(--cov-4)"></div>
-                    <div class="legend-swatch" style="background:var(--cov-5)"></div>
-                </div>
-                <div class="legend-labels">
-                    <span>0</span><span>1</span><span>2</span>
-                    <span>3</span><span>4</span><span>5+</span>
-                </div>
-            </div>
+        <div class="map-badge" id="map-badge" style="background:var(--mdr-blue);color:white">
+            <div class="badge-label">Gesamt Meldungen</div>
+            <div class="badge-value" id="badge-val">23</div>
+            <div class="badge-sub" id="badge-sub">KW 7 · Sachsen gesamt</div>
+            <div class="badge-filter" id="badge-filter" style="display:none"></div>
         </div>
 
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Übersicht nach Region</h2>
-                <div class="selected-region-name">Sachsen gesamt · 27 Meldungen</div>
+        <div class="legend" id="legend">
+            <div class="legend-title" id="legend-title">Meldungen gesamt</div>
+            <div class="legend-scale" id="legend-scale">
+                <div class="legend-swatch" id="ls0"></div>
+                <div class="legend-swatch" id="ls1"></div>
+                <div class="legend-swatch" id="ls2"></div>
+                <div class="legend-swatch" id="ls3"></div>
+                <div class="legend-swatch" id="ls4"></div>
+                <div class="legend-swatch" id="ls5"></div>
             </div>
-
-            <div class="overview-section" id="overview-section">
-                <!-- Rendered by JS -->
+            <div class="legend-labels">
+                <span>0</span><span>1</span><span>2</span>
+                <span>3</span><span>4</span><span>5+</span>
             </div>
-
-            <div class="detail-panel" id="detail-panel">
-                <!-- Rendered by JS on click -->
-            </div>
-        </aside>
+        </div>
     </div>
 
-    <script>
-    // ─── Data from Excel (KW 7 · 09.02.2026) ─────────────────────────────────
-    const meldungen = [
-        { thema:"Thema 1",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 2",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Nachricht",  zeitung:"Dresdner Neueste Nachrichten" },
-        { thema:"Thema 3",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 4",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Interview",  zeitung:null },
-        { thema:"Thema 5",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 6",  ort:"Kamenz",             kreis:"Bautzen",                            beitragsart:"Nachricht",  zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 7",  ort:"Bautzen",            kreis:"Bautzen",                            beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 8",  ort:"Bautzen",            kreis:"Bautzen",                            beitragsart:"Nachricht",  zeitung:null },
-        { thema:"Thema 9",  ort:"Görlitz",            kreis:"Görlitz",                            beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 10", ort:"Löbau",              kreis:"Görlitz",                            beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 11", ort:"Riesa",              kreis:"Meißen",                             beitragsart:"Nachricht",  zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 12", ort:"Meißen",             kreis:"Meißen",                             beitragsart:"Bericht",    zeitung:null },
-        { thema:"Thema 13", ort:"Pirna",              kreis:"Sächsische Schweiz-Osterzgebirge",   beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
-        { thema:"Thema 14", ort:"Freital",            kreis:"Sächsische Schweiz-Osterzgebirge",   beitragsart:"Nachricht",  zeitung:null },
-        { thema:"Thema 15", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Leipziger Volkszeitung" },
-        { thema:"Thema 16", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Interview",  zeitung:"Leipziger Volkszeitung" },
-        { thema:"Thema 17", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Reportage",  zeitung:null },
-        { thema:"Thema 18", ort:"Delitzsch",          kreis:"Nordsachsen",                        beitragsart:"Nachricht",  zeitung:"Leipziger Volkszeitung" },
-        { thema:"Thema 19", ort:"Torgau",             kreis:"Nordsachsen",                        beitragsart:"Bericht",    zeitung:null },
-        { thema:"Thema 20", ort:"Chemnitz",           kreis:"Chemnitz, Kreisfreie Stadt",         beitragsart:"Reportage",  zeitung:"Freie Presse" },
-        { thema:"Thema 21", ort:"Chemnitz",           kreis:"Chemnitz, Kreisfreie Stadt",         beitragsart:"Nachricht",  zeitung:"Freie Presse" },
-        { thema:"Thema 22", ort:"Annaberg-Buchholz",  kreis:"Erzgebirgskreis",                   beitragsart:"Bericht",    zeitung:"Freie Presse" },
-        { thema:"Thema 23", ort:"Aue",                kreis:"Erzgebirgskreis",                   beitragsart:"Nachricht",  zeitung:null },
-        { thema:"Thema 24", ort:"Freiberg",           kreis:"Mittelsachsen",                      beitragsart:"Reportage",  zeitung:"Freie Presse" },
-        { thema:"Thema 25", ort:"Döbeln",             kreis:"Mittelsachsen",                      beitragsart:"Bericht",    zeitung:null },
-        { thema:"Thema 26", ort:"Plauen",             kreis:"Vogtlandkreis",                      beitragsart:"Nachricht",  zeitung:"Freie Presse" },
-        { thema:"Thema 27", ort:"Zwickau",            kreis:"Zwickau",                            beitragsart:"Bericht",    zeitung:null },
-    ];
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Übersicht nach Region</h2>
+            <div class="selected-rname" id="sel-rname">Sachsen gesamt · 23 Meldungen</div>
+        </div>
+        <div class="overview-section" id="overview-section"></div>
+        <div class="detail-panel" id="detail-panel"></div>
+    </aside>
+</div>
 
-    // ─── Region definitions (SVG ID → Excel key) ─────────────────────────────
-    const regionen = [
-        // Direktionsbezirk Leipzig
-        { svgId:'Nordsachsen',                        excel:'Nordsachsen',                       name:'Nordsachsen',                       direkt:'Leipzig' },
-        { svgId:'Kreis-Leipzig',                      excel:null,                                name:'Kreis Leipzig',                     direkt:'Leipzig' },
-        { svgId:'Stadt-Leipzig',                      excel:'Leipzig, Kreisfreie Stadt',         name:'Stadt Leipzig',                     direkt:'Leipzig',  isStadt:true },
-        // Direktionsbezirk Dresden
-        { svgId:'Bautzen',                            excel:'Bautzen',                           name:'Bautzen',                           direkt:'Dresden' },
-        { svgId:'Görlitz',                            excel:'Görlitz',                           name:'Görlitz',                           direkt:'Dresden' },
-        { svgId:'Meißen',                             excel:'Meißen',                            name:'Meißen',                            direkt:'Dresden' },
-        { svgId:'Sächsische-Schweiz-Osterzgebirge',  excel:'Sächsische Schweiz-Osterzgebirge',  name:'Sächsische Schweiz-Osterzgeb.',     direkt:'Dresden' },
-        { svgId:'Stadt-Dresden',                      excel:'Dresden, Kreisfreie Stadt',         name:'Stadt Dresden',                     direkt:'Dresden',  isStadt:true },
-        // Direktionsbezirk Chemnitz
-        { svgId:'Erzgebirgskreis',                    excel:'Erzgebirgskreis',                   name:'Erzgebirgskreis',                   direkt:'Chemnitz' },
-        { svgId:'Mittelsachsen',                      excel:'Mittelsachsen',                     name:'Mittelsachsen',                     direkt:'Chemnitz' },
-        { svgId:'Vogtlandkreis',                      excel:'Vogtlandkreis',                     name:'Vogtlandkreis',                     direkt:'Chemnitz' },
-        { svgId:'Zwickau',                            excel:'Zwickau',                           name:'Zwickau',                           direkt:'Chemnitz' },
-        { svgId:'Stadt-Chemnitz',                     excel:'Chemnitz, Kreisfreie Stadt',        name:'Stadt Chemnitz',                    direkt:'Chemnitz', isStadt:true },
-    ];
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA  (from meldungen_tabelle.xlsx, KW 7 · 09.02.2026)
+// ══════════════════════════════════════════════════════════════════
+const meldungen = [
+  {thema:"Ferien-Projekt: Seniorinnen bringen Mädchen das Stricken bei Freiberg",ort:"Freiberg",kreis:"Landkreis Mittelsachsen",beitragsart:"Aufsager",medienquelle:"Zeitung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Spielplan Freilichtbühne Kirchberg",ort:"Kirchberg",kreis:"Landkreis Zwickau",beitragsart:"BmE / MGO",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Biberdamm wird teilweise abgetragen",ort:"Adorf",kreis:"Vogtlandkreis",beitragsart:"BmE / MGO",medienquelle:"eigen",zeitung:null,verbreitung:"landesweit"},
+  {thema:"Lustige Namen der Erzgebirger",ort:"Sehmatal",kreis:"Erzgebirgskreis",beitragsart:"MAZ",medienquelle:"Zeitung",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Julia Taubitz auf Goldkurs",ort:"Oberwiesenthal",kreis:"Erzgebirgskreis",beitragsart:"Meldung",medienquelle:"Agentur",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Burgstadt: Autos gebrannt",ort:"Burgstädt",kreis:"Landkreis Mittelsachsen",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP; Tag24",verbreitung:"landesweit"},
+  {thema:"Niederlage der Eispiraten Crimmitschau",ort:"Crimmitschau",kreis:"Landkreis Zwickau",beitragsart:"Meldung",medienquelle:"Agentur",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Optimierter Stadtbusverkehr in Wilkau-Haßlau",ort:"Wilkau-Haßlau",kreis:"Landkreis Zwickau",beitragsart:"Meldung",medienquelle:"Zeitung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Crimmitschauer Wohnungsgesellschaft CWG insolvent",ort:"Crimmitschau",kreis:"Landkreis Zwickau",beitragsart:"Meldung",medienquelle:"Zeitung",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Mozartpreis für Ragna Schirmer",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Im Chemnitzer Küchwaldpark werden Bäume gefällt",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Vor Heimspiel des Chemnitzer FC",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Feueralarm am Chemnitzer Hauptbahnhof",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP; Tag24",verbreitung:"regional"},
+  {thema:"Stadtbibliothek Chemnitz liefert nach Hause",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"regional"},
+  {thema:"Vogtlandkreis setzt auf Waffenkontrollen",ort:"Plauen",kreis:"Vogtlandkreis",beitragsart:"Meldung",medienquelle:"Pressemitteilung",zeitung:"FP; Tag24",verbreitung:"regional"},
+  {thema:"Hinter den Kulissen im Hotel",ort:"Eibenstock",kreis:"Erzgebirgskreis",beitragsart:"MG",medienquelle:"eigen",zeitung:null,verbreitung:"landesweit"},
+  {thema:"Julia Taubitz bei Olympia vorab",ort:"Oberwiesenthal",kreis:"Erzgebirgskreis",beitragsart:"O-Ton",medienquelle:"eigen",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Wintersportbedingungen in Eibenstock",ort:"Eibenstock",kreis:"Erzgebirgskreis",beitragsart:"O-Ton",medienquelle:"eigen",zeitung:null,verbreitung:"landesweit"},
+  {thema:"Wintersportbedingungen in Oberwiesenthal",ort:"Oberwiesenthal",kreis:"Erzgebirgskreis",beitragsart:"O-Ton",medienquelle:"eigen",zeitung:null,verbreitung:"landesweit"},
+  {thema:"Gute Wintersportbedingungen in Augustusburg",ort:"Augustusburg",kreis:"Landkreis Mittelsachsen",beitragsart:"O-Ton",medienquelle:"Pressemitteilung",zeitung:null,verbreitung:"regional"},
+  {thema:"Kirchberg Freilichtbühne Frühjahrsputz",ort:"Kirchberg",kreis:"Landkreis Zwickau",beitragsart:"O-Ton",medienquelle:"Pressemitteilung",zeitung:null,verbreitung:"regional"},
+  {thema:"Intercity-Direktverbindung Chemnitz–Rostock fällt aus",ort:"Chemnitz",kreis:"Stadt Chemnitz",beitragsart:"O-Ton",medienquelle:"Pressemitteilung",zeitung:"FP",verbreitung:"landesweit"},
+  {thema:"Winterurlaub im Vogtland wird immer kurzfristiger gebucht",ort:"Schöneck/Vogtland",kreis:"Vogtlandkreis",beitragsart:"O-Ton",medienquelle:"eigen",zeitung:null,verbreitung:"regional"},
+];
 
-    // ─── Count label positions (absolute SVG coords, below existing name labels) ─
-    const labelPos = {
-        'Nordsachsen':                       { x:191, y:84  },
-        'Kreis-Leipzig':                     { x:158, y:206 },
-        'Stadt-Leipzig':                     { x:113, y:157 },
-        'Meißen':                            { x:372, y:187 },
-        'Sächsische-Schweiz-Osterzgebirge':  { x:477, y:305 },
-        'Görlitz':                           { x:689, y:159 },
-        'Bautzen':                           { x:545, y:165 },
-        'Stadt-Dresden':                     { x:444, y:249 },
-        'Erzgebirgskreis':                   { x:252, y:432 },
-        'Mittelsachsen':                     { x:272, y:289 },
-        'Vogtlandkreis':                     { x:87,  y:498 },
-        'Zwickau':                           { x:143, y:380 },
-        'Stadt-Chemnitz':                    { x:244, y:344 },
-    };
+// ══════════════════════════════════════════════════════════════════
+// REGION DEFINITIONS
+// ══════════════════════════════════════════════════════════════════
+const regionen = [
+  // Direktionsbezirk Leipzig
+  {svgId:'Nordsachsen',         excel:null,                      name:'Nordsachsen',                  direkt:'Leipzig'},
+  {svgId:'Kreis-Leipzig',       excel:null,                      name:'Kreis Leipzig',                direkt:'Leipzig'},
+  {svgId:'Stadt-Leipzig',       excel:null,                      name:'Stadt Leipzig',                direkt:'Leipzig', isStadt:true},
+  // Direktionsbezirk Dresden
+  {svgId:'Bautzen',             excel:null,                      name:'Bautzen',                      direkt:'Dresden'},
+  {svgId:'Görlitz',             excel:null,                      name:'Görlitz',                      direkt:'Dresden'},
+  {svgId:'Meißen',              excel:null,                      name:'Meißen',                       direkt:'Dresden'},
+  {svgId:'Sächsische-Schweiz-Osterzgebirge', excel:null,        name:'Sächs. Schweiz-Osterzgeb.',    direkt:'Dresden'},
+  {svgId:'Stadt-Dresden',       excel:null,                      name:'Stadt Dresden',                direkt:'Dresden', isStadt:true},
+  // Direktionsbezirk Chemnitz
+  {svgId:'Erzgebirgskreis',     excel:'Erzgebirgskreis',         name:'Erzgebirgskreis',              direkt:'Chemnitz'},
+  {svgId:'Mittelsachsen',       excel:'Landkreis Mittelsachsen', name:'Landkreis Mittelsachsen',      direkt:'Chemnitz'},
+  {svgId:'Vogtlandkreis',       excel:'Vogtlandkreis',           name:'Vogtlandkreis',                direkt:'Chemnitz'},
+  {svgId:'Zwickau',             excel:'Landkreis Zwickau',       name:'Landkreis Zwickau',            direkt:'Chemnitz'},
+  {svgId:'Stadt-Chemnitz',      excel:'Stadt Chemnitz',          name:'Stadt Chemnitz',               direkt:'Chemnitz', isStadt:true},
+];
 
-    // ─── Color scale (MDR blue gradient) ─────────────────────────────────────
-    const COLORS = ['#eaf2f8','#c3daea','#6aaed6','#3182bd','#08519c','#003366'];
-    const TEXT_COLORS = ['#003366','#003366','#ffffff','#ffffff','#ffffff','#ffffff'];
+const labelPos = {
+  'Nordsachsen':{x:191,y:84},  'Kreis-Leipzig':{x:158,y:206},  'Stadt-Leipzig':{x:113,y:157},
+  'Meißen':{x:372,y:187},  'Sächsische-Schweiz-Osterzgebirge':{x:477,y:305},
+  'Görlitz':{x:689,y:159},  'Bautzen':{x:545,y:165},  'Stadt-Dresden':{x:444,y:249},
+  'Erzgebirgskreis':{x:252,y:432},  'Mittelsachsen':{x:272,y:289},
+  'Vogtlandkreis':{x:87,y:498},  'Zwickau':{x:143,y:380},  'Stadt-Chemnitz':{x:244,y:344},
+};
 
-    function getColor(count) {
-        if (count === 0) return COLORS[0];
-        if (count === 1) return COLORS[1];
-        if (count === 2) return COLORS[2];
-        if (count === 3) return COLORS[3];
-        if (count === 4) return COLORS[4];
-        return COLORS[5];
+// ══════════════════════════════════════════════════════════════════
+// COLOR SCHEMES
+// ══════════════════════════════════════════════════════════════════
+const SCHEMES = {
+  gesamt:     ['#eaf2f8','#c3daea','#6aaed6','#3182bd','#08519c','#003366'],
+  beitragsart:['#fff3e0','#ffcc80','#ffa726','#fb8c00','#e65100','#bf360c'],
+  medienquelle:['#e0f7fa','#80deea','#26c6da','#00acc1','#00838f','#006064'],
+  verbreitung_regional:  ['#e8f5e9','#a5d6a7','#66bb6a','#43a047','#2e7d32','#1b5e20'],
+  verbreitung_landesweit:['#f3e5f5','#ce93d8','#ab47bc','#8e24aa','#6a1b9a','#4a148c'],
+};
+
+const CATEGORY_COLORS = {
+  gesamt:'var(--mdr-blue)', beitragsart:'#bf360c',
+  medienquelle:'#006064', verbreitung_regional:'#2e7d32', verbreitung_landesweit:'#4a148c'
+};
+
+function getScheme() {
+  if (state.cat === 'gesamt') return SCHEMES.gesamt;
+  if (state.cat === 'beitragsart') return SCHEMES.beitragsart;
+  if (state.cat === 'medienquelle') return SCHEMES.medienquelle;
+  if (state.cat === 'verbreitung') {
+    if (state.val === 'landesweit') return SCHEMES.verbreitung_landesweit;
+    return SCHEMES.verbreitung_regional; // regional or no val yet
+  }
+  return SCHEMES.gesamt;
+}
+
+function schemeColor(count) {
+  const s = getScheme();
+  if (count <= 0) return s[0];
+  if (count === 1) return s[1];
+  if (count === 2) return s[2];
+  if (count === 3) return s[3];
+  if (count === 4) return s[4];
+  return s[5];
+}
+
+function textOnColor(count) {
+  return count >= 2 ? '#ffffff' : '#1a1a2e';
+}
+
+function badgeBg() {
+  if (state.cat === 'gesamt') return 'var(--mdr-blue)';
+  if (state.cat === 'beitragsart') return '#bf360c';
+  if (state.cat === 'medienquelle') return '#006064';
+  if (state.cat === 'verbreitung') return state.val === 'landesweit' ? '#4a148c' : '#2e7d32';
+  return 'var(--mdr-blue)';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FILTER STATE
+// ══════════════════════════════════════════════════════════════════
+const state = {cat:'gesamt', val:null};
+
+function filteredMeldungen() {
+  if (state.cat === 'gesamt' || !state.val) return meldungen;
+  const field = {beitragsart:'beitragsart', medienquelle:'medienquelle', verbreitung:'verbreitung'}[state.cat];
+  return meldungen.filter(m => m[field] === state.val);
+}
+
+function regionCount(excelKey) {
+  if (!excelKey) return 0;
+  return filteredMeldungen().filter(m => m.kreis === excelKey).length;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER FILTER BAR
+// ══════════════════════════════════════════════════════════════════
+function renderFilterBar() {
+  // Category buttons
+  document.querySelectorAll('.filter-cat').forEach(btn => {
+    btn.className = 'filter-cat';
+    if (btn.dataset.cat === state.cat) btn.classList.add('active-' + state.cat);
+  });
+
+  const valsRow = document.getElementById('filter-vals-row');
+  if (state.cat === 'gesamt') {
+    valsRow.classList.remove('visible');
+    valsRow.innerHTML = '';
+    return;
+  }
+  valsRow.classList.add('visible');
+
+  // Build value pills
+  const field = {beitragsart:'beitragsart', medienquelle:'medienquelle', verbreitung:'verbreitung'}[state.cat];
+  const counts = {};
+  meldungen.forEach(m => {
+    const v = m[field];
+    if (v) counts[v] = (counts[v]||0)+1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+
+  let cls = 'fv-' + state.cat;
+  if (state.cat === 'verbreitung') cls = '';
+
+  let html = `<span class="filter-val-label">Auswahl:</span>`;
+  sorted.forEach(([v, cnt]) => {
+    const vcls = state.cat === 'verbreitung'
+      ? 'filter-val fv-' + v
+      : `filter-val ${cls}`;
+    const active = state.val === v ? ' active' : '';
+    html += `<button class="${vcls}${active}" onclick="setVal('${v}')">${v} <strong>(${cnt})</strong></button>`;
+  });
+  // "Alle" button
+  const allActive = !state.val ? ' active' : '';
+  html = `<button class="filter-val ${cls}${allActive}" style="font-style:italic" onclick="setVal(null)">Alle</button>` + html;
+  valsRow.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// COLOR MAP
+// ══════════════════════════════════════════════════════════════════
+function colorMap() {
+  regionen.forEach(r => {
+    const el = document.getElementById(r.svgId);
+    if (!el) return;
+    const cnt = regionCount(r.excel);
+    el.style.fill = schemeColor(cnt);
+    el.style.stroke = '#ffffff';
+    el.style.strokeWidth = r.excel ? '0.6px' : '0.4px';
+  });
+  // Update legend swatches
+  const s = getScheme();
+  for (let i=0;i<6;i++) {
+    const el = document.getElementById('ls'+i);
+    if(el) el.style.background = s[i];
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// COUNT LABELS
+// ══════════════════════════════════════════════════════════════════
+function initCountLabels() {
+  const svg = document.getElementById('sachsen-map');
+  regionen.forEach(r => {
+    const pos = labelPos[r.svgId];
+    if (!pos) return;
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.id = 'clg-'+r.svgId;
+    g.style.pointerEvents = 'none';
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',pos.x); circle.setAttribute('cy',pos.y);
+    circle.setAttribute('r','8'); circle.id = 'clc-'+r.svgId;
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x',pos.x); text.setAttribute('y',pos.y);
+    text.setAttribute('class','count-label'); text.id = 'clt-'+r.svgId;
+    g.appendChild(circle); g.appendChild(text);
+    svg.appendChild(g);
+  });
+}
+
+function updateCountLabels() {
+  regionen.forEach(r => {
+    const circle = document.getElementById('clc-'+r.svgId);
+    const text   = document.getElementById('clt-'+r.svgId);
+    if (!circle || !text) return;
+    const cnt = regionCount(r.excel);
+    const col = schemeColor(cnt);
+    if (cnt > 0) {
+      circle.setAttribute('fill', col);
+      circle.setAttribute('stroke','rgba(255,255,255,0.75)');
+      circle.setAttribute('stroke-width','1');
+      text.setAttribute('fill', textOnColor(cnt));
+      text.textContent = cnt;
+    } else {
+      circle.setAttribute('fill','none');
+      circle.setAttribute('stroke','none');
+      text.setAttribute('fill','#cccccc');
+      text.textContent = '0';
     }
-    function getTextColor(count) {
-        if (count === 0) return TEXT_COLORS[0];
-        if (count === 1) return TEXT_COLORS[1];
-        if (count === 2) return TEXT_COLORS[2];
-        if (count === 3) return TEXT_COLORS[3];
-        if (count === 4) return TEXT_COLORS[4];
-        return TEXT_COLORS[5];
-    }
+  });
+}
 
-    // ─── Aggregate counts ─────────────────────────────────────────────────────
-    function getCounts() {
-        const counts = {};
-        meldungen.forEach(m => {
-            counts[m.kreis] = (counts[m.kreis] || 0) + 1;
-        });
-        return counts;
-    }
+// ══════════════════════════════════════════════════════════════════
+// BADGE + LEGEND TITLE
+// ══════════════════════════════════════════════════════════════════
+function updateBadge() {
+  const total = filteredMeldungen().length;
+  document.getElementById('badge-val').textContent = total;
+  const badge = document.getElementById('map-badge');
+  badge.style.background = badgeBg();
 
-    function getCountForRegion(r) {
-        if (!r.excel) return 0;
-        const counts = getCounts();
-        return counts[r.excel] || 0;
-    }
+  const bfEl = document.getElementById('badge-filter');
+  if (state.cat !== 'gesamt' && state.val) {
+    bfEl.style.display = 'inline-block';
+    bfEl.textContent = state.val;
+  } else {
+    bfEl.style.display = 'none';
+  }
 
-    // ─── Color map regions ───────────────────────────────────────────────────
-    function colorMap() {
-        regionen.forEach(r => {
-            const el = document.getElementById(r.svgId);
-            if (!el) return;
-            const count = getCountForRegion(r);
-            el.style.fill = getColor(count);
-            el.style.stroke = '#ffffff';
-            el.style.strokeWidth = '0.6px';
-        });
-    }
+  const legendTitles = {
+    gesamt:'Meldungen gesamt',
+    beitragsart:'Filter: Beitragsart',
+    medienquelle:'Filter: Medienquelle',
+    verbreitung:'Filter: Verbreitungsgebiet'
+  };
+  document.getElementById('legend-title').textContent =
+    (state.cat !== 'gesamt' && state.val)
+      ? state.val
+      : legendTitles[state.cat];
+}
 
-    // ─── Add count labels to SVG ─────────────────────────────────────────────
-    function addCountLabels() {
-        const svg = document.getElementById('sachsen-map');
-        regionen.forEach(r => {
-            const pos = labelPos[r.svgId];
-            if (!pos) return;
-            const count = getCountForRegion(r);
-            const textColor = getTextColor(count);
-
-            // Small circle background
-            const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-            circle.setAttribute('cx', pos.x);
-            circle.setAttribute('cy', pos.y);
-            circle.setAttribute('r', '8');
-            circle.setAttribute('fill', count > 0 ? getColor(count) : 'none');
-            circle.setAttribute('stroke', count > 0 ? 'rgba(255,255,255,0.7)' : 'none');
-            circle.setAttribute('stroke-width', '1');
-            circle.style.pointerEvents = 'none';
-            svg.appendChild(circle);
-
-            const text = document.createElementNS('http://www.w3.org/2000/svg','text');
-            text.setAttribute('x', pos.x);
-            text.setAttribute('y', pos.y);
-            text.setAttribute('class', 'count-label');
-            text.setAttribute('fill', count > 0 ? textColor : '#aaaaaa');
-            text.textContent = count;
-            svg.appendChild(text);
-        });
-    }
-
-    // ─── Dots helper ─────────────────────────────────────────────────────────
-    function makeDots(count, max=5) {
-        let html = '';
-        for (let i = 0; i < max; i++) {
-            html += `<div class="dot ${i < count ? 'dot-filled' : 'dot-empty'}"></div>`;
-        }
-        return html;
-    }
-
-    // ─── Render overview table ────────────────────────────────────────────────
-    function renderOverview() {
-        const section = document.getElementById('overview-section');
-        const direkts = ['Leipzig','Dresden','Chemnitz'];
-        let html = '';
-        let grandTotal = 0;
-
-        direkts.forEach(d => {
-            const regInDirekt = regionen.filter(r => r.direkt === d);
-            const subtotal = regInDirekt.reduce((s,r) => s + getCountForRegion(r), 0);
-            grandTotal += subtotal;
-            html += `<div class="overview-group">
-                <div class="overview-group-title">
-                    <span>Direktionsbezirk ${d}</span>
-                    <span>${subtotal}</span>
-                </div>`;
-            regInDirekt.forEach(r => {
-                const count = getCountForRegion(r);
-                html += `
-                <div class="overview-row${r.isStadt?' is-stadt':''}" data-svgid="${r.svgId}" onclick="selectRegion('${r.svgId}')">
-                    <span class="row-name">${r.name}</span>
-                    <div class="row-dots">${makeDots(Math.min(count,5))}</div>
-                    <span class="row-count">${count}</span>
-                </div>`;
-            });
-            html += `<div class="overview-subtotal">Gesamt <span>${subtotal}</span></div>
-            </div>`;
-        });
-
-        html += `<div class="overview-total">
-            <span class="total-label">Sachsen gesamt</span>
-            <span class="total-val">${grandTotal}</span>
-        </div>`;
-        section.innerHTML = html;
-    }
-
-    // ─── Render detail panel ──────────────────────────────────────────────────
-    let activeRegion = null;
-
-    function selectRegion(svgId) {
-        const r = regionen.find(x => x.svgId === svgId);
-        if (!r) return;
-
-        // Toggle: click same region again to deselect
-        if (activeRegion === svgId) {
-            deselectRegion();
-            return;
-        }
-        activeRegion = svgId;
-
-        // Update map highlight
-        document.querySelectorAll('.kreis-path').forEach(p => p.classList.remove('active'));
-        const pathEl = document.getElementById(svgId);
-        if (pathEl) pathEl.classList.add('active');
-
-        // Update table highlight
-        document.querySelectorAll('.overview-row').forEach(row => row.classList.remove('active'));
-        const tableRow = document.querySelector(`.overview-row[data-svgid="${svgId}"]`);
-        if (tableRow) tableRow.classList.add('active');
-
-        // Build detail panel
-        const count = getCountForRegion(r);
-        const myMeldungen = r.excel ? meldungen.filter(m => m.kreis === r.excel) : [];
-        const beitragsarten = {};
-        myMeldungen.forEach(m => { beitragsarten[m.beitragsart] = (beitragsarten[m.beitragsart]||0)+1; });
-
-        let bHtml = '';
-        Object.entries(beitragsarten).sort((a,b)=>b[1]-a[1]).forEach(([name,cnt]) => {
-            bHtml += `<div class="beitragsart-row">
-                <span>${name}</span>
-                <span class="beitragsart-count">${cnt}</span>
-            </div>`;
-        });
-
-        let mHtml = '';
-        myMeldungen.forEach(m => {
-            mHtml += `<div class="detail-meldung-item">
-                <div><span class="detail-tag">${m.beitragsart}</span>${m.thema}</div>
-                <div class="detail-meldung-ort">${m.ort}${m.zeitung ? ' · ' + m.zeitung : ''}</div>
-            </div>`;
-        });
-
-        const panel = document.getElementById('detail-panel');
-        panel.innerHTML = `
-            <div class="detail-header">
-                <div class="detail-region-name">${r.name}</div>
-                <button class="detail-close" onclick="deselectRegion()" title="Schließen">✕</button>
-            </div>
-            <div class="detail-count">${count} Meldung${count !== 1 ? 'en' : ''}</div>
-            ${count > 0 ? bHtml : '<em style="font-size:0.8rem;color:#999">Keine Meldungen in dieser Region</em>'}
-            ${count > 0 ? '<div class="detail-meldungen">' + mHtml + '</div>' : ''}
-        `;
-        panel.classList.add('visible');
-
-        // Scroll table row into view
-        if (tableRow) tableRow.scrollIntoView({block:'nearest', behavior:'smooth'});
-    }
-
-    function deselectRegion() {
-        activeRegion = null;
-        document.querySelectorAll('.kreis-path').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.overview-row').forEach(r => r.classList.remove('active'));
-        document.getElementById('detail-panel').classList.remove('visible');
-    }
-
-    // ─── Click handlers on SVG paths ─────────────────────────────────────────
-    function setupMapInteraction() {
-        regionen.forEach(r => {
-            const el = document.getElementById(r.svgId);
-            if (el) el.addEventListener('click', () => selectRegion(r.svgId));
-        });
-    }
-
-    // ─── Init ─────────────────────────────────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', () => {
-        colorMap();
-        addCountLabels();
-        renderOverview();
-        setupMapInteraction();
-
-        // Hide big SVG title (last <g> child of svg that contains large font text)
-        const svgEl = document.getElementById('sachsen-map');
-        const allGGroups = svgEl.querySelectorAll(':scope > g');
-        allGGroups.forEach(g => {
-            const texts = g.querySelectorAll('text');
-            texts.forEach(t => {
-                if (parseFloat(t.style.fontSize) >= 24 || t.style.fontSize === '28px') {
-                    g.style.display = 'none';
-                }
-            });
-        });
+// ══════════════════════════════════════════════════════════════════
+// SIDEBAR OVERVIEW TABLE
+// ══════════════════════════════════════════════════════════════════
+function renderOverview() {
+  const sec = document.getElementById('overview-section');
+  const direkts = ['Leipzig','Dresden','Chemnitz'];
+  const maxCnt = Math.max(...regionen.map(r=>regionCount(r.excel)),1);
+  const schCol = getScheme()[4];
+  let html=''; let grand=0;
+  direkts.forEach(d => {
+    const inD = regionen.filter(r=>r.direkt===d);
+    const sub = inD.reduce((s,r)=>s+regionCount(r.excel),0);
+    grand += sub;
+    html += `<div class="overview-group"><div class="overview-group-title">
+      <span>DB ${d}</span><span>${sub}</span></div>`;
+    inD.forEach(r => {
+      const cnt = regionCount(r.excel);
+      const barW = cnt>0 ? Math.max(8,Math.round(cnt/maxCnt*100)) : 0;
+      const barCol = schemeColor(cnt);
+      const active = activeRegion===r.svgId ? ' active' : '';
+      html += `<div class="overview-row${r.isStadt?' is-stadt':''}${active}" data-svgid="${r.svgId}" onclick="selectRegion('${r.svgId}')">
+        <span class="row-name">${r.name}</span>
+        <div class="row-bar-wrap"><div class="row-bar" style="width:${barW}%;background:${cnt>0?barCol:'#e8eef4'}"></div></div>
+        <span class="row-count${cnt===0?' zero':''}"> ${cnt}</span>
+      </div>`;
     });
-    </script>
+    html += `<div class="overview-subtotal">Σ <span>${sub}</span></div></div>`;
+  });
+  html += `<div class="overview-total"><span class="total-label">Sachsen gesamt</span><span class="total-val">${grand}</span></div>`;
+  sec.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// REGION SELECTION / DETAIL
+// ══════════════════════════════════════════════════════════════════
+let activeRegion = null;
+
+function selectRegion(svgId) {
+  if (activeRegion === svgId) { deselectRegion(); return; }
+  activeRegion = svgId;
+  document.querySelectorAll('.kreis-path').forEach(p=>p.classList.remove('active'));
+  const p = document.getElementById(svgId);
+  if (p) p.classList.add('active');
+  renderOverview();
+  renderDetail(svgId);
+}
+
+function deselectRegion() {
+  activeRegion = null;
+  document.querySelectorAll('.kreis-path').forEach(p=>p.classList.remove('active'));
+  document.getElementById('detail-panel').classList.remove('visible');
+  renderOverview();
+}
+
+function renderDetail(svgId) {
+  const r = regionen.find(x=>x.svgId===svgId);
+  if (!r) return;
+  const myMeld = r.excel ? filteredMeldungen().filter(m=>m.kreis===r.excel) : [];
+  const bas = {};
+  myMeld.forEach(m=>{ bas[m.beitragsart]=(bas[m.beitragsart]||0)+1; });
+  let baHtml = Object.entries(bas).sort((a,b)=>b[1]-a[1])
+    .map(([n,c])=>`<div class="ba-row"><span>${n}</span><span class="ba-cnt">${c}</span></div>`).join('');
+  let mHtml = myMeld.map(m=>`<div class="mld-item">
+    <span class="tag tag-beitragsart">${m.beitragsart}</span>${m.thema}
+    <div class="mld-meta">${m.ort}${m.medienquelle?' · '+m.medienquelle:''}
+      ${m.verbreitung==='regional'
+        ?'<span class="tag tag-verbreitung-r">regional</span>'
+        :'<span class="tag tag-verbreitung-l">landesweit</span>'}
+      ${m.zeitung?' · FP: '+m.zeitung:''}
+    </div></div>`).join('');
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = `
+    <div class="detail-hdr">
+      <div class="detail-rname">${r.name}</div>
+      <button class="detail-close" onclick="deselectRegion()">✕</button>
+    </div>
+    <div class="detail-count">${myMeld.length} Meldung${myMeld.length!==1?'en':''}</div>
+    ${myMeld.length>0 ? baHtml+'<div class="mld-list">'+mHtml+'</div>' : '<em style="font-size:.8rem;color:#aaa">Keine Meldungen bei aktuellem Filter</em>'}
+  `;
+  panel.classList.add('visible');
+  document.querySelector(`.overview-row[data-svgid="${svgId}"]`)
+    ?.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FILTER CONTROL FUNCTIONS
+// ══════════════════════════════════════════════════════════════════
+function setCategory(cat) {
+  state.cat = cat;
+  state.val = null;
+  update();
+}
+function setVal(val) {
+  state.val = val;
+  update();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MASTER UPDATE
+// ══════════════════════════════════════════════════════════════════
+function update() {
+  renderFilterBar();
+  colorMap();
+  updateCountLabels();
+  updateBadge();
+  renderOverview();
+  if (activeRegion) renderDetail(activeRegion);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide SVG title
+  document.querySelectorAll('#sachsen-map > g').forEach(g => {
+    g.querySelectorAll('text').forEach(t => {
+      if (t.style && parseFloat(t.style.fontSize) >= 16) g.style.display='none';
+    });
+  });
+  // Setup map clicks
+  regionen.forEach(r => {
+    const el = document.getElementById(r.svgId);
+    if (el) el.addEventListener('click', ()=>selectRegion(r.svgId));
+  });
+  initCountLabels();
+  update();
+});
+</script>
 </body>
 </html>
