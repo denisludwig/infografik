@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDR Sachsen – Regionale Berichterstattung KW 7/2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mdr-blue: #003366;
+            --mdr-blue-light: #0066cc;
+            --mdr-accent: #e8640a;
+            --cov-0: #eaf2f8;
+            --cov-1: #c3daea;
+            --cov-2: #6aaed6;
+            --cov-3: #3182bd;
+            --cov-4: #08519c;
+            --cov-5: #003366;
+            --bg: #fafbfc;
+            --text: #1a1a2e;
+            --text-muted: #666;
+            --border: #e5e7eb;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--mdr-blue) 0%, #1a5276 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .header-logo {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: white;
+            color: var(--mdr-blue);
+            padding: 0.1rem 0.5rem;
+            border-radius: 3px;
+        }
+        .header-divider {
+            width: 1px;
+            height: 2rem;
+            background: rgba(255,255,255,0.3);
+        }
+        .header-info {}
+        .header-title {
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+        .header-sub {
+            font-size: 0.8rem;
+            font-weight: 300;
+            opacity: 0.75;
+            margin-top: 0.1rem;
+        }
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            height: calc(100vh - 72px);
+            overflow: hidden;
+        }
+        .map-container {
+            position: relative;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+        #sachsen-map {
+            width: 100%;
+            height: 100%;
+            max-height: calc(100vh - 110px);
+            object-fit: contain;
+        }
+        /* SVG text override */
+        #sachsen-map text {
+            font-family: 'Source Sans 3', -apple-system, sans-serif !important;
+        }
+        /* Hide the big SVG title */
+        #sachsen-map > g:last-child { display: none; }
+        .kreis-path {
+            cursor: pointer;
+            transition: filter 0.15s ease;
+        }
+        .kreis-path:hover {
+            filter: brightness(0.82) saturate(1.3);
+        }
+        .kreis-path.active {
+            filter: brightness(0.75) saturate(1.5);
+            stroke: var(--mdr-accent) !important;
+            stroke-width: 1.5px !important;
+        }
+        .count-label {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+        /* Total badge on map */
+        .total-badge {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--mdr-blue);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,51,102,0.3);
+            min-width: 130px;
+        }
+        .total-badge-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.8;
+            margin-bottom: 0.2rem;
+        }
+        .total-badge-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .total-badge-sub {
+            font-size: 0.7rem;
+            opacity: 0.75;
+            margin-top: 0.2rem;
+        }
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+        .legend-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .legend-scale {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+        .legend-swatch {
+            width: 26px;
+            height: 14px;
+            border-radius: 2px;
+        }
+        .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            gap: 2px;
+        }
+        .legend-labels span {
+            width: 26px;
+            text-align: center;
+        }
+        /* ─── Sidebar ─── */
+        .sidebar {
+            background: white;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-header {
+            padding: 1rem 1.25rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+        .sidebar-header h2 {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .selected-region-name {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.2rem;
+            color: var(--mdr-blue);
+        }
+        /* Overview table */
+        .overview-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.75rem 1.25rem;
+        }
+        .overview-group {
+            margin-bottom: 1rem;
+        }
+        .overview-group-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--mdr-blue);
+            font-weight: 700;
+            padding: 0.4rem 0 0.3rem;
+            border-bottom: 2px solid var(--mdr-blue);
+            margin-bottom: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .overview-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.35rem 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .overview-row:hover { background: #f0f5fa; }
+        .overview-row.active { background: #dbeaf7; }
+        .overview-row.is-stadt .row-name { font-weight: 600; }
+        .row-name {
+            font-size: 0.85rem;
+            flex: 1;
+        }
+        .row-dots {
+            display: flex;
+            gap: 2px;
+            margin: 0 0.5rem;
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+        .dot-filled { background: var(--mdr-blue); }
+        .dot-empty { background: #d0dde8; }
+        .row-count {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--mdr-blue);
+            min-width: 1.5rem;
+            text-align: right;
+        }
+        .overview-subtotal {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0.25rem 0.4rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 0.1rem;
+        }
+        .overview-subtotal span { font-weight: 600; color: var(--mdr-blue); margin-left: 0.35rem; }
+        .overview-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.4rem;
+            border-top: 2px solid var(--mdr-blue);
+            margin-top: 0.25rem;
+        }
+        .overview-total .total-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--mdr-blue);
+        }
+        .overview-total .total-val {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--mdr-blue);
+        }
+        /* Detail panel */
+        .detail-panel {
+            flex-shrink: 0;
+            border-top: 2px solid var(--mdr-blue);
+            padding: 0.75rem 1.25rem;
+            background: #f8fafc;
+            max-height: 40vh;
+            overflow-y: auto;
+            display: none;
+        }
+        .detail-panel.visible { display: block; }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+        .detail-region-name {
+            font-weight: 700;
+            color: var(--mdr-blue);
+            font-size: 0.9rem;
+        }
+        .detail-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-muted);
+            padding: 0 0.25rem;
+        }
+        .detail-close:hover { color: var(--text); }
+        .detail-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .beitragsart-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+        }
+        .beitragsart-row:last-child { border-bottom: none; }
+        .beitragsart-count {
+            font-weight: 600;
+            color: var(--mdr-blue);
+        }
+        .detail-meldungen {
+            margin-top: 0.5rem;
+        }
+        .detail-meldung-item {
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+        }
+        .detail-meldung-item:last-child { border-bottom: none; }
+        .detail-meldung-ort {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .detail-tag {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            background: #dbeaf7;
+            color: var(--mdr-blue);
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-right: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">MDR</div>
+        <div class="header-divider"></div>
+        <div class="header-info">
+            <div class="header-title">Regionale Berichterstattung Sachsen</div>
+            <div class="header-sub">KW 7 · 09.02.2026 · Meldungen nach Landkreisen</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="map-container">
+
+            <svg id="sachsen-map" viewBox="0 0 739 573" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Kreise">
+        <g id="Direktionsbezirk-Chemnitz" serif:id="Direktionsbezirk Chemnitz">
+            <path id="Vogtlandkreis" class="kreis-path" d="M172.537,481.22L172.152,474.693L150.65,459.33L150.266,458.564L142.969,441.664L143.354,440.902L144.887,438.98L153.721,434.757L157.561,429.38L148.729,425.546L143.361,426.697L140.666,422.857L138.744,424.773L133.754,422.085L132.984,418.63L135.287,408.261L137.594,407.496L128.377,402.119L130.682,395.974L124.537,390.214L120.312,387.908L120.701,381.765L111.867,385.99L106.107,381.38L104.953,387.146L96.886,394.437L93.051,396.357L93.435,399.814L87.672,400.191L82.297,399.814L77.687,396.357L67.707,400.58L56.953,416.709L68.47,417.857L68.47,421.697L63.097,421.703L58.871,424.773L55.043,420.164L50.81,420.164L49.656,428.23L43.513,430.917L39.291,430.917L35.451,424.773L39.672,414.785L32.761,399.814L25.852,405.185L28.152,409.025L17.4,416.32L12.793,418.63L14.328,426.308L3.961,431.685L1.271,435.525L4.727,444.744L18.168,448.58L22.393,453.959L22.393,458.564L7.416,470.085L5.881,472.386L8.184,475.078L15.097,475.845L13.562,478.917L19.707,481.99L21.24,490.437L23.929,488.517L28.922,491.589L28.144,495.814L29.304,501.185L27,505.791L40.054,509.632L41.209,513.857L55.799,513.857L57.72,517.697L74.615,516.164L78.072,516.164L82.297,520.773L80.379,525.765L81.912,534.214L92.666,535.748L97.271,539.205L93.049,539.974L91.894,544.197L100.727,562.63L104.568,569.158L112.25,571.076L116.086,570.693L118.777,547.263L118.393,540.357L121.082,532.292L129.527,525.38L138.744,509.251L144.506,502.724L149.113,504.646L151.416,501.574L150.648,495.046L156.793,485.83L172.537,481.22Z" style="fill:rgb(213,240,244);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Zwickau" class="kreis-path" d="M106.139,381.38L104.953,378.693L95.353,378.693L91.511,371.775L91.127,366.785L94.199,362.949L85.369,361.414L83.451,356.419L86.521,348.357L91.894,351.044L97.656,342.214L88.824,339.144L86.136,333.375L88.054,329.542L94.584,332.619L99.193,325.318L101.113,329.154L107.258,328.384L110.713,326.847L110.713,321.857L115.322,317.638L123.383,316.869L127.609,320.324L133.369,318.791L133.367,311.492L137.594,308.8L136.824,304.58L142.969,299.591L148.729,299.591L147.576,295.367L151.035,293.83L154.484,296.513L158.711,294.593L163.322,295.75L165.625,294.98L174.072,292.675L179.064,294.98L181.754,287.302L182.906,286.529L191.738,294.214L195.963,293.83L202.488,293.062L204.025,298.437L208.25,301.125L209.016,303.044L218.234,306.501L218.615,313.412L212.471,322.628L203.256,321.476L201.338,325.703L205.943,324.548L210.938,330.304L213.623,336.064L208.25,342.976L204.41,339.904L198.264,344.128L201.723,350.281L198.648,355.648L193.656,355.263L191.354,349.892L183.672,351.046L187.896,358.724L183.291,360.257L182.523,362.953L184.824,366.791L200.568,374.085L197.498,387.908L199.416,391.748L197.107,391.748L196.729,394.824L194.041,397.119L188.281,393.287L182.906,394.82L180.602,401.347L171.383,405.574L177.529,421.699L168.312,426.304L161.785,424.005L157.562,429.38L148.729,425.546L143.361,426.697L140.666,422.857L138.744,424.773L133.754,422.085L132.984,418.63L135.287,408.261L137.594,407.496L128.377,402.119L130.682,395.974L124.537,390.214L120.312,387.908L120.701,381.765L111.867,385.99L106.139,381.38Z" style="fill:rgb(213,240,244);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Mittelsachsen" class="kreis-path" d="M181.785,287.302L174.84,280.386L172.537,265.792L184.055,263.492L188.281,263.492L192.887,255.429L199.799,258.119L201.721,256.966L198.65,250.052L194.426,248.902L194.426,246.593L198.266,243.136L194.426,235.076L197.113,228.929L197.498,226.63L199.416,222.015L199.799,218.175L202.488,217.792L215.543,222.402L225.145,219.718L230.137,220.486L235.512,218.949L235.514,207.046L226.297,201.667L224.762,198.597L227.451,196.292L227.064,195.135L234.363,178.241L242.426,174.401L250.107,171.329L257.016,172.484L260.471,176.708L268.152,179.78L277.754,172.486L280.441,175.173L285.051,174.406L283.514,170.95L291.578,171.329L305.785,165.571L304.635,174.404L308.471,177.476L309.625,182.465L310.393,187.457L316.537,191.302L319.609,191.686L321.145,200.517L319.225,201.287L322.297,218.949L322.682,226.63L319.609,228.55L321.912,238.916L316.922,247.75L318.457,250.05L327.287,240.453L336.121,238.916L352.25,232.001L362.615,237.765L367.225,241.605L363.77,250.046L365.307,256.191L375.287,255.814L364.922,270.021L372.215,279.621L372.984,287.302L379.512,289.992L386.418,303.046L384.506,309.959L388.727,314.179L393.721,313.414L399.48,320.32L396.41,329.154L401.783,334.525L407.543,333.765L411.77,342.597L421.785,349.125L414.455,355.652L399.48,356.419L395.256,358.72L391.416,361.031L396.41,370.63L389.881,385.99L386.426,387.908L383.354,384.453L381.434,380.996L369.914,376.39L369.529,372.552L366.072,367.558L363.77,369.093L354.938,357.957L354.17,350.277L356.088,350.277L352.635,343.75L351.098,344.134L333.816,349.507L330.746,348.357L331.512,340.681L324.984,336.453L322.682,337.988L311.93,333.765L305.018,334.15L304.25,336.837L299.256,339.908L290.809,332.613L286.967,335.302L283.512,334.917L276.6,327.238L276.215,318.404L276.6,314.175L272.762,311.49L261.242,310.72L262.01,297.287L262.01,296.134L256.635,294.597L245.496,298.437L237.051,292.675L227.834,295.365L222.842,301.125L218.234,306.501L209.016,303.044L208.25,301.125L204.025,298.437L202.488,293.062L195.963,293.83L191.738,294.214L182.906,286.529L181.785,287.302Z" style="fill:rgb(213,240,244);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Erzgebirgskreis" class="kreis-path" d="M386.457,387.908L379.514,397.125L368.762,394.437L361.465,383.685L356.855,383.302L356.088,394.052L344.953,400.964L346.107,409.031L338.426,411.332L336.123,405.57L328.441,404.804L324.984,410.949L325.369,412.101L317.307,438.214L311.928,439.365L301.178,435.142L293.496,440.902L284.281,441.664L280.824,437.441L276.215,447.046L276.6,460.486L268.152,472.386L258.938,478.15L245.496,470.087L227.834,459.33L226.297,470.464L222.072,463.558L212.855,468.548L201.721,480.835L192.123,477.765L172.539,481.22L172.152,474.693L150.65,459.33L150.266,458.564L142.969,441.664L143.354,440.902L144.887,438.98L153.721,434.757L157.562,429.38L161.785,424.005L168.312,426.304L177.529,421.699L171.383,405.574L180.602,401.347L182.906,394.82L188.281,393.287L194.041,397.119L196.729,394.824L197.107,391.748L199.416,391.748L197.498,387.908L200.568,374.085L184.824,366.791L182.523,362.953L183.291,360.257L187.896,358.724L183.672,351.046L191.354,349.892L193.656,355.263L198.648,355.648L201.723,350.281L198.264,344.128L204.41,339.904L208.25,342.976L213.625,336.066L217.082,337.601L221.688,336.066L228.215,331.078L240.887,337.603L240.121,344.902L244.727,351.046L248.953,352.197L251.641,350.662L250.873,347.972L258.56,347.207L263.162,342.214L270.457,341.056L276.6,327.238L283.512,334.917L286.967,335.302L290.809,332.613L299.256,339.908L304.25,336.837L305.018,334.15L311.93,333.765L322.682,337.988L324.984,336.453L331.512,340.681L330.746,348.357L333.816,349.507L351.098,344.134L352.635,343.75L356.088,350.277L354.17,350.277L354.938,357.957L363.77,369.093L366.072,367.558L369.529,372.552L369.914,376.39L381.434,380.996L383.354,384.453L386.457,387.908Z" style="fill:rgb(213,240,244);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+        </g>
+        <g id="Direktionsbezirk-Leipzig" serif:id="Direktionsbezirk Leipzig">
+            <path id="Nordsachsen" class="kreis-path" d="M68.47,137.539L79.992,131.393L83.066,104.511L101.113,104.129L115.32,104.516L116.855,101.444L127.992,96.454L137.209,98.374L137.209,101.446L133.369,103.749L131.066,122.948L139.513,124.102L148.346,119.108L156.033,118.726L157.943,117.188L159.48,119.108L165.621,116.037L167.541,106.436L175.605,101.446L172.922,97.99L177.529,90.308L181.367,89.541L188.666,91.078L202.871,83.777L207.865,82.241L212.088,86.47L216.697,88.774L233.593,93.764L237.051,97.601L242.426,101.057L242.426,119.876L240.123,124.865L235.896,123.713L233.979,131.393L233.209,136.001L227.064,142.15L228.215,144.832L242.426,163.265L237.434,170.564L238.199,172.865L242.426,174.401L250.107,171.329L257.016,172.484L260.471,176.708L268.152,179.78L277.754,172.486L280.441,175.173L285.051,174.406L283.514,170.95L291.578,171.329L305.785,165.574L309.242,152.516L307.322,148.681L305.785,127.939L305.018,114.884L299.256,112.964L305.4,101.444L303.865,92.228L300.41,91.076L300.025,94.529L296.953,91.841L303.48,82.241L298.107,69.572L301.562,70.338L303.48,62.276L298.107,47.302L297.723,44.993L291.578,44.614L286.967,40.39L289.656,29.638L275.451,28.102L272.762,25.03L264.312,12.737L258.553,16.961L255.098,6.593L248.568,5.444L245.111,7.364L246.266,11.972L239.354,16.959L235.896,13.121L230.137,14.662L221.305,10.438L220.537,4.676L216.695,1.223L212.855,1.99L209.016,6.98L207.48,7.75L199.799,15.43L191.736,12.358L191.354,12.358L180.984,10.436L175.225,21.957L162.17,30.401L166.777,25.025L164.855,24.257L155.256,25.03L154.107,28.865L143.354,33.092L142.586,32.709L132.984,37.313L124.537,31.937L119.543,42.692L111.865,40.774L106.488,42.691L99.578,41.925L100.344,43.844L90.363,49.22L87.672,51.524L76.922,50.374L75.002,56.902L67.32,63.044L66.552,72.641L70.01,73.797L69.24,80.326L57.722,88.774L56.568,90.308L60.408,100.292L65.016,100.676L66.937,104.518L62.713,108.737L63.867,121.414L67.705,126.785L68.472,134.47L68.47,137.539Z" style="fill:rgb(200,219,152);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Kreis-Leipzig" class="kreis-path" serif:id="Kreis Leipzig" d="M172.568,265.792L170.234,260.039L163.707,263.494L151.035,260.039L154.105,257.349L153.338,250.435L147.963,250.435L144.504,241.605L144.123,235.843L137.211,235.839L132.984,228.929L131.834,231.238L123,233.158L112.635,231.236L107.641,224.71L103.416,222.791L92.666,227.781L91.129,224.324L85.369,225.091L78.072,220.101L81.914,213.191L71.543,208.964L72.312,200.902L75,193.222L65.783,194.374L66.937,190.917L71.543,182.47L70.777,172.491L70.01,172.865L68.47,165.957L65.016,165.572L63.865,159.045L63.095,152.518L60.793,152.902L60.025,149.83L57.722,142.529L64.635,139.457L68.855,138.692L68.47,137.537L79.992,131.393L84.215,136.001L78.84,139.457L83.064,164.42L84.6,172.102L98.039,170.18L99.193,164.041L100.344,159.819L109.943,153.669L129.144,154.438L129.144,160.581L137.594,161.734L141.816,146.374L149.889,144.836L148.346,141.764L150.65,137.537L146.426,135.621L139.513,124.102L148.346,119.108L156.033,118.726L157.943,117.188L159.48,119.108L165.621,116.037L167.541,106.436L175.605,101.446L172.922,97.99L177.529,90.308L181.367,89.541L188.666,91.078L202.871,83.777L207.865,82.241L212.088,86.47L216.697,88.774L233.593,93.764L237.051,97.601L242.426,101.057L242.426,119.876L240.123,124.865L235.896,123.713L233.979,131.393L233.209,136.001L227.064,142.15L228.215,144.832L242.426,163.265L237.434,170.564L238.199,172.865L242.426,174.401L234.363,178.241L227.064,195.135L227.451,196.292L224.762,198.597L226.297,201.667L235.514,207.046L235.512,218.949L230.137,220.486L225.145,219.718L215.543,222.402L202.488,217.792L199.799,218.175L199.416,222.015L197.498,226.63L197.113,228.929L194.426,235.076L198.266,243.136L194.426,246.593L194.426,248.902L198.65,250.052L201.721,256.966L199.799,258.119L192.887,255.429L188.281,263.492L184.055,263.492L172.568,265.792Z" style="fill:rgb(200,219,152);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+        </g>
+        <g id="Direktionsbezirk-Dresden" serif:id="Direktionsbezirk Dresden">
+            <path id="Meißen" class="kreis-path" d="M305.432,101.446L306.938,105.285L313.465,105.665L323.449,102.975L333.434,92.609L330.736,88.38L334.199,88.005L334.584,90.699L350.713,82.244L352.635,86.47L356.857,90.692L354.938,93.38L364.537,91.076L366.842,93.38L364.539,96.07L377.209,99.521L382.968,108.737L384.506,111.43L390.266,105.286L394.871,105.665L398.328,111.044L401.4,110.276L416.762,110.657L418.682,107.969L430.199,112.198L434.426,107.969L435.963,112.964L440.568,108.737L448.635,107.974L452.471,105.286L457.85,119.105L450.938,118.721L445.562,132.929L449.785,140.993L446.713,141.764L447.096,144.449L451.32,146.753L449.4,160.576L442.871,161.729L438.648,166.338L446.328,172.491L441.338,176.326L439.799,181.318L434.426,181.318L439.799,193.609L435.193,197.445L430.584,195.143L427.512,205.125L425.209,205.125L426.363,212.037L423.287,214.724L408.312,210.117L402.17,212.041L402.553,217.419L398.328,224.324L387.963,227.775L371.834,227.396L362.234,231.236L362.615,237.765L352.25,232.001L336.121,238.916L327.287,240.453L318.457,250.05L316.922,247.75L321.912,238.916L319.609,228.55L322.682,226.63L322.297,218.949L319.225,201.287L321.145,200.517L319.609,191.686L316.537,191.302L310.393,187.457L309.625,182.465L308.471,177.476L304.635,174.404L305.785,165.574L309.242,152.516L307.322,148.681L305.785,127.939L305.018,114.884L299.256,112.964L305.432,101.446Z" style="fill:rgb(234,131,255);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Sächsische-Schweiz-Osterzgebirge" class="kreis-path" serif:id="Sächsische Schweiz-Osterzgebirge" d="M572.697,219.718L567.287,220.871L559.611,244.675L565.762,248.513L575.738,246.212L573.051,256.964L584.953,260.419L592.25,261.574L594.939,266.951L592.25,276.166L583.035,276.55L583.035,279.238L574.201,282.31L563.834,279.621L555.768,283.078L553.852,293.828L537.723,300.736L533.496,304.193L511.992,314.564L509.688,316.484L498.938,313.029L491.639,316.484L488.184,323.392L478.585,324.164L478.585,341.828L467.451,348.738L452.088,346.052L439.035,347.589L435.578,351.046L423.287,349.126L421.754,349.125L411.77,342.597L407.543,333.765L401.783,334.525L396.41,329.154L399.48,320.32L393.721,313.414L388.727,314.179L384.506,309.959L386.418,303.046L379.512,289.992L372.984,287.302L372.215,279.621L364.922,270.021L375.287,255.814L365.307,256.191L363.77,250.046L367.225,241.605L362.615,237.765L362.234,231.236L371.834,227.396L387.963,227.775L398.328,224.32L399.48,232.39L404.471,236.617L418.682,236.994L422.906,243.136L426.363,246.98L436.343,244.292L444.793,251.201L449.4,251.968L449.783,255.429L458.615,254.281L464.762,248.517L471.672,251.974L471.287,250.052L477.051,245.445L477.434,239.302L483.578,239.302L489.338,232.392L488.568,221.638L493.562,218.179L505.852,218.951L507.769,211.652L511.994,215.88L520.828,215.113L527.736,208.58L535.035,217.031L539.256,210.886L544.633,208.964L554.607,213.189L556.529,218.179L562.682,212.8L572.666,214.335L572.697,219.718Z" style="fill:rgb(234,131,255);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Görlitz" class="kreis-path" d="M591.865,35.014L590.71,46.915L598.393,47.683L601.082,51.907L598.393,56.134L602.232,63.044L612.215,73.797L611.449,77.253L604.537,84.165L607.225,84.548L605.688,87.238L599.543,108.737L601.85,109.121L603.768,117.955L610.682,115.265L614.136,114.5L613.369,108.356L618.744,103.364L616.441,109.508L624.123,117.19L627.195,115.273L631.035,116.809L633.723,122.95L632.957,127.937L639.1,131.393L637.182,138.305L642.552,142.534L639.48,149.444L646.393,151.749L649.082,155.972L654.455,155.974L654.072,159.43L658.682,167.11L654.455,174.785L646.01,180.929L647.162,185.156L644.088,187.076L639.096,186.692L638.328,191.686L633.338,190.529L630.65,193.601L633.723,196.675L628.346,206.277L615.287,208.193L611.451,207.814L608.379,212.039L612.602,214.726L613.761,220.869L616.441,220.486L615.672,228.929L623.736,230.462L624.506,235.078L631.035,232.773L639.865,241.22L639.865,249.664L632.184,263.878L633.338,266.179L637.943,267.718L652.537,260.419L653.691,261.574L654.457,269.638L649.852,279.238L647.93,288.447L657.914,291.136L670.201,294.591L675.195,299.201L689.785,298.82L694.779,278.853L701.688,265.031L711.672,253.507L713.209,241.22L715.896,240.064L718.199,223.169L723.963,209.73L730.488,183.621L728.953,177.476L732.793,147.137L737.016,137.158L737.016,126.79L734.713,119.492L729.723,116.801L728.568,111.435L720.123,102.217L713.977,69.19L717.049,64.964L710.521,54.213L702.072,50.374L687.48,49.22L657.914,35.393L652.922,24.262L656.379,16.581L648.312,11.586L649.85,16.576L644.855,28.865L629.113,29.638L626.426,22.337L619.126,19.265L616.824,22.721L613.369,22.338L614.136,26.564L607.225,30.022L604.152,28.486L592.635,30.02L591.865,35.014Z" style="fill:rgb(234,131,255);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+            <path id="Bautzen" class="kreis-path" d="M488.568,221.636L483.578,216.644L482.434,219.712L478.201,220.865L468.984,218.951L467.451,198.214L469.369,191.686L467.064,187.846L462.072,186.692L455.543,191.302L439.799,181.318L441.338,176.326L446.328,172.491L438.648,166.338L442.871,161.729L449.4,160.576L451.32,146.753L447.096,144.449L446.713,141.764L449.785,140.993L445.562,132.929L450.938,118.721L457.85,119.105L452.471,105.281L452.855,102.98L463.609,105.286L481.656,96.454L483.96,104.134L491.256,104.902L491.639,95.684L498.938,87.621L500.471,87.238L498.938,83.398L504.312,76.865L496.635,66.118L498.552,64.581L505.852,66.886L509.688,63.814L511.609,50.756L519.287,40.001L525.434,40.001L539.256,40.39L545.016,43.462L552.312,42.308L561.914,44.998L565.367,50.374L578.039,36.165L591.865,35.014L590.71,46.915L598.393,47.683L601.082,51.907L598.393,56.134L602.232,63.044L612.215,73.797L611.449,77.253L604.537,84.165L607.225,84.548L605.688,87.238L599.543,108.737L601.85,109.121L603.768,117.955L610.682,115.265L614.136,114.5L613.369,108.356L618.744,103.364L616.441,109.508L624.123,117.19L627.195,115.273L631.035,116.809L633.723,122.95L632.957,127.937L639.1,131.393L637.182,138.305L642.552,142.534L639.48,149.444L646.393,151.749L649.082,155.972L654.455,155.974L654.072,159.43L658.682,167.11L654.455,174.785L646.01,180.929L647.162,185.156L644.088,187.076L639.096,186.692L638.328,191.686L633.338,190.529L630.65,193.601L633.723,196.675L628.346,206.277L615.287,208.193L611.451,207.814L608.379,212.039L612.602,214.726L613.761,220.869L613.754,228.548L594.938,231.236L582.65,222.402L577.273,225.091L572.666,219.718L572.666,214.335L562.682,212.8L556.529,218.179L554.607,213.189L544.633,208.964L539.256,210.886L535.035,217.031L527.736,208.58L520.828,215.113L511.994,215.88L507.769,211.652L505.852,218.951L493.562,218.179L488.568,221.636Z" style="fill:rgb(234,131,255);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+        </g>
+        <path id="Stadt-Dresden" class="kreis-path" serif:id="Stadt Dresden" d="M488.572,221.638L489.338,232.392L483.578,239.302L477.434,239.302L477.051,245.445L471.287,250.052L471.672,251.974L464.762,248.517L458.615,254.281L449.783,255.429L449.4,251.968L444.793,251.201L436.343,244.292L426.363,246.98L422.906,243.136L418.682,236.994L404.471,236.617L399.48,232.39L398.328,224.324L402.553,217.419L402.17,212.041L408.312,210.117L423.287,214.724L426.363,212.037L425.209,205.125L427.512,205.125L430.584,195.143L435.193,197.445L439.799,193.609L434.426,181.318L439.799,181.318L455.543,191.302L462.072,186.692L467.064,187.846L469.369,191.686L467.451,198.214L468.984,218.951L478.201,220.865L482.434,219.712L483.578,216.644L488.572,221.638Z" style="fill:rgb(130,140,254);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+        <path id="Stadt-Leipzig" class="kreis-path" serif:id="Stadt Leipzig" d="M79.992,131.393L84.215,136.001L78.84,139.457L83.064,164.42L84.6,172.102L98.039,170.18L99.193,164.041L100.344,159.819L109.943,153.669L129.144,154.438L129.144,160.581L137.594,161.734L141.816,146.374L149.889,144.836L148.346,141.764L150.65,137.537L146.426,135.621L139.513,124.102L131.066,122.948L133.369,103.749L137.209,101.446L137.209,98.374L127.992,96.454L116.855,101.444L115.32,104.516L101.113,104.129L83.066,104.511L79.992,131.393Z" style="fill:rgb(130,140,254);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+        <path id="Stadt-Chemnitz" class="kreis-path" serif:id="Stadt Chemnitz" d="M276.6,327.238L276.215,318.404L276.6,314.175L272.762,311.49L261.242,310.72L262.01,297.287L262.01,296.134L256.635,294.597L245.496,298.437L237.051,292.675L227.834,295.365L222.842,301.125L218.234,306.501L218.615,313.412L212.471,322.628L203.256,321.476L201.338,325.703L205.943,324.548L210.938,330.304L213.625,336.064L217.082,337.601L221.688,336.066L228.215,331.078L240.887,337.603L240.121,344.902L244.727,351.046L248.953,352.197L251.641,350.662L250.873,347.972L258.56,347.207L263.162,342.214L270.457,341.056L276.6,327.238Z" style="fill:rgb(130,140,254);fill-rule:nonzero;stroke:black;stroke-width:0.3px;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,544.74811,148.73557)">
+        <g transform="matrix(12,0,0,12,17.016,0)">
+        </g>
+        <text x="-17.016px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Bautzen</text>
+    </g>
+    <g transform="matrix(1,0,0,1,688.78772,143.05591)">
+        <g transform="matrix(12,0,0,12,13.632,0)">
+        </g>
+        <text x="-13.632px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Görlitz</text>
+    </g>
+    <g transform="matrix(1,0,0,1,158.19411,189.2274)">
+        <g transform="matrix(12,0,0,12,26.346,0)">
+        </g>
+        <text x="-26.346px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Kreis L<tspan x="0.81px 5.886px " y="0px 0px ">ei</tspan>pzig</text>
+    </g>
+    <g transform="matrix(1,0,0,1,372.39954,170.03392)">
+        <g transform="matrix(12,0,0,12,16.212,0)">
+        </g>
+        <text x="-16.212px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Meißen</text>
+    </g>
+    <g transform="matrix(1,0,0,1,252.36914,399.99845)">
+        <text x="-23.4px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Erzgebirgs-</text>
+        <g transform="matrix(12,0,0,12,9.906,15)">
+        </g>
+        <text x="-9.906px" y="15px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">kreis</text>
+    </g>
+    <g transform="matrix(1,0,0,1,272.48743,256.59235)">
+        <text x="-12.39px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Mit<tspan x="1.674px 4.674px " y="0px 0px ">te</tspan>l</text>
+        <g transform="matrix(12,0,0,12,16.68,15)">
+        </g>
+        <text x="-16.68px" y="15px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">sachsen</text>
+    </g>
+    <g transform="matrix(1,0,0,1,190.74121,67.364952)">
+        <g transform="matrix(12,0,0,12,27.09,0)">
+        </g>
+        <text x="-27.09px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Nordsachsen</text>
+    </g>
+    <g transform="matrix(1,0,0,1,476.85303,273.24435)">
+        <text x="-41.796px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Sächsische Schweiz-</text>
+        <g transform="matrix(12,0,0,12,29.532,15)">
+        </g>
+        <text x="-29.532px" y="15px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Osterzgebirge</text>
+    </g>
+    <g transform="matrix(1,0,0,1,87.044601,465.49939)">
+        <text x="-20.244px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">V<tspan x="-15.06px -9.78px " y="0px 0px ">og</tspan>tland-</text>
+        <g transform="matrix(12,0,0,12,9.906,15)">
+        </g>
+        <text x="-9.906px" y="15px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">kreis</text>
+    </g>
+    <g transform="matrix(1,0,0,1,143.10411,362.43869)">
+        <g transform="matrix(12,0,0,12,16.668,0)">
+        </g>
+        <text x="-16.668px" y="0px" style="font-family:'AvenirNextCondensed-Regular', 'Avenir Next Condensed', sans-serif;font-stretch:condensed;font-size:12px;">Z<tspan x="-12.12px -5.22px " y="0px 0px ">wi</tspan>ckau</text>
+    </g>
+    <g transform="matrix(1,0,0,1,244.15578,327.14511)">
+        <g transform="matrix(12,0,0,12,34.47,0)">
+        </g>
+        <text x="-34.47px" y="0px" style="font-family:'AvenirNextCondensed-DemiBold', 'Avenir Next Condensed', sans-serif;font-weight:600;font-stretch:condensed;font-size:12px;">Stadt Chemnitz</text>
+    </g>
+    <g transform="matrix(1,0,0,1,443.57663,231.80214)">
+        <g transform="matrix(12,0,0,12,31.65,0)">
+        </g>
+        <text x="-31.65px" y="0px" style="font-family:'AvenirNextCondensed-DemiBold', 'Avenir Next Condensed', sans-serif;font-weight:600;font-stretch:condensed;font-size:12px;">Stadt Dresden</text>
+    </g>
+    <g transform="matrix(1,0,0,1,113.48116,140.00063)">
+        <g transform="matrix(12,0,0,12,28.914,0)">
+        </g>
+        <text x="-28.914px" y="0px" style="font-family:'AvenirNextCondensed-DemiBold', 'Avenir Next Condensed', sans-serif;font-weight:600;font-stretch:condensed;font-size:12px;">Stadt L<tspan x="1.314px 6.69px " y="0px 0px ">ei</tspan>pzig</text>
+    </g>
+    <g transform="matrix(1,0,0,1,719.37633,521.08866)">
+        <text x="-364.588px" y="0px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:28px;">Landkr<tspan x="-286.356px -273.112px " y="0px 0px ">ei</tspan>se und kr<tspan x="-161.252px -148.008px " y="0px 0px ">ei</tspan>sfr<tspan x="-111.244px -98px " y="0px 0px ">ei</tspan>e S<tspan x="-58.688px -49.868px " y="0px 0px ">tä</tspan>dte</text>
+        <g transform="matrix(28,0,0,28,-0,35)">
+        </g>
+        <text x="-119.112px" y="35px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:28px;">in Sachsen</text>
+    </g>
+    <g transform="matrix(1,0,0,1,202.895126,113.035786)">
+        <text x="-53.784px" y="0px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">Direktionsbezirk</text>
+        <g transform="matrix(16,0,0,16,23.12,16)">
+        </g>
+        <text x="-23.12px" y="16px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">L<tspan x="-16.544px -8.976px " y="16px 16px ">ei</tspan>pzig</text>
+    </g>
+    <g transform="matrix(1,0,0,1,537.03033,176.6354)">
+        <text x="-53.784px" y="0px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">Direktionsbezirk</text>
+        <text x="-26.736px" y="20px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">Dresden</text>
+    </g>
+    <g transform="matrix(1,0,0,1,243.56521,362.43869)">
+        <text x="-53.784px" y="0px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">Direktionsbezirk</text>
+        <g transform="matrix(16,0,0,16,30.792,16)">
+        </g>
+        <text x="-30.792px" y="16px" style="font-family:'AvenirNextCondensed-Bold', 'Avenir Next Condensed', sans-serif;font-weight:700;font-stretch:condensed;font-size:16px;">Chemnitz</text>
+    </g>
+</svg>
+
+
+            <div class="total-badge">
+                <div class="total-badge-label">Gesamt Meldungen</div>
+                <div class="total-badge-value" id="map-total">27</div>
+                <div class="total-badge-sub">KW 7 · Sachsen gesamt</div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-title">Meldungen pro Region</div>
+                <div class="legend-scale">
+                    <div class="legend-swatch" style="background:var(--cov-0)"></div>
+                    <div class="legend-swatch" style="background:var(--cov-1)"></div>
+                    <div class="legend-swatch" style="background:var(--cov-2)"></div>
+                    <div class="legend-swatch" style="background:var(--cov-3)"></div>
+                    <div class="legend-swatch" style="background:var(--cov-4)"></div>
+                    <div class="legend-swatch" style="background:var(--cov-5)"></div>
+                </div>
+                <div class="legend-labels">
+                    <span>0</span><span>1</span><span>2</span>
+                    <span>3</span><span>4</span><span>5+</span>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Übersicht nach Region</h2>
+                <div class="selected-region-name">Sachsen gesamt · 27 Meldungen</div>
+            </div>
+
+            <div class="overview-section" id="overview-section">
+                <!-- Rendered by JS -->
+            </div>
+
+            <div class="detail-panel" id="detail-panel">
+                <!-- Rendered by JS on click -->
+            </div>
+        </aside>
+    </div>
+
+    <script>
+    // ─── Data from Excel (KW 7 · 09.02.2026) ─────────────────────────────────
+    const meldungen = [
+        { thema:"Thema 1",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 2",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Nachricht",  zeitung:"Dresdner Neueste Nachrichten" },
+        { thema:"Thema 3",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 4",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Interview",  zeitung:null },
+        { thema:"Thema 5",  ort:"Dresden",            kreis:"Dresden, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 6",  ort:"Kamenz",             kreis:"Bautzen",                            beitragsart:"Nachricht",  zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 7",  ort:"Bautzen",            kreis:"Bautzen",                            beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 8",  ort:"Bautzen",            kreis:"Bautzen",                            beitragsart:"Nachricht",  zeitung:null },
+        { thema:"Thema 9",  ort:"Görlitz",            kreis:"Görlitz",                            beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 10", ort:"Löbau",              kreis:"Görlitz",                            beitragsart:"Bericht",    zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 11", ort:"Riesa",              kreis:"Meißen",                             beitragsart:"Nachricht",  zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 12", ort:"Meißen",             kreis:"Meißen",                             beitragsart:"Bericht",    zeitung:null },
+        { thema:"Thema 13", ort:"Pirna",              kreis:"Sächsische Schweiz-Osterzgebirge",   beitragsart:"Reportage",  zeitung:"Sächsische Zeitung" },
+        { thema:"Thema 14", ort:"Freital",            kreis:"Sächsische Schweiz-Osterzgebirge",   beitragsart:"Nachricht",  zeitung:null },
+        { thema:"Thema 15", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Bericht",    zeitung:"Leipziger Volkszeitung" },
+        { thema:"Thema 16", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Interview",  zeitung:"Leipziger Volkszeitung" },
+        { thema:"Thema 17", ort:"Leipzig",            kreis:"Leipzig, Kreisfreie Stadt",          beitragsart:"Reportage",  zeitung:null },
+        { thema:"Thema 18", ort:"Delitzsch",          kreis:"Nordsachsen",                        beitragsart:"Nachricht",  zeitung:"Leipziger Volkszeitung" },
+        { thema:"Thema 19", ort:"Torgau",             kreis:"Nordsachsen",                        beitragsart:"Bericht",    zeitung:null },
+        { thema:"Thema 20", ort:"Chemnitz",           kreis:"Chemnitz, Kreisfreie Stadt",         beitragsart:"Reportage",  zeitung:"Freie Presse" },
+        { thema:"Thema 21", ort:"Chemnitz",           kreis:"Chemnitz, Kreisfreie Stadt",         beitragsart:"Nachricht",  zeitung:"Freie Presse" },
+        { thema:"Thema 22", ort:"Annaberg-Buchholz",  kreis:"Erzgebirgskreis",                   beitragsart:"Bericht",    zeitung:"Freie Presse" },
+        { thema:"Thema 23", ort:"Aue",                kreis:"Erzgebirgskreis",                   beitragsart:"Nachricht",  zeitung:null },
+        { thema:"Thema 24", ort:"Freiberg",           kreis:"Mittelsachsen",                      beitragsart:"Reportage",  zeitung:"Freie Presse" },
+        { thema:"Thema 25", ort:"Döbeln",             kreis:"Mittelsachsen",                      beitragsart:"Bericht",    zeitung:null },
+        { thema:"Thema 26", ort:"Plauen",             kreis:"Vogtlandkreis",                      beitragsart:"Nachricht",  zeitung:"Freie Presse" },
+        { thema:"Thema 27", ort:"Zwickau",            kreis:"Zwickau",                            beitragsart:"Bericht",    zeitung:null },
+    ];
+
+    // ─── Region definitions (SVG ID → Excel key) ─────────────────────────────
+    const regionen = [
+        // Direktionsbezirk Leipzig
+        { svgId:'Nordsachsen',                        excel:'Nordsachsen',                       name:'Nordsachsen',                       direkt:'Leipzig' },
+        { svgId:'Kreis-Leipzig',                      excel:null,                                name:'Kreis Leipzig',                     direkt:'Leipzig' },
+        { svgId:'Stadt-Leipzig',                      excel:'Leipzig, Kreisfreie Stadt',         name:'Stadt Leipzig',                     direkt:'Leipzig',  isStadt:true },
+        // Direktionsbezirk Dresden
+        { svgId:'Bautzen',                            excel:'Bautzen',                           name:'Bautzen',                           direkt:'Dresden' },
+        { svgId:'Görlitz',                            excel:'Görlitz',                           name:'Görlitz',                           direkt:'Dresden' },
+        { svgId:'Meißen',                             excel:'Meißen',                            name:'Meißen',                            direkt:'Dresden' },
+        { svgId:'Sächsische-Schweiz-Osterzgebirge',  excel:'Sächsische Schweiz-Osterzgebirge',  name:'Sächsische Schweiz-Osterzgeb.',     direkt:'Dresden' },
+        { svgId:'Stadt-Dresden',                      excel:'Dresden, Kreisfreie Stadt',         name:'Stadt Dresden',                     direkt:'Dresden',  isStadt:true },
+        // Direktionsbezirk Chemnitz
+        { svgId:'Erzgebirgskreis',                    excel:'Erzgebirgskreis',                   name:'Erzgebirgskreis',                   direkt:'Chemnitz' },
+        { svgId:'Mittelsachsen',                      excel:'Mittelsachsen',                     name:'Mittelsachsen',                     direkt:'Chemnitz' },
+        { svgId:'Vogtlandkreis',                      excel:'Vogtlandkreis',                     name:'Vogtlandkreis',                     direkt:'Chemnitz' },
+        { svgId:'Zwickau',                            excel:'Zwickau',                           name:'Zwickau',                           direkt:'Chemnitz' },
+        { svgId:'Stadt-Chemnitz',                     excel:'Chemnitz, Kreisfreie Stadt',        name:'Stadt Chemnitz',                    direkt:'Chemnitz', isStadt:true },
+    ];
+
+    // ─── Count label positions (absolute SVG coords, below existing name labels) ─
+    const labelPos = {
+        'Nordsachsen':                       { x:191, y:84  },
+        'Kreis-Leipzig':                     { x:158, y:206 },
+        'Stadt-Leipzig':                     { x:113, y:157 },
+        'Meißen':                            { x:372, y:187 },
+        'Sächsische-Schweiz-Osterzgebirge':  { x:477, y:305 },
+        'Görlitz':                           { x:689, y:159 },
+        'Bautzen':                           { x:545, y:165 },
+        'Stadt-Dresden':                     { x:444, y:249 },
+        'Erzgebirgskreis':                   { x:252, y:432 },
+        'Mittelsachsen':                     { x:272, y:289 },
+        'Vogtlandkreis':                     { x:87,  y:498 },
+        'Zwickau':                           { x:143, y:380 },
+        'Stadt-Chemnitz':                    { x:244, y:344 },
+    };
+
+    // ─── Color scale (MDR blue gradient) ─────────────────────────────────────
+    const COLORS = ['#eaf2f8','#c3daea','#6aaed6','#3182bd','#08519c','#003366'];
+    const TEXT_COLORS = ['#003366','#003366','#ffffff','#ffffff','#ffffff','#ffffff'];
+
+    function getColor(count) {
+        if (count === 0) return COLORS[0];
+        if (count === 1) return COLORS[1];
+        if (count === 2) return COLORS[2];
+        if (count === 3) return COLORS[3];
+        if (count === 4) return COLORS[4];
+        return COLORS[5];
+    }
+    function getTextColor(count) {
+        if (count === 0) return TEXT_COLORS[0];
+        if (count === 1) return TEXT_COLORS[1];
+        if (count === 2) return TEXT_COLORS[2];
+        if (count === 3) return TEXT_COLORS[3];
+        if (count === 4) return TEXT_COLORS[4];
+        return TEXT_COLORS[5];
+    }
+
+    // ─── Aggregate counts ─────────────────────────────────────────────────────
+    function getCounts() {
+        const counts = {};
+        meldungen.forEach(m => {
+            counts[m.kreis] = (counts[m.kreis] || 0) + 1;
+        });
+        return counts;
+    }
+
+    function getCountForRegion(r) {
+        if (!r.excel) return 0;
+        const counts = getCounts();
+        return counts[r.excel] || 0;
+    }
+
+    // ─── Color map regions ───────────────────────────────────────────────────
+    function colorMap() {
+        regionen.forEach(r => {
+            const el = document.getElementById(r.svgId);
+            if (!el) return;
+            const count = getCountForRegion(r);
+            el.style.fill = getColor(count);
+            el.style.stroke = '#ffffff';
+            el.style.strokeWidth = '0.6px';
+        });
+    }
+
+    // ─── Add count labels to SVG ─────────────────────────────────────────────
+    function addCountLabels() {
+        const svg = document.getElementById('sachsen-map');
+        regionen.forEach(r => {
+            const pos = labelPos[r.svgId];
+            if (!pos) return;
+            const count = getCountForRegion(r);
+            const textColor = getTextColor(count);
+
+            // Small circle background
+            const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            circle.setAttribute('cx', pos.x);
+            circle.setAttribute('cy', pos.y);
+            circle.setAttribute('r', '8');
+            circle.setAttribute('fill', count > 0 ? getColor(count) : 'none');
+            circle.setAttribute('stroke', count > 0 ? 'rgba(255,255,255,0.7)' : 'none');
+            circle.setAttribute('stroke-width', '1');
+            circle.style.pointerEvents = 'none';
+            svg.appendChild(circle);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+            text.setAttribute('x', pos.x);
+            text.setAttribute('y', pos.y);
+            text.setAttribute('class', 'count-label');
+            text.setAttribute('fill', count > 0 ? textColor : '#aaaaaa');
+            text.textContent = count;
+            svg.appendChild(text);
+        });
+    }
+
+    // ─── Dots helper ─────────────────────────────────────────────────────────
+    function makeDots(count, max=5) {
+        let html = '';
+        for (let i = 0; i < max; i++) {
+            html += `<div class="dot ${i < count ? 'dot-filled' : 'dot-empty'}"></div>`;
+        }
+        return html;
+    }
+
+    // ─── Render overview table ────────────────────────────────────────────────
+    function renderOverview() {
+        const section = document.getElementById('overview-section');
+        const direkts = ['Leipzig','Dresden','Chemnitz'];
+        let html = '';
+        let grandTotal = 0;
+
+        direkts.forEach(d => {
+            const regInDirekt = regionen.filter(r => r.direkt === d);
+            const subtotal = regInDirekt.reduce((s,r) => s + getCountForRegion(r), 0);
+            grandTotal += subtotal;
+            html += `<div class="overview-group">
+                <div class="overview-group-title">
+                    <span>Direktionsbezirk ${d}</span>
+                    <span>${subtotal}</span>
+                </div>`;
+            regInDirekt.forEach(r => {
+                const count = getCountForRegion(r);
+                html += `
+                <div class="overview-row${r.isStadt?' is-stadt':''}" data-svgid="${r.svgId}" onclick="selectRegion('${r.svgId}')">
+                    <span class="row-name">${r.name}</span>
+                    <div class="row-dots">${makeDots(Math.min(count,5))}</div>
+                    <span class="row-count">${count}</span>
+                </div>`;
+            });
+            html += `<div class="overview-subtotal">Gesamt <span>${subtotal}</span></div>
+            </div>`;
+        });
+
+        html += `<div class="overview-total">
+            <span class="total-label">Sachsen gesamt</span>
+            <span class="total-val">${grandTotal}</span>
+        </div>`;
+        section.innerHTML = html;
+    }
+
+    // ─── Render detail panel ──────────────────────────────────────────────────
+    let activeRegion = null;
+
+    function selectRegion(svgId) {
+        const r = regionen.find(x => x.svgId === svgId);
+        if (!r) return;
+
+        // Toggle: click same region again to deselect
+        if (activeRegion === svgId) {
+            deselectRegion();
+            return;
+        }
+        activeRegion = svgId;
+
+        // Update map highlight
+        document.querySelectorAll('.kreis-path').forEach(p => p.classList.remove('active'));
+        const pathEl = document.getElementById(svgId);
+        if (pathEl) pathEl.classList.add('active');
+
+        // Update table highlight
+        document.querySelectorAll('.overview-row').forEach(row => row.classList.remove('active'));
+        const tableRow = document.querySelector(`.overview-row[data-svgid="${svgId}"]`);
+        if (tableRow) tableRow.classList.add('active');
+
+        // Build detail panel
+        const count = getCountForRegion(r);
+        const myMeldungen = r.excel ? meldungen.filter(m => m.kreis === r.excel) : [];
+        const beitragsarten = {};
+        myMeldungen.forEach(m => { beitragsarten[m.beitragsart] = (beitragsarten[m.beitragsart]||0)+1; });
+
+        let bHtml = '';
+        Object.entries(beitragsarten).sort((a,b)=>b[1]-a[1]).forEach(([name,cnt]) => {
+            bHtml += `<div class="beitragsart-row">
+                <span>${name}</span>
+                <span class="beitragsart-count">${cnt}</span>
+            </div>`;
+        });
+
+        let mHtml = '';
+        myMeldungen.forEach(m => {
+            mHtml += `<div class="detail-meldung-item">
+                <div><span class="detail-tag">${m.beitragsart}</span>${m.thema}</div>
+                <div class="detail-meldung-ort">${m.ort}${m.zeitung ? ' · ' + m.zeitung : ''}</div>
+            </div>`;
+        });
+
+        const panel = document.getElementById('detail-panel');
+        panel.innerHTML = `
+            <div class="detail-header">
+                <div class="detail-region-name">${r.name}</div>
+                <button class="detail-close" onclick="deselectRegion()" title="Schließen">✕</button>
+            </div>
+            <div class="detail-count">${count} Meldung${count !== 1 ? 'en' : ''}</div>
+            ${count > 0 ? bHtml : '<em style="font-size:0.8rem;color:#999">Keine Meldungen in dieser Region</em>'}
+            ${count > 0 ? '<div class="detail-meldungen">' + mHtml + '</div>' : ''}
+        `;
+        panel.classList.add('visible');
+
+        // Scroll table row into view
+        if (tableRow) tableRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+    }
+
+    function deselectRegion() {
+        activeRegion = null;
+        document.querySelectorAll('.kreis-path').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.overview-row').forEach(r => r.classList.remove('active'));
+        document.getElementById('detail-panel').classList.remove('visible');
+    }
+
+    // ─── Click handlers on SVG paths ─────────────────────────────────────────
+    function setupMapInteraction() {
+        regionen.forEach(r => {
+            const el = document.getElementById(r.svgId);
+            if (el) el.addEventListener('click', () => selectRegion(r.svgId));
+        });
+    }
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        colorMap();
+        addCountLabels();
+        renderOverview();
+        setupMapInteraction();
+
+        // Hide big SVG title (last <g> child of svg that contains large font text)
+        const svgEl = document.getElementById('sachsen-map');
+        const allGGroups = svgEl.querySelectorAll(':scope > g');
+        allGGroups.forEach(g => {
+            const texts = g.querySelectorAll('text');
+            texts.forEach(t => {
+                if (parseFloat(t.style.fontSize) >= 24 || t.style.fontSize === '28px') {
+                    g.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
