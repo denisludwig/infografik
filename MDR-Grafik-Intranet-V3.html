@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="de" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -11,36 +12,36 @@
   --transition-theme: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
-[data-theme="dark"] {
-  --bg:      #0c0c0c;
-  --bg2:     #121212;
-  --bg3:     #1a1a1a;
-  --bg4:     #222;
-  --text:    #f0ece4;
-  --text2:   #a09890;
-  --muted:   #524e4a;
-  --border:  #242220;
-  --accent:  #e8d5a3;
-  --accent2: #c8a45a;
-  --red:     #d94f3d;
-  --nav-bg:  rgba(12,12,12,0.88);
-  --footer-big: #f0ece4;
+[data-theme=“dark”] {
+–bg:      #0c0c0c;
+–bg2:     #121212;
+–bg3:     #1a1a1a;
+–bg4:     #222;
+–text:    #f0ece4;
+–text2:   #a09890;
+–muted:   #524e4a;
+–border:  #242220;
+–accent:  #e8d5a3;
+–accent2: #c8a45a;
+–red:     #d94f3d;
+–nav-bg:  rgba(12,12,12,0.88);
+–footer-big: #f0ece4;
 }
 
-[data-theme="light"] {
-  --bg:      #f5f3ef;
-  --bg2:     #eeebe5;
-  --bg3:     #e5e1d8;
-  --bg4:     #ddd9cf;
-  --text:    #161412;
-  --text2:   #5a534c;
-  --muted:   #9a9088;
-  --border:  #d5cfc5;
-  --accent:  #8b6914;
-  --accent2: #a07c20;
-  --red:     #c93d2b;
-  --nav-bg:  rgba(245,243,239,0.88);
-  --footer-big: #161412;
+[data-theme=“light”] {
+–bg:      #f5f3ef;
+–bg2:     #eeebe5;
+–bg3:     #e5e1d8;
+–bg4:     #ddd9cf;
+–text:    #161412;
+–text2:   #5a534c;
+–muted:   #9a9088;
+–border:  #d5cfc5;
+–accent:  #8b6914;
+–accent2: #a07c20;
+–red:     #c93d2b;
+–nav-bg:  rgba(245,243,239,0.88);
+–footer-big: #161412;
 }
 
 /* ─── BASE ────────────────────────────────────────── */
@@ -48,1084 +49,1195 @@
 html { scroll-behavior:smooth; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  line-height: 1.65;
-  overflow-x: hidden;
-  transition: var(--transition-theme);
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+font-weight: 300;
+line-height: 1.65;
+overflow-x: hidden;
+transition: var(–transition-theme);
 }
 
 a { text-decoration: none; color: inherit; }
 
 /* ─── NAV ─────────────────────────────────────────── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 3rem;
-  background: var(--nav-bg);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  transition: var(--transition-theme);
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 200;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1.25rem 3rem;
+background: var(–nav-bg);
+backdrop-filter: blur(16px);
+border-bottom: 1px solid var(–border);
+transition: var(–transition-theme);
 }
 
 .nav-logo {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  color: var(--accent2);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.18em;
+color: var(–accent2);
+text-transform: uppercase;
 }
 
 .nav-right {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
+display: flex;
+align-items: center;
+gap: 2.5rem;
 }
 
 .nav-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
+display: flex;
+gap: 2rem;
+list-style: none;
 }
 
 .nav-links a {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  transition: color 0.2s;
+font-size: 0.75rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–muted);
+transition: color 0.2s;
 }
-.nav-links a:hover { color: var(--text); }
+.nav-links a:hover { color: var(–text); }
 
 /* THEME TOGGLE */
 .theme-toggle {
-  width: 44px;
-  height: 24px;
-  background: var(--border);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  position: relative;
-  transition: background 0.3s;
-  flex-shrink: 0;
+width: 44px;
+height: 24px;
+background: var(–border);
+border-radius: 12px;
+border: 1px solid var(–border);
+cursor: pointer;
+position: relative;
+transition: background 0.3s;
+flex-shrink: 0;
 }
 
 .theme-toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  transition: transform 0.3s, background 0.3s;
+content: ‘’;
+position: absolute;
+top: 3px; left: 3px;
+width: 16px; height: 16px;
+border-radius: 50%;
+background: var(–accent);
+transition: transform 0.3s, background 0.3s;
 }
 
-[data-theme="light"] .theme-toggle::after {
-  transform: translateX(20px);
+[data-theme=“light”] .theme-toggle::after {
+transform: translateX(20px);
 }
 
 .toggle-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+color: var(–muted);
+text-transform: uppercase;
 }
 
 /* ─── HERO ────────────────────────────────────────── */
 .hero {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 55% 45%;
-  position: relative;
-  overflow: hidden;
+min-height: 100vh;
+display: grid;
+grid-template-columns: 55% 45%;
+position: relative;
+overflow: hidden;
 }
 
 .hero-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 8rem 5rem 5rem;
-  position: relative;
-  z-index: 2;
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 8rem 5rem 5rem;
+position: relative;
+z-index: 2;
 }
 
 .hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-bottom: 2rem;
 }
 
 .hero-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--red);
-  flex-shrink: 0;
+width: 8px; height: 8px;
+border-radius: 50%;
+background: var(–red);
+flex-shrink: 0;
 }
 
 .hero-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.65rem;
+letter-spacing: 0.2em;
+color: var(–muted);
+text-transform: uppercase;
 }
 
 .hero h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(3.8rem, 6.5vw, 7.5rem);
-  line-height: 0.95;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  margin-bottom: 2.5rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(3.8rem, 6.5vw, 7.5rem);
+line-height: 0.95;
+font-weight: 400;
+letter-spacing: -0.03em;
+margin-bottom: 2.5rem;
 }
 
 .hero h1 em {
-  font-style: italic;
-  color: var(--accent);
+font-style: italic;
+color: var(–accent);
 }
 
 .hero-desc {
-  font-size: 1rem;
-  color: var(--text2);
-  max-width: 40ch;
-  line-height: 1.8;
-  margin-bottom: 3.5rem;
+font-size: 1rem;
+color: var(–text2);
+max-width: 40ch;
+line-height: 1.8;
+margin-bottom: 3.5rem;
 }
 
 .hero-actions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+display: flex;
+gap: 1rem;
+align-items: center;
 }
 
 .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--accent);
-  padding: 0.9rem 2rem;
-  transition: background 0.2s, transform 0.2s;
+display: inline-flex;
+align-items: center;
+gap: 0.75rem;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–bg);
+background: var(–accent);
+padding: 0.9rem 2rem;
+transition: background 0.2s, transform 0.2s;
 }
-.btn-primary:hover { background: var(--accent2); transform: translateX(4px); }
+.btn-primary:hover { background: var(–accent2); transform: translateX(4px); }
 
 .btn-ghost {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 2px;
-  transition: color 0.2s, border-color 0.2s;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.7rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–muted);
+border-bottom: 1px solid var(–border);
+padding-bottom: 2px;
+transition: color 0.2s, border-color 0.2s;
 }
-.btn-ghost:hover { color: var(--text); border-color: var(--text); }
+.btn-ghost:hover { color: var(–text); border-color: var(–text); }
 
 .hero-right {
-  position: relative;
-  background: var(--bg3);
-  overflow: hidden;
+position: relative;
+background: var(–bg3);
+overflow: hidden;
 }
 
 .hero-right-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1.2rem;
+width: 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 1.2rem;
 }
 
 .hero-wedge {
-  position: absolute;
-  top: 0; left: -2px; bottom: 0;
-  width: 80px;
-  background: var(--bg);
-  clip-path: polygon(0 0, 50% 0, 100% 100%, 0 100%);
-  z-index: 3;
-  transition: background 0.4s;
+position: absolute;
+top: 0; left: -2px; bottom: 0;
+width: 80px;
+background: var(–bg);
+clip-path: polygon(0 0, 50% 0, 100% 100%, 0 100%);
+z-index: 3;
+transition: background 0.4s;
 }
 
 /* ─── STATS ───────────────────────────────────────── */
 .stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  transition: var(--transition-theme);
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+border-top: 1px solid var(–border);
+border-bottom: 1px solid var(–border);
+transition: var(–transition-theme);
 }
 
 .stat-item {
-  padding: 2.5rem 3rem;
-  border-right: 1px solid var(--border);
+padding: 2.5rem 3rem;
+border-right: 1px solid var(–border);
 }
 .stat-item:last-child { border-right: none; }
 
 .stat-num {
-  font-family: 'DM Serif Display', serif;
-  font-size: 3.2rem;
-  color: var(--accent);
-  line-height: 1;
-  margin-bottom: 0.5rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: 3.2rem;
+color: var(–accent);
+line-height: 1;
+margin-bottom: 0.5rem;
 }
 
 .stat-label {
-  font-size: 0.78rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
+font-size: 0.78rem;
+color: var(–muted);
+letter-spacing: 0.04em;
 }
 
 .red-stripe {
-  height: 3px;
-  background: linear-gradient(to right, var(--red) 0%, var(--accent2) 100%);
+height: 3px;
+background: linear-gradient(to right, var(–red) 0%, var(–accent2) 100%);
 }
 
 /* ─── SECTIONS ────────────────────────────────────── */
 section { padding: 7rem 0; }
 
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 4.5rem;
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 4.5rem;
 }
 
 .section-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 4rem;
+display: flex;
+align-items: center;
+gap: 1.5rem;
+margin-bottom: 4rem;
 }
 
 .section-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--red);
-  flex-shrink: 0;
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–red);
+flex-shrink: 0;
 }
 
 .section-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  text-transform: uppercase;
-  white-space: nowrap;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.2em;
+color: var(–muted);
+text-transform: uppercase;
+white-space: nowrap;
 }
 
 .section-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+flex: 1;
+height: 1px;
+background: var(–border);
 }
 
 h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(2.2rem, 4vw, 3.8rem);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  margin-bottom: 1.5rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(2.2rem, 4vw, 3.8rem);
+font-weight: 400;
+line-height: 1.05;
+letter-spacing: -0.025em;
+margin-bottom: 1.5rem;
 }
-h2 em { font-style: italic; color: var(--accent); }
+h2 em { font-style: italic; color: var(–accent); }
 
 /* ─── PURPOSE / WHY ───────────────────────────────── */
-.purpose { background: var(--bg2); }
+.purpose { background: var(–bg2); }
 
 .purpose-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7rem;
-  align-items: center;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 7rem;
+align-items: center;
 }
 
 .purpose-quote {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-  font-style: italic;
-  color: var(--accent);
-  line-height: 1.3;
-  margin-bottom: 2rem;
-  border-left: 2px solid var(--accent2);
-  padding-left: 1.5rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+font-style: italic;
+color: var(–accent);
+line-height: 1.3;
+margin-bottom: 2rem;
+border-left: 2px solid var(–accent2);
+padding-left: 1.5rem;
 }
 
 .purpose-text p {
-  font-size: 0.98rem;
-  color: var(--text2);
-  line-height: 1.85;
-  margin-bottom: 1.4rem;
+font-size: 0.98rem;
+color: var(–text2);
+line-height: 1.85;
+margin-bottom: 1.4rem;
 }
-.purpose-text p strong { color: var(--text); font-weight: 500; }
+.purpose-text p strong { color: var(–text); font-weight: 500; }
 
 .purpose-visual {
-  aspect-ratio: 4/3;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  position: relative;
-  overflow: hidden;
+aspect-ratio: 4/3;
+background: var(–bg3);
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 1rem;
+position: relative;
+overflow: hidden;
 }
 
 .purpose-visual::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    -45deg, transparent, transparent 30px,
-    rgba(200,164,90,0.03) 30px, rgba(200,164,90,0.03) 31px
-  );
+content: ‘’;
+position: absolute; inset: 0;
+background: repeating-linear-gradient(
+-45deg, transparent, transparent 30px,
+rgba(200,164,90,0.03) 30px, rgba(200,164,90,0.03) 31px
+);
 }
 
 /* ─── 4-CLUSTER GRID ──────────────────────────────── */
 /* Outer wrapper for all clusters */
 .clusters-wrap {
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+border: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+gap: 0;
 }
 
 /* Each row: two cards side by side */
 .cluster-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0;
+border-bottom: 1px solid var(–border);
 }
 .cluster-row:last-child { border-bottom: none; }
 
-/* Cards within a row match each other's height automatically via grid */
+/* Cards within a row match each other’s height automatically via grid */
 .cluster-card {
-  background: var(--bg);
-  padding: 3rem;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.3s;
-  border-right: 1px solid var(--border);
+background: var(–bg);
+padding: 3rem;
+position: relative;
+overflow: hidden;
+transition: background 0.3s;
+border-right: 1px solid var(–border);
 }
 .cluster-card:last-child { border-right: none; }
-.cluster-card:hover { background: var(--bg3); }
+.cluster-card:hover { background: var(–bg3); }
 
 /* Spotlight box: full width under a row */
 .spotlight-row {
-  border-bottom: 1px solid var(--border);
+border-bottom: 1px solid var(–border);
 }
 .spotlight-row:last-child { border-bottom: none; }
 
 .cluster-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  margin-bottom: 2rem;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+color: var(–muted);
+margin-bottom: 2rem;
 }
 
 .cluster-icon {
-  width: 52px; height: 52px;
-  margin-bottom: 1.5rem;
-  color: var(--accent);
+width: 52px; height: 52px;
+margin-bottom: 1.5rem;
+color: var(–accent);
 }
 
 .cluster-card h3 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.6rem;
-  font-weight: 400;
-  margin-bottom: 0.75rem;
-  color: var(--text);
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.6rem;
+font-weight: 400;
+margin-bottom: 0.75rem;
+color: var(–text);
 }
 
 .cluster-card > p {
-  font-size: 0.875rem;
-  color: var(--text2);
-  line-height: 1.75;
-  margin-bottom: 1.5rem;
-  max-width: 46ch;
+font-size: 0.875rem;
+color: var(–text2);
+line-height: 1.75;
+margin-bottom: 1.5rem;
+max-width: 46ch;
 }
 
 .cluster-items {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 2rem;
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 0.4rem;
+margin-bottom: 2rem;
 }
 
 .cluster-items li {
-  font-size: 0.8rem;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+font-size: 0.8rem;
+color: var(–muted);
+display: flex;
+align-items: center;
+gap: 0.6rem;
 }
 
 .cluster-items li::before {
-  content: '→';
-  color: var(--accent2);
-  font-size: 0.75rem;
+content: ‘→’;
+color: var(–accent2);
+font-size: 0.75rem;
 }
 
 .cluster-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+display: flex;
+flex-wrap: wrap;
+gap: 0.4rem;
 }
 
 .tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent2);
-  border: 1px solid var(--accent2);
-  padding: 0.2rem 0.55rem;
-  opacity: 0.65;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–accent2);
+border: 1px solid var(–accent2);
+padding: 0.2rem 0.55rem;
+opacity: 0.65;
 }
 
 .cluster-visual {
-  margin: 2rem -3rem -3rem;
-  aspect-ratio: 16/6;
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.5rem;
+margin: 2rem -3rem -3rem;
+aspect-ratio: 16/6;
+background: var(–bg2);
+border-top: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 0.5rem;
 }
 
 .cluster-visual span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: var(--border);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+color: var(–border);
+text-transform: uppercase;
 }
 
 /* CARTOON HIGHLIGHT BOX */
 /* Cluster column wrapper — stacks card + spotlight box vertically */
 .cluster-col {
-  display: flex;
-  flex-direction: column;
+display: flex;
+flex-direction: column;
 }
 
 .cluster-col .cluster-card {
-  flex: 1;
+flex: 1;
 }
 
 .cluster-col .cartoon-box {
-  /* no span 2 needed — lives inside its column */
-  grid-column: unset;
+/* no span 2 needed — lives inside its column */
+grid-column: unset;
 }
 
 /* Two-row cluster layout */
 .clusters-row {
-  margin-bottom: 0;
+margin-bottom: 0;
 }
 
 .cartoon-box {
-  background: var(--bg3);
-  border: 1px solid var(--accent2);
-  padding: 2.5rem 3rem;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 2rem;
-  align-items: center;
+background: var(–bg3);
+border: 1px solid var(–accent2);
+padding: 2.5rem 3rem;
+display: grid;
+grid-template-columns: auto 1fr auto;
+gap: 2rem;
+align-items: center;
 }
 
 /* ─── HERO SLIDER ──────────────────────────────────── */
 .hero-slider {
-  position: relative;
-  /* height set dynamically by JS to match tallest slide */
-  overflow: hidden;
-  margin-bottom: 0;
+position: relative;
+/* height set dynamically by JS to match tallest slide */
+overflow: hidden;
+margin-bottom: 0;
 }
 
 .hero-slide {
-  /* All slides stacked, invisible by default */
-  opacity: 0;
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
-  transition: opacity 0.55s ease;
+/* All slides stacked, invisible by default */
+opacity: 0;
+visibility: hidden;
+height: 0;
+overflow: hidden;
+transition: opacity 0.55s ease;
 }
 
 .hero-slide.active {
-  opacity: 1;
-  visibility: visible;
-  height: auto;
-  overflow: visible;
-  animation: slideIn 0.55s ease both;
+opacity: 1;
+visibility: visible;
+height: auto;
+overflow: visible;
+animation: slideIn 0.55s ease both;
 }
 
 .hero-slide h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(3.2rem, 5.5vw, 7rem);
-  line-height: 1.0;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  margin-bottom: 0;
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(3.2rem, 5.5vw, 7rem);
+line-height: 1.0;
+font-weight: 400;
+letter-spacing: -0.02em;
+margin-bottom: 0;
 }
-.hero-slide h1 em { font-style: italic; color: var(--accent); }
+.hero-slide h1 em { font-style: italic; color: var(–accent); }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: none; }
+from { opacity: 0; transform: translateY(12px); }
+to   { opacity: 1; transform: none; }
 }
 
 /* Slider controls row */
 .slider-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-top: 2rem;
 }
 
 .slider-arrow {
-  width: 36px; height: 36px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, color 0.2s;
-  flex-shrink: 0;
+width: 36px; height: 36px;
+border: 1px solid var(–border);
+background: transparent;
+color: var(–muted);
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: border-color 0.2s, color 0.2s;
+flex-shrink: 0;
 }
-.slider-arrow:hover { border-color: var(--accent); color: var(--accent); }
+.slider-arrow:hover { border-color: var(–accent); color: var(–accent); }
 
 .slider-dots {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+display: flex;
+gap: 0.5rem;
+align-items: center;
 }
 
 .slider-dot {
-  width: 20px; height: 2px;
-  background: var(--muted);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.3s, width 0.3s;
+width: 20px; height: 2px;
+background: var(–muted);
+border: none;
+cursor: pointer;
+padding: 0;
+transition: background 0.3s, width 0.3s;
 }
-.slider-dot.active { background: var(--accent); width: 36px; }
+.slider-dot.active { background: var(–accent); width: 36px; }
 
 .cartoon-box-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent2);
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–accent2);
+writing-mode: vertical-rl;
+text-orientation: mixed;
+transform: rotate(180deg);
 }
 
 .cartoon-box-text h4 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--accent);
-  margin-bottom: 0.75rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.2rem;
+font-weight: 400;
+font-style: italic;
+color: var(–accent);
+margin-bottom: 0.75rem;
 }
 
 .cartoon-box-text p {
-  font-size: 0.85rem;
-  color: var(--text2);
-  line-height: 1.75;
-  max-width: 70ch;
+font-size: 0.85rem;
+color: var(–text2);
+line-height: 1.75;
+max-width: 70ch;
 }
 
 .cartoon-visual {
-  width: 120px;
-  height: 80px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.4rem;
+width: 120px;
+height: 80px;
+background: var(–bg2);
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 0.4rem;
 }
 
 .cartoon-visual span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
-  color: var(--border);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-align: center;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.5rem;
+color: var(–border);
+text-transform: uppercase;
+letter-spacing: 0.1em;
+text-align: center;
+}
+
+/* ─── TOOL & WEBAPP SECTION ───────────────────────── */
+.tools-section {
+background: var(–bg2);
+border-top: 1px solid var(–border);
+border-bottom: 1px solid var(–border);
+}
+
+.tools-inner {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0;
+min-height: 520px;
+}
+
+/* Left: bold statement panel */
+.tools-statement {
+padding: 5rem 5rem 5rem 0;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+border-right: 1px solid var(–border);
+}
+
+.tools-statement h2 {
+margin-bottom: 2rem;
+}
+
+.tools-statement-body {
+font-size: 0.95rem;
+color: var(–text2);
+line-height: 1.85;
+max-width: 46ch;
+margin-bottom: 2.5rem;
+}
+
+.tools-stages {
+display: flex;
+gap: 0;
+border: 1px solid var(–border);
+overflow: hidden;
+margin-top: auto;
+}
+
+.tools-stage {
+flex: 1;
+padding: 1rem 1.2rem;
+border-right: 1px solid var(–border);
+text-align: center;
+}
+.tools-stage:last-child { border-right: none; }
+
+.tools-stage-num {
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+color: var(–muted);
+margin-bottom: 0.4rem;
+}
+
+.tools-stage-label {
+font-size: 0.78rem;
+color: var(–text2);
+font-weight: 500;
+}
+
+/* Right: project cards */
+.tools-projects {
+padding: 5rem 0 5rem 5rem;
+display: flex;
+flex-direction: column;
+gap: 0;
+}
+
+.tool-project {
+padding: 2rem 0;
+border-bottom: 1px solid var(–border);
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 2rem;
+align-items: start;
+}
+.tool-project:first-child { padding-top: 0; }
+.tool-project:last-child { border-bottom: none; padding-bottom: 0; }
+
+.tool-project-tag {
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–accent2);
+background: transparent;
+border: 1px solid var(–border);
+padding: 0.3rem 0.7rem;
+white-space: nowrap;
+margin-top: 0.2rem;
+}
+
+.tool-project-text h4 {
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.15rem;
+font-weight: 400;
+color: var(–text);
+margin-bottom: 0.5rem;
+}
+
+.tool-project-text p {
+font-size: 0.83rem;
+color: var(–text2);
+line-height: 1.75;
 }
 
 /* ─── KI SECTION ──────────────────────────────────── */
-.ki-section { background: var(--bg); }
+.ki-section { background: var(–bg); }
 
 .ki-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: end;
-  margin-bottom: 4rem;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 5rem;
+align-items: end;
+margin-bottom: 4rem;
 }
 
 .ki-intro {
-  font-size: 0.95rem;
-  color: var(--text2);
-  line-height: 1.85;
+font-size: 0.95rem;
+color: var(–text2);
+line-height: 1.85;
 }
 
 .ki-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1px;
+background: var(–border);
+border: 1px solid var(–border);
 }
 
 .ki-card {
-  background: var(--bg2);
-  padding: 2.5rem;
-  transition: background 0.3s;
+background: var(–bg2);
+padding: 2.5rem;
+transition: background 0.3s;
 }
-.ki-card:hover { background: var(--bg3); }
+.ki-card:hover { background: var(–bg3); }
 
 .ki-card-icon {
-  font-family: 'Space Mono', monospace;
-  font-size: 1.8rem;
-  color: var(--accent);
-  margin-bottom: 1.5rem;
-  line-height: 1;
+font-family: ‘Space Mono’, monospace;
+font-size: 1.8rem;
+color: var(–accent);
+margin-bottom: 1.5rem;
+line-height: 1;
 }
 
 .ki-card h4 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.3rem;
-  font-weight: 400;
-  margin-bottom: 0.75rem;
-  color: var(--text);
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.3rem;
+font-weight: 400;
+margin-bottom: 0.75rem;
+color: var(–text);
 }
 
 .ki-card p {
-  font-size: 0.83rem;
-  color: var(--text2);
-  line-height: 1.75;
+font-size: 0.83rem;
+color: var(–text2);
+line-height: 1.75;
 }
 
 .ki-card ul {
-  margin-top: 1rem;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+margin-top: 1rem;
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 0.4rem;
 }
 
 .ki-card ul li {
-  font-size: 0.78rem;
-  color: var(--muted);
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
+font-size: 0.78rem;
+color: var(–muted);
+display: flex;
+gap: 0.5rem;
+align-items: baseline;
 }
 
 .ki-card ul li::before {
-  content: '·';
-  color: var(--accent2);
+content: ‘·’;
+color: var(–accent2);
 }
 
 /* ─── SHOWREEL ────────────────────────────────────── */
-.showreel-section { background: var(--bg2); }
+.showreel-section { background: var(–bg2); }
 
 .video-wrap {
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
+width: 100%;
+aspect-ratio: 16/9;
+background: var(–bg3);
+border: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1.5rem;
+position: relative;
+overflow: hidden;
+cursor: pointer;
 }
 
 .video-wrap::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(232,213,163,0.05) 0%, transparent 65%);
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(ellipse at center, rgba(232,213,163,0.05) 0%, transparent 65%);
 }
 
 .video-play {
-  width: 76px; height: 76px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.25s, transform 0.25s;
-  position: relative; z-index: 1;
+width: 76px; height: 76px;
+border: 1px solid var(–accent);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background 0.25s, transform 0.25s;
+position: relative; z-index: 1;
 }
-.video-wrap:hover .video-play { background: var(--accent); transform: scale(1.06); }
-.video-wrap:hover .video-play svg path { fill: var(--bg); }
+.video-wrap:hover .video-play { background: var(–accent); transform: scale(1.06); }
+.video-wrap:hover .video-play svg path { fill: var(–bg); }
 
 .video-play svg { margin-left: 5px; }
 
 .video-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  text-transform: uppercase;
-  position: relative; z-index: 1;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.65rem;
+letter-spacing: 0.2em;
+color: var(–muted);
+text-transform: uppercase;
+position: relative; z-index: 1;
 }
 
 /* ─── APPROACH ────────────────────────────────────── */
-.approach { background: var(--bg2); }
+.approach { background: var(–bg2); }
 
 .approach-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border: 1px solid var(--border);
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 0;
+border: 1px solid var(–border);
 }
 
 .step {
-  padding: 2.5rem;
-  border-right: 1px solid var(--border);
-  position: relative;
+padding: 2.5rem;
+border-right: 1px solid var(–border);
+position: relative;
 }
 .step:last-child { border-right: none; }
 
 .step-num-bg {
-  font-family: 'DM Serif Display', serif;
-  font-size: 6rem;
-  color: var(--border);
-  line-height: 1;
-  position: absolute;
-  bottom: 1rem; right: 1.5rem;
-  user-select: none;
-  transition: color 0.3s;
+font-family: ‘DM Serif Display’, serif;
+font-size: 6rem;
+color: var(–border);
+line-height: 1;
+position: absolute;
+bottom: 1rem; right: 1.5rem;
+user-select: none;
+transition: color 0.3s;
 }
-.step:hover .step-num-bg { color: var(--bg4); }
+.step:hover .step-num-bg { color: var(–bg4); }
 
 .step h4 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: var(--accent);
-  margin-bottom: 0.75rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.2rem;
+font-weight: 400;
+color: var(–accent);
+margin-bottom: 0.75rem;
 }
 
 .step p {
-  font-size: 0.82rem;
-  color: var(--text2);
-  line-height: 1.75;
-  position: relative; z-index: 1;
+font-size: 0.82rem;
+color: var(–text2);
+line-height: 1.75;
+position: relative; z-index: 1;
 }
 
 /* ─── PORTFOLIO GRID ──────────────────────────────── */
-.portfolio-section { background: var(--bg); }
+.portfolio-section { background: var(–bg); }
 
 .portfolio-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 260px 260px;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
+display: grid;
+grid-template-columns: 2fr 1fr 1fr;
+grid-template-rows: 260px 260px;
+gap: 1px;
+background: var(–border);
+border: 1px solid var(–border);
 }
 
 .portfolio-item {
-  background: var(--bg3);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  padding: 1.75rem;
-  cursor: pointer;
-  transition: opacity 0.25s;
+background: var(–bg3);
+position: relative;
+overflow: hidden;
+display: flex;
+align-items: flex-end;
+padding: 1.75rem;
+cursor: pointer;
+transition: opacity 0.25s;
 }
 .portfolio-item:hover { opacity: 0.82; }
 .portfolio-item:first-child { grid-row: span 2; }
 
 .portfolio-item::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
-  z-index: 1;
+content: ‘’;
+position: absolute; inset: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+z-index: 1;
 }
 
 .portfolio-bg {
-  position: absolute; inset: 0;
-  background: var(--bg2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--border);
-  font-size: 3rem;
+position: absolute; inset: 0;
+background: var(–bg2);
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(–border);
+font-size: 3rem;
 }
 
 .portfolio-info {
-  position: relative; z-index: 2;
+position: relative; z-index: 2;
 }
 
 .portfolio-info h4 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.05rem;
-  font-weight: 400;
-  color: #f0ece4;
-  margin-bottom: 0.2rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.05rem;
+font-weight: 400;
+color: #f0ece4;
+margin-bottom: 0.2rem;
 }
 
 .portfolio-info span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.15em;
-  color: rgba(240,236,228,0.45);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.58rem;
+letter-spacing: 0.15em;
+color: rgba(240,236,228,0.45);
+text-transform: uppercase;
 }
 
 /* ─── CONTACT ─────────────────────────────────────── */
-.contact-section { background: var(--bg2); }
+.contact-section { background: var(–bg2); }
 
 .contact-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7rem;
-  align-items: center;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 7rem;
+align-items: center;
 }
 
 .contact-left h2 { margin-bottom: 1.2rem; }
 
 .contact-left p {
-  font-size: 0.95rem;
-  color: var(--text2);
-  line-height: 1.85;
-  margin-bottom: 3rem;
+font-size: 0.95rem;
+color: var(–text2);
+line-height: 1.85;
+margin-bottom: 3rem;
 }
 
 .contact-table {
-  display: flex;
-  flex-direction: column;
+display: flex;
+flex-direction: column;
 }
 
 .contact-row {
-  display: flex;
-  gap: 1.5rem;
-  align-items: baseline;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--border);
+display: flex;
+gap: 1.5rem;
+align-items: baseline;
+padding: 1rem 0;
+border-bottom: 1px solid var(–border);
 }
 
 .cr-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  min-width: 110px;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–muted);
+min-width: 110px;
 }
 
 .cr-val {
-  font-size: 0.9rem;
-  color: var(--text);
+font-size: 0.9rem;
+color: var(–text);
 }
 
 .contact-visual {
-  aspect-ratio: 3/4;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.8rem;
+aspect-ratio: 3/4;
+background: var(–bg3);
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 0.8rem;
 }
 
 /* ─── REVEALING FOOTER ────────────────────────────── */
 .site-main {
-  position: relative;
-  z-index: 2;
-  background: var(--bg);
+position: relative;
+z-index: 2;
+background: var(–bg);
 }
 
 .footer-reveal {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  background: #0d0d0d;
-  color: #f0ece4;
-  overflow: hidden;
+position: sticky;
+bottom: 0;
+z-index: 1;
+background: #0d0d0d;
+color: #f0ece4;
+overflow: hidden;
 }
 
 /* TOP: Claim left, info right — like Agntix/Syndicate */
 .footer-top-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0;
-  padding: 5rem 5rem 4rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 0;
+padding: 5rem 5rem 4rem;
+border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .footer-claim-big {
-  grid-column: 1;
-  padding-right: 3rem;
+grid-column: 1;
+padding-right: 3rem;
 }
 
 .footer-claim-big-text {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(2.4rem, 3.5vw, 4rem);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  color: #f0ece4;
-  margin-bottom: 2.5rem;
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(2.4rem, 3.5vw, 4rem);
+line-height: 1.05;
+letter-spacing: -0.025em;
+color: #f0ece4;
+margin-bottom: 2.5rem;
 }
 .footer-claim-big-text em {
-  font-style: italic;
-  color: #e8d5a3;
+font-style: italic;
+color: #e8d5a3;
 }
 
 .footer-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #0c0c0c;
-  background: #e8d5a3;
-  padding: 0.9rem 1.8rem;
-  text-decoration: none;
-  transition: background 0.2s;
+display: inline-flex;
+align-items: center;
+gap: 0.6rem;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.62rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: #0c0c0c;
+background: #e8d5a3;
+padding: 0.9rem 1.8rem;
+text-decoration: none;
+transition: background 0.2s;
 }
 .footer-cta-btn:hover { background: #c8a45a; }
 
 /* middle col — nav links */
 .footer-nav-col {
-  padding: 0 2rem;
-  border-left: 1px solid rgba(255,255,255,0.06);
+padding: 0 2rem;
+border-left: 1px solid rgba(255,255,255,0.06);
 }
 
 .footer-col-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(240,236,228,0.22);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.55rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: rgba(240,236,228,0.22);
+margin-bottom: 1.5rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
 }
 .footer-col-label::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(240,236,228,0.22);
-  flex-shrink: 0;
+content: ‘’;
+width: 6px; height: 6px;
+border-radius: 50%;
+background: rgba(240,236,228,0.22);
+flex-shrink: 0;
 }
 
 .footer-links {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 0.55rem;
 }
 .footer-links a {
-  font-size: 0.88rem;
-  color: rgba(240,236,228,0.42);
-  text-decoration: none;
-  transition: color 0.2s;
-  line-height: 1.7;
+font-size: 0.88rem;
+color: rgba(240,236,228,0.42);
+text-decoration: none;
+transition: color 0.2s;
+line-height: 1.7;
 }
 .footer-links a:hover { color: #f0ece4; }
 
 /* right col — contact */
 .footer-contact-col {
-  padding: 0 0 0 2rem;
-  border-left: 1px solid rgba(255,255,255,0.06);
+padding: 0 0 0 2rem;
+border-left: 1px solid rgba(255,255,255,0.06);
 }
 
 .footer-contact-col p {
-  font-size: 0.88rem;
-  color: rgba(240,236,228,0.42);
-  line-height: 1.75;
+font-size: 0.88rem;
+color: rgba(240,236,228,0.42);
+line-height: 1.75;
 }
 .footer-contact-col strong {
-  color: rgba(240,236,228,0.7);
-  font-weight: 400;
+color: rgba(240,236,228,0.7);
+font-weight: 400;
 }
 
 /* BIG wordmark at bottom — full bleed, Agntix style */
 .footer-wordmark {
-  padding: 1rem 0 0;
-  overflow: hidden;
-  line-height: 0.82;
+padding: 1rem 0 0;
+overflow: hidden;
+line-height: 0.82;
 }
 
 .footer-wordmark-text {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(10vw, 14vw, 16vw);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  color: rgba(240,236,228,0.06);
-  -webkit-text-stroke: 1px rgba(240,236,228,0.12);
-  white-space: nowrap;
-  padding: 0 4rem;
-  display: block;
-  user-select: none;
-  transform: translateY(30%);
-  transition: transform 1.4s cubic-bezier(0.16,1,0.3,1);
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(10vw, 14vw, 16vw);
+font-weight: 400;
+letter-spacing: -0.04em;
+color: rgba(240,236,228,0.06);
+-webkit-text-stroke: 1px rgba(240,236,228,0.12);
+white-space: nowrap;
+padding: 0 4rem;
+display: block;
+user-select: none;
+transform: translateY(30%);
+transition: transform 1.4s cubic-bezier(0.16,1,0.3,1);
 }
 .footer-wordmark-text.revealed {
-  transform: translateY(0);
+transform: translateY(0);
 }
 
 /* bottom bar */
 .footer-bottom-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.2rem 5rem;
-  border-top: 1px solid rgba(255,255,255,0.05);
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1.2rem 5rem;
+border-top: 1px solid rgba(255,255,255,0.05);
 }
 .footer-bottom-bar p {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.57rem;
-  letter-spacing: 0.1em;
-  color: rgba(240,236,228,0.16);
-  text-transform: uppercase;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.57rem;
+letter-spacing: 0.1em;
+color: rgba(240,236,228,0.16);
+text-transform: uppercase;
 }
 
 /* ─── SCROLL REVEAL ───────────────────────────────── */
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+opacity: 0;
+transform: translateY(22px);
+transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .reveal.visible { opacity: 1; transform: none; }
 
 /* FADE IN from start */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: none; }
+from { opacity: 0; transform: translateY(28px); }
+to   { opacity: 1; transform: none; }
 }
 
 .anim-1 { animation: fadeUp 0.9s ease both; }
@@ -1135,20 +1247,20 @@ h2 em { font-style: italic; color: var(--accent); }
 
 /* ─── PLACEHOLDER UTILS ───────────────────────────── */
 .ph-icon {
-  width: 56px; height: 56px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--muted);
+width: 56px; height: 56px;
+border: 1px solid var(–border);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+color: var(–muted);
 }
 
 .ph-txt {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  text-transform: uppercase;
-  text-align: center;
+font-family: ‘Space Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+color: var(–muted);
+text-transform: uppercase;
+text-align: center;
 }
 
 </style>
@@ -1156,6 +1268,7 @@ h2 em { font-style: italic; color: var(--accent); }
 <body>
 
 <!-- ═══════════════════════════════════════════════════ NAV -->
+
 <nav>
   <div class="nav-logo">MDR · Grafik & Design</div>
   <div class="nav-right">
@@ -1172,9 +1285,11 @@ h2 em { font-style: italic; color: var(--accent); }
 </nav>
 
 <!-- ═══════════════════════════════════════════════════ SITE MAIN -->
+
 <div class="site-main">
 
 <!-- ─── HERO ─────────────────────────────────────────── -->
+
 <section class="hero">
   <div class="hero-left">
     <div class="hero-eyebrow anim-1">
@@ -1232,6 +1347,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── STATS ─────────────────────────────────────────── -->
+
 <div class="stats">
   <div class="stat-item reveal">
     <div class="stat-num">50+</div>
@@ -1253,6 +1369,7 @@ h2 em { font-style: italic; color: var(--accent); }
 <div class="red-stripe"></div>
 
 <!-- ─── PURPOSE / WHY ─────────────────────────────────── -->
+
 <section class="purpose">
   <div class="container">
     <div class="section-header reveal">
@@ -1279,6 +1396,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── KOMPETENZEN (4 CLUSTER) ───────────────────────── -->
+
 <section id="kompetenzen">
   <div class="container">
     <div class="section-header reveal">
@@ -1288,164 +1406,243 @@ h2 em { font-style: italic; color: var(--accent); }
     </div>
     <h2 class="reveal" style="margin-bottom:3rem;">Was wir <em>können</em> &<br>was wir <em>lieben</em></h2>
 
-    <div class="clusters-wrap reveal">
+```
+<div class="clusters-wrap reveal">
 
-      <!-- ROW 1: 01 + 02 -->
-      <div class="cluster-row">
+  <!-- ROW 1: 01 + 02 -->
+  <div class="cluster-row">
 
-        <div class="cluster-card">
-          <div class="cluster-num">01</div>
-          <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
-            <rect x="4" y="12" width="44" height="28" rx="3" stroke="currentColor" stroke-width="1.4"/>
-            <circle cx="26" cy="26" r="7" stroke="currentColor" stroke-width="1.4"/>
-            <circle cx="26" cy="26" r="2.5" fill="currentColor" opacity="0.6"/>
-            <path d="M8 16h4M40 16h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <h3>Live & On-Air</h3>
-          <p>Das Rückgrat des Sendebetriebs — rund um die Uhr, 365 Tage im Jahr. Wir bestücken Grafiksysteme in der Regie, integrieren Infografiken in Livesendungen und betreiben virtuelle Studios auf Broadcastniveau.</p>
-          <ul class="cluster-items">
-            <li>Grafiksysteme & Regie-Integration</li>
-            <li>Virtuelle Studios (Planung, Bau, Betrieb)</li>
-            <li>Live-Infografiken & Breaking News</li>
-            <li>Hintergrundbilder für Fernsehsendungen</li>
-          </ul>
-          <div class="cluster-tags">
-            <span class="tag">Live-Produktion</span>
-            <span class="tag">Virtual Studio</span>
-            <span class="tag">Regie</span>
-            <span class="tag">XR</span>
-          </div>
-          <div class="cluster-visual">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
-            <span>Bild / Video einfügen</span>
-          </div>
-        </div>
-
-        <div class="cluster-card">
-          <div class="cluster-num">02</div>
-          <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
-            <path d="M10 42L10 20l8-8h24v30H10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
-            <path d="M10 20h8V12" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
-            <path d="M18 30h16M18 35h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-            <path d="M20 24l3 4 4-6 4 6h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Narrative & Erklärung</h3>
-          <p>Komplexe Sachverhalte visuell zugänglich machen — das ist unser journalistisches Kernhandwerk. Von der tagesaktuellen Infografik bis zur aufwändigen 3D-Erklärgrafik und Charakteranimation.</p>
-          <ul class="cluster-items">
-            <li>Infografiken & Datenjournalismus</li>
-            <li>Erklärgrafiken & Animationen</li>
-            <li>3D-Grafik & Visualisierung</li>
-            <li>Cartoon- & Charakteranimation</li>
-          </ul>
-          <div class="cluster-tags">
-            <span class="tag">Infografik</span>
-            <span class="tag">3D</span>
-            <span class="tag">Animation</span>
-            <span class="tag">Storytelling</span>
-          </div>
-          <div class="cluster-visual">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
-            <span>Bild / Video einfügen</span>
-          </div>
-        </div>
-
-      </div><!-- /cluster-row 1 -->
-
-      <!-- SPOTLIGHT: Cartoon — volle Breite unter Zeile 1 -->
-      <div class="spotlight-row">
-        <div class="cartoon-box">
-          <div class="cartoon-box-label">Spotlight</div>
-          <div class="cartoon-box-text">
-            <h4>Cartoon & Charakteranimation — das i-Tüpfelchen</h4>
-            <p>Was als KiKA-Projekt begann, ist zu einem echten Aushängeschild geworden: Wir bringen Charaktere zum Leben — mit Witz, Wärme und handwerklicher Sorgfalt. Vom animierten Maskottchen bis zur vollständigen Seriencharakterwelt. Diese Arbeit steht exemplarisch für unseren Anspruch: Gestaltung nicht als Pflicht, sondern als Leidenschaft.</p>
-          </div>
-          <div class="cartoon-visual">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="var(--border)" stroke-width="1.2"/><circle cx="12" cy="14" r="2" fill="var(--border)"/><circle cx="20" cy="14" r="2" fill="var(--border)"/><path d="M11 20c1.3 2 8.7 2 10 0" stroke="var(--border)" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <span>Charakter-<br>beispiel</span>
-          </div>
-        </div>
+    <div class="cluster-card">
+      <div class="cluster-num">01</div>
+      <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="12" width="44" height="28" rx="3" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="26" cy="26" r="7" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="26" cy="26" r="2.5" fill="currentColor" opacity="0.6"/>
+        <path d="M8 16h4M40 16h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3>Live & On-Air</h3>
+      <p>Das Rückgrat des Sendebetriebs — rund um die Uhr, 365 Tage im Jahr. Wir bestücken Grafiksysteme in der Regie, integrieren Infografiken in Livesendungen und betreiben virtuelle Studios auf Broadcastniveau.</p>
+      <ul class="cluster-items">
+        <li>Grafiksysteme & Regie-Integration</li>
+        <li>Virtuelle Studios (Planung, Bau, Betrieb)</li>
+        <li>Live-Infografiken & Breaking News</li>
+        <li>Hintergrundbilder für Fernsehsendungen</li>
+      </ul>
+      <div class="cluster-tags">
+        <span class="tag">Live-Produktion</span>
+        <span class="tag">Virtual Studio</span>
+        <span class="tag">Regie</span>
+        <span class="tag">XR</span>
       </div>
-
-      <!-- ROW 2: 03 + 04 -->
-      <div class="cluster-row">
-
-        <div class="cluster-card">
-          <div class="cluster-num">03</div>
-          <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
-            <rect x="6" y="8" width="22" height="30" rx="2" stroke="currentColor" stroke-width="1.4"/>
-            <rect x="24" y="14" width="22" height="30" rx="2" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M12 20h10M12 25h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <h3>Erscheinung & Identität</h3>
-          <p>Konsistente Designsprachen, die wiedererkennbar sind — auf allen Plattformen, in jedem Format. Wir entwickeln und pflegen die visuelle Identität von Sendungen, Formaten und Marken innerhalb des MDR.</p>
-          <ul class="cluster-items">
-            <li>Sendungspakete & Formatdesign</li>
-            <li>Thumbnails & Mediathek-Gestaltung</li>
-            <li>Social Media Templates & Motion</li>
-            <li>Titelmotive & Eventgrafik</li>
-          </ul>
-          <div class="cluster-tags">
-            <span class="tag">Corporate Design</span>
-            <span class="tag">Social Media</span>
-            <span class="tag">Mediathek</span>
-            <span class="tag">Branding</span>
-          </div>
-          <div class="cluster-visual">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
-            <span>Bild / Video einfügen</span>
-          </div>
-        </div>
-
-        <div class="cluster-card">
-          <div class="cluster-num">04</div>
-          <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
-            <circle cx="26" cy="26" r="18" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M18 26h16M26 18v16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <circle cx="26" cy="26" r="4" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M10 26h4M38 26h4M26 10v4M26 38v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-          <h3>Strategie & Beratung</h3>
-          <p>Wir denken vor. Welche Bildsprache funktioniert auf welcher Plattform? Was macht ein Thumbnail klickbar? Wie baut man ein Format auf, das auch morgen noch funktioniert? Wir sind Sparringspartner, nicht Auftragsabwickler.</p>
-          <ul class="cluster-items">
-            <li>Rapid Prototyping & Entscheidungsvorlagen</li>
-            <li>Performance-Analyse & Optimierung</li>
-            <li>Format- & Kanalberatung</li>
-            <li>Workshops & Design-Briefings</li>
-          </ul>
-          <div class="cluster-tags">
-            <span class="tag">Beratung</span>
-            <span class="tag">Prototyping</span>
-            <span class="tag">Strategy</span>
-            <span class="tag">Workshops</span>
-          </div>
-          <div class="cluster-visual">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
-            <span>Bild / Video einfügen</span>
-          </div>
-        </div>
-
-      </div><!-- /cluster-row 2 -->
-
-      <!-- SPOTLIGHT: Digital Publishing — volle Breite unter Zeile 2 -->
-      <div class="spotlight-row">
-        <div class="cartoon-box" style="border-color: var(--muted); opacity:0.9;">
-          <div class="cartoon-box-label" style="color:var(--muted);">Spotlight</div>
-          <div class="cartoon-box-text">
-            <h4 style="color:var(--text2);">Digital Publishing — von Print bis zum interaktiven Geschäftsbericht</h4>
-            <p>Neben dem Bewegtbild-Schwerpunkt gestalten und produzieren wir das gesamte Spektrum des Digital Publishing: von klassischen Printdokumenten über Plakate und Flyer bis hin zu umfangreichen Geschäftsberichten — inhaltlich, grafisch und infografisch aufbereitet. Wir denken Print und Digital nicht getrennt, sondern als zwei Aggregatzustände derselben Kommunikationsaufgabe. Besonders bei datenreichen Formaten bringen wir unsere Infografik-Kompetenz voll ein: Zahlen werden lesbar, Zusammenhänge sichtbar, Dokumente zu Erzählungen.</p>
-          </div>
-          <div class="cartoon-visual">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="16" height="22" rx="2" stroke="var(--border)" stroke-width="1.2"/><rect x="10" y="8" width="20" height="22" rx="2" stroke="var(--border)" stroke-width="1.2"/><path d="M13 14h10M13 18h7" stroke="var(--border)" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <span>Beispiel<br>einfügen</span>
-          </div>
-        </div>
+      <div class="cluster-visual">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
+        <span>Bild / Video einfügen</span>
       </div>
+    </div>
 
-    </div><!-- /clusters-wrap -->
+    <div class="cluster-card">
+      <div class="cluster-num">02</div>
+      <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
+        <path d="M10 42L10 20l8-8h24v30H10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M10 20h8V12" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M18 30h16M18 35h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M20 24l3 4 4-6 4 6h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>Narrative & Erklärung</h3>
+      <p>Komplexe Sachverhalte visuell zugänglich machen — das ist unser journalistisches Kernhandwerk. Von der tagesaktuellen Infografik bis zur aufwändigen 3D-Erklärgrafik und Charakteranimation.</p>
+      <ul class="cluster-items">
+        <li>Infografiken & Datenjournalismus</li>
+        <li>Erklärgrafiken & Animationen</li>
+        <li>3D-Grafik & Visualisierung</li>
+        <li>Cartoon- & Charakteranimation</li>
+      </ul>
+      <div class="cluster-tags">
+        <span class="tag">Infografik</span>
+        <span class="tag">3D</span>
+        <span class="tag">Animation</span>
+        <span class="tag">Storytelling</span>
+      </div>
+      <div class="cluster-visual">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
+        <span>Bild / Video einfügen</span>
+      </div>
+    </div>
+
+  </div><!-- /cluster-row 1 -->
+
+  <!-- SPOTLIGHT: Cartoon — volle Breite unter Zeile 1 -->
+  <div class="spotlight-row">
+    <div class="cartoon-box">
+      <div class="cartoon-box-label">Spotlight</div>
+      <div class="cartoon-box-text">
+        <h4>Cartoon & Charakteranimation — das i-Tüpfelchen</h4>
+        <p>Was als KiKA-Projekt begann, ist zu einem echten Aushängeschild geworden: Wir bringen Charaktere zum Leben — mit Witz, Wärme und handwerklicher Sorgfalt. Vom animierten Maskottchen bis zur vollständigen Seriencharakterwelt. Diese Arbeit steht exemplarisch für unseren Anspruch: Gestaltung nicht als Pflicht, sondern als Leidenschaft.</p>
+      </div>
+      <div class="cartoon-visual">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="var(--border)" stroke-width="1.2"/><circle cx="12" cy="14" r="2" fill="var(--border)"/><circle cx="20" cy="14" r="2" fill="var(--border)"/><path d="M11 20c1.3 2 8.7 2 10 0" stroke="var(--border)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span>Charakter-<br>beispiel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: 03 + 04 -->
+  <div class="cluster-row">
+
+    <div class="cluster-card">
+      <div class="cluster-num">03</div>
+      <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
+        <rect x="6" y="8" width="22" height="30" rx="2" stroke="currentColor" stroke-width="1.4"/>
+        <rect x="24" y="14" width="22" height="30" rx="2" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M12 20h10M12 25h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3>Erscheinung & Identität</h3>
+      <p>Konsistente Designsprachen, die wiedererkennbar sind — auf allen Plattformen, in jedem Format. Wir entwickeln und pflegen die visuelle Identität von Sendungen, Formaten und Marken innerhalb des MDR.</p>
+      <ul class="cluster-items">
+        <li>Sendungspakete & Formatdesign</li>
+        <li>Thumbnails & Mediathek-Gestaltung</li>
+        <li>Social Media Templates & Motion</li>
+        <li>Titelmotive & Eventgrafik</li>
+      </ul>
+      <div class="cluster-tags">
+        <span class="tag">Corporate Design</span>
+        <span class="tag">Social Media</span>
+        <span class="tag">Mediathek</span>
+        <span class="tag">Branding</span>
+      </div>
+      <div class="cluster-visual">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
+        <span>Bild / Video einfügen</span>
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-num">04</div>
+      <svg class="cluster-icon" viewBox="0 0 52 52" fill="none">
+        <circle cx="26" cy="26" r="18" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M18 26h16M26 18v16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="26" cy="26" r="4" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M10 26h4M38 26h4M26 10v4M26 38v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <h3>Strategie & Beratung</h3>
+      <p>Wir denken vor. Welche Bildsprache funktioniert auf welcher Plattform? Was macht ein Thumbnail klickbar? Wie baut man ein Format auf, das auch morgen noch funktioniert? Wir sind Sparringspartner, nicht Auftragsabwickler.</p>
+      <ul class="cluster-items">
+        <li>Rapid Prototyping & Entscheidungsvorlagen</li>
+        <li>Performance-Analyse & Optimierung</li>
+        <li>Format- & Kanalberatung</li>
+        <li>Workshops & Design-Briefings</li>
+      </ul>
+      <div class="cluster-tags">
+        <span class="tag">Beratung</span>
+        <span class="tag">Prototyping</span>
+        <span class="tag">Strategy</span>
+        <span class="tag">Workshops</span>
+      </div>
+      <div class="cluster-visual">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="2" stroke="var(--border)" stroke-width="1.2"/></svg>
+        <span>Bild / Video einfügen</span>
+      </div>
+    </div>
+
+  </div><!-- /cluster-row 2 -->
+
+  <!-- SPOTLIGHT: Digital Publishing — volle Breite unter Zeile 2 -->
+  <div class="spotlight-row">
+    <div class="cartoon-box" style="border-color: var(--muted); opacity:0.9;">
+      <div class="cartoon-box-label" style="color:var(--muted);">Spotlight</div>
+      <div class="cartoon-box-text">
+        <h4 style="color:var(--text2);">Digital Publishing — von Print bis zum interaktiven Geschäftsbericht</h4>
+        <p>Neben dem Bewegtbild-Schwerpunkt gestalten und produzieren wir das gesamte Spektrum des Digital Publishing: von klassischen Printdokumenten über Plakate und Flyer bis hin zu umfangreichen Geschäftsberichten — inhaltlich, grafisch und infografisch aufbereitet. Wir denken Print und Digital nicht getrennt, sondern als zwei Aggregatzustände derselben Kommunikationsaufgabe. Besonders bei datenreichen Formaten bringen wir unsere Infografik-Kompetenz voll ein: Zahlen werden lesbar, Zusammenhänge sichtbar, Dokumente zu Erzählungen.</p>
+      </div>
+      <div class="cartoon-visual">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="16" height="22" rx="2" stroke="var(--border)" stroke-width="1.2"/><rect x="10" y="8" width="20" height="22" rx="2" stroke="var(--border)" stroke-width="1.2"/><path d="M13 14h10M13 18h7" stroke="var(--border)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span>Beispiel<br>einfügen</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /clusters-wrap -->
+```
+
+  </div>
+</section>
+
+<!-- ─── WEBAPP & TOOL-ENTWICKLUNG ─────────────────────── -->
+
+<section class="tools-section" id="tools">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-dot"></div>
+      <div class="section-tag">WebApp & Tool-Entwicklung</div>
+      <div class="section-line"></div>
+    </div>
+
+```
+<div class="tools-inner">
+
+  <!-- LEFT: Statement -->
+  <div class="tools-statement reveal">
+    <div>
+      <h2>Wir bauen nicht nur<br><em>Grafik — wir bauen<br>Werkzeuge.</em></h2>
+      <p class="tools-statement-body">
+        Vom ersten Prototyp bis zum produktiven Redaktionssystem: Wir entwickeln Software, die unsere eigenen Kernkompetenzen verlängert und Redakteurinnen und Redakteuren ermächtigt, Gestaltung selbst in die Hand zu nehmen — ohne Grafikausbildung, ohne technischen Umweg.
+      </p>
+    </div>
+    <div class="tools-stages">
+      <div class="tools-stage">
+        <div class="tools-stage-num">01</div>
+        <div class="tools-stage-label">Idee & Konzept</div>
+      </div>
+      <div class="tools-stage">
+        <div class="tools-stage-num">02</div>
+        <div class="tools-stage-label">Rapid Prototype</div>
+      </div>
+      <div class="tools-stage">
+        <div class="tools-stage-num">03</div>
+        <div class="tools-stage-label">Redaktionstest</div>
+      </div>
+      <div class="tools-stage">
+        <div class="tools-stage-num">04</div>
+        <div class="tools-stage-label">Produktivsystem</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Project examples -->
+  <div class="tools-projects reveal">
+
+    <div class="tool-project">
+      <span class="tool-project-tag">WebApp</span>
+      <div class="tool-project-text">
+        <h4>Wozniu — Charakteranimation für Redakteure</h4>
+        <p>Eine browserbasierte Produktionsumgebung, die Redakteurinnen und Redakteuren ermöglicht, Charakteranimationen eigenständig zu steuern: Text eingeben, Audio generieren, Animationen per Timeline-Interface synchronisieren — ähnlich einer vereinfachten Schnitt-Software. Entwickelt für den KiKA-Kontext, übertragbar auf alle Formate mit animierten Figuren.</p>
+      </div>
+    </div>
+
+    <div class="tool-project">
+      <span class="tool-project-tag">Redaktionssystem</span>
+      <div class="tool-project-text">
+        <h4>Grafik-Steuerung im Sendebetrieb</h4>
+        <p>Benutzeroberflächen, die direkt in bestehende Redaktionssysteme integriert sind: Redakteurinnen und Redakteure können Grafikelemente konfigurieren, virtuelle Studios einrichten und Live-Vorschauen abrufen — ohne Grafikabteilung als Zwischenschritt im Tagesgeschäft.</p>
+      </div>
+    </div>
+
+    <div class="tool-project">
+      <span class="tool-project-tag">Smart Templates</span>
+      <div class="tool-project-text">
+        <h4>Grafik-Vorlagen die wie Software funktionieren</h4>
+        <p>Designvorlagen mit schaltbaren Varianten, Datenanbindung und konfigurierbaren Parametern — weit mehr als statische Templates. Die Redaktion wählt Modus, Datenquelle und Layout; die Grafik liefert sich automatisch das richtige Ergebnis.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+```
+
   </div>
 </section>
 
 <!-- ─── KI & ZUKUNFT ──────────────────────────────────── -->
+
 <section class="ki-section" id="ki">
   <div class="container">
     <div class="section-header reveal">
@@ -1501,6 +1698,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── SHOWREEL ───────────────────────────────────────── -->
+
 <section class="showreel-section">
   <div class="container">
     <div class="section-header reveal">
@@ -1520,6 +1718,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── ARBEITSWEISE ──────────────────────────────────── -->
+
 <section class="approach">
   <div class="container">
     <div class="section-header reveal">
@@ -1554,6 +1753,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── PORTFOLIO ─────────────────────────────────────── -->
+
 <section class="portfolio-section" id="arbeiten">
   <div class="container">
     <div class="section-header reveal">
@@ -1602,6 +1802,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </section>
 
 <!-- ─── KONTAKT ───────────────────────────────────────── -->
+
 <section class="contact-section" id="kontakt">
   <div class="container">
     <div class="section-header reveal">
@@ -1648,48 +1849,54 @@ h2 em { font-style: italic; color: var(--accent); }
 </div><!-- /site-main -->
 
 <!-- ═══════════════════════════════════════════════════ REVEALING FOOTER -->
+
 <footer class="footer-reveal">
 
   <!-- TOP ROW: Claim + Nav + Contact — 3 columns -->
+
   <div class="footer-top-row">
 
-    <div class="footer-claim-big">
-      <div class="footer-claim-big-text">
-        Lasst uns<br><em>zusammen&shy;arbeiten.</em>
-      </div>
-      <a href="#kontakt" class="footer-cta-btn">
-        Anfrage stellen
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
+```
+<div class="footer-claim-big">
+  <div class="footer-claim-big-text">
+    Lasst uns<br><em>zusammen&shy;arbeiten.</em>
+  </div>
+  <a href="#kontakt" class="footer-cta-btn">
+    Anfrage stellen
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</div>
 
-    <div class="footer-nav-col">
-      <div class="footer-col-label">Navigation</div>
-      <ul class="footer-links">
-        <li><a href="#kompetenzen">Kompetenzfelder</a></li>
-        <li><a href="#ki">KI & Zukunft</a></li>
-        <li><a href="#arbeiten">Ausgewählte Arbeiten</a></li>
-        <li><a href="#kontakt">Team & Kontakt</a></li>
-        <li><a href="#">Ticketsystem / Anfrage →</a></li>
-      </ul>
-    </div>
+<div class="footer-nav-col">
+  <div class="footer-col-label">Navigation</div>
+  <ul class="footer-links">
+    <li><a href="#kompetenzen">Kompetenzfelder</a></li>
+    <li><a href="#ki">KI & Zukunft</a></li>
+    <li><a href="#arbeiten">Ausgewählte Arbeiten</a></li>
+    <li><a href="#kontakt">Team & Kontakt</a></li>
+    <li><a href="#">Ticketsystem / Anfrage →</a></li>
+  </ul>
+</div>
 
-    <div class="footer-contact-col">
-      <div class="footer-col-label">Kontakt</div>
-      <p><strong>Grafik & Design</strong></p>
-      <p>Mitteldeutscher Rundfunk</p>
-      <p>Leipzig · Halle · Erfurt</p>
-      <p style="margin-top:0.8rem;"><strong>Leitung:</strong><br>Denis Mocigemba</p>
-    </div>
+<div class="footer-contact-col">
+  <div class="footer-col-label">Kontakt</div>
+  <p><strong>Grafik & Design</strong></p>
+  <p>Mitteldeutscher Rundfunk</p>
+  <p>Leipzig · Halle · Erfurt</p>
+  <p style="margin-top:0.8rem;"><strong>Leitung:</strong><br>Denis Mocigemba</p>
+</div>
+```
 
   </div>
 
   <!-- WORDMARK — full bleed, Agntix-style -->
+
   <div class="footer-wordmark">
     <span class="footer-wordmark-text" id="footerWordmark">Grafik & Design.</span>
   </div>
 
   <!-- BOTTOM BAR -->
+
   <div class="footer-bottom-bar">
     <p>© 2025 MDR Mitteldeutscher Rundfunk · Grafik & Design</p>
     <p>Intranet · Intern · Nicht zur Veröffentlichung</p>
@@ -1698,6 +1905,7 @@ h2 em { font-style: italic; color: var(--accent); }
 </footer>
 
 <!-- ═══════════════════════════════════════════════════ SCRIPT -->
+
 <script>
 // ── HERO SLIDER ───────────────────────────────────────
 const slides = document.querySelectorAll('.hero-slide');
