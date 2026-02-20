@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDR Strategische Mitgestaltung: Partnerschaft auf Augenhöhe</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Corporate Clarity -->
+    <!-- 
+         Palette:
+         - Background: Slate-50 (Warm Neutral)
+         - Primary Text: Slate-800
+         - IST-State (Problem): Red-600 (Alert), Slate-500 (Passive), Gray-300 (Structure)
+         - SOLL-State (Solution): Emerald-500 (Growth), Blue-600 (PPD), Orange-500 (Hakomm), Green-600 (Design)
+         - Interactive Accents: Indigo-600
+    -->
+
+    <!-- Application Structure Plan: 
+         Die Anwendung wurde als interaktives Dashboard konzipiert, das den kulturellen Wandel visualisiert.
+         1. Header: Zentraler Umschalter (IST/SOLL).
+         2. Hero: Einführung in das Thema "Augenhöhe".
+         3. Strategie-Visualisierer: Ein CSS-basiertes Diagramm, das im IST-Zustand eine vertikale Hierarchie (Druck von oben) und im SOLL-Zustand eine horizontale Partnerschaft (Augenhöhe) zeigt.
+         4. Budget-Status: Alle Bereiche erhalten im SOLL-Zustand Budgethoheit.
+         5. Rollen-Deep-Dive: Konkrete Beschreibungen der neuen Aufgabenfelder.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Strukturelles Diagramm (CSS/HTML): 
+            - IST: Vertikaler Fluss mit gerichteten Belastungspfeilen auf Design.
+            - SOLL: Horizontale Anordnung ("Auf einer Höhe") mit bidirektionalen Verbindungen.
+         2. Radar Chart (Chart.js): Zeigt die Verschiebung von "Hierarchie-Druck" zu "System-Effizienz".
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Custom Transition Classes */
+        .trans-all {
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* State Styling Helpers */
+        .mode-ist .ist-visible { display: flex; opacity: 1; }
+        .mode-ist .soll-visible { display: none; opacity: 0; }
+        .mode-soll .ist-visible { display: none; opacity: 0; }
+        .mode-soll .soll-visible { display: flex; opacity: 1; }
+
+        /* Pressure Arrows for IST */
+        .ist-arrow {
+            position: absolute;
+            width: 4px;
+            background-color: #dc2626;
+            transition: all 0.5s;
+        }
+        .ist-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: -8px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid #dc2626;
+        }
+
+        /* Budget Badge */
+        .budget-badge {
+            background-color: #fbbf24;
+            color: #78350f;
+            border-radius: 9999px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: absolute;
+            top: -12px;
+            right: -12px;
+        }
+
+        /* Eye-Level Connector (SOLL) */
+        .eye-level-line {
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb, #10b981, #f97316);
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 1px); }
+            75% { transform: translate(2px, -1px); }
+        }
+        .mode-ist .design-card-ist {
+            animation: shake 0.3s infinite ease-in-out;
+        }
+
+        .fade-content {
+            transition: opacity 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 transition-colors duration-500 mode-ist" id="appBody">
+
+    <!-- Navigation / Mode Toggle -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">M</div>
+                <span class="font-bold text-xl tracking-tight">MDR Strategie<span class="font-light">Design</span></span>
+            </div>
+            
+            <div class="bg-slate-100 p-1 rounded-full flex shadow-inner relative">
+                <div id="toggleBg" class="absolute top-1 left-1 w-[120px] h-[36px] bg-white rounded-full shadow-sm transition-all duration-300 border border-slate-200"></div>
+                <button onclick="setMode('ist')" class="relative z-10 w-[120px] py-1.5 text-sm font-semibold text-center rounded-full transition-colors duration-300 text-red-600" id="btnIst">
+                    ⚠️ IST-Zustand
+                </button>
+                <button onclick="setMode('soll')" class="relative z-10 w-[120px] py-1.5 text-sm font-semibold text-center rounded-full transition-colors duration-300 text-slate-500 hover:text-emerald-600" id="btnSoll">
+                    🚀 SOLL-Zustand
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- Section 1: Introduction -->
+        <section class="text-center max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-4 text-slate-900 leading-tight" id="mainTitle">
+                Strukturanalyse: Von Druck zu Dialog
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed mb-4" id="introText">
+                Die aktuelle Struktur ist geprägt von hierarchischen Anweisungen. Das Zielbild definiert Design als gleichberechtigten Partner für den Gesamtauftritt.
+            </p>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold shadow-sm transition-all duration-300" id="statusBadge">
+                <span id="statusIndicator" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span id="statusLabel">Status: Hierarchisches Problem</span>
+            </div>
+        </section>
+
+        <!-- Section 2: Strategy Flow Visualizer -->
+        <section class="bg-white rounded-3xl shadow-xl border border-slate-100 p-4 md:p-12 min-h-[550px] relative transition-all duration-500 overflow-hidden">
+            
+            <!-- IST-VIEW: Hierarchical (Vertical) -->
+            <div class="ist-visible flex flex-col items-center w-full h-full space-y-12">
+                <!-- Strategic Cloud -->
+                <div class="bg-slate-700 text-white p-6 rounded-2xl shadow-xl text-center max-w-sm relative z-10 transform -rotate-1">
+                    <div class="text-2xl font-bold mb-1">Versteckte Strategie</div>
+                    <p class="text-xs opacity-80">(Angst vor Gegenwehr führt zu Intransparenz)</p>
+                </div>
+
+                <!-- Top Row (Senders) -->
+                <div class="flex justify-between w-full max-w-3xl gap-8 relative">
+                    <div class="flex-1 bg-blue-600 text-white p-6 rounded-2xl shadow-lg relative h-40 flex flex-col items-center justify-center text-center">
+                        <div class="budget-badge">€</div>
+                        <h3 class="text-xl font-bold mb-2">PPD</h3>
+                        <p class="text-[10px] uppercase font-bold tracking-wider opacity-80">Programmdirektion Leipzig</p>
+                        <p class="text-xs mt-2 italic">Fokus: Programm-Designs</p>
+                        
+                        <!-- Arrow down -->
+                        <div class="ist-arrow h-16 -bottom-16 left-1/2 -translate-x-1/2">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-red-600 font-black text-xs whitespace-nowrap">DRUCK</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 bg-orange-600 text-white p-6 rounded-2xl shadow-lg relative h-40 flex flex-col items-center justify-center text-center">
+                        <div class="budget-badge">€</div>
+                        <h3 class="text-xl font-bold mb-2">Hakomm</h3>
+                        <p class="text-[10px] uppercase font-bold tracking-wider opacity-80">Unternehmenskommunikation</p>
+                        <p class="text-xs mt-2 italic">Fokus: Gesamtauftritt</p>
+
+                        <!-- Arrow down -->
+                        <div class="ist-arrow h-16 -bottom-16 left-1/2 -translate-x-1/2">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-red-600 font-black text-xs whitespace-nowrap">ANWEISUNGEN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Receiver (Target) -->
+                <div class="w-full flex justify-center pt-8">
+                    <div class="w-64 bg-emerald-500 text-white p-8 rounded-2xl shadow-lg border-4 border-red-500/40 text-center design-card-ist">
+                        <h3 class="text-xl font-extrabold">Grafik & Design</h3>
+                        <p class="text-xs mt-2 opacity-90 uppercase tracking-widest font-bold">Gestaltungsdienstleister</p>
+                        <div class="mt-4 pt-4 border-t border-white/20">
+                            <span class="text-[10px] bg-red-600 px-2 py-1 rounded">Redaktionserziehung</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOLL-VIEW: Eye-Level (Horizontal) -->
+            <div class="soll-visible flex flex-col items-center w-full h-full space-y-16">
+                
+                <div class="bg-emerald-50 border border-emerald-100 text-emerald-800 px-8 py-4 rounded-full shadow-sm text-center font-bold tracking-widest uppercase text-sm animate-pulse">
+                    🚀 Strategische Mitgestaltung & Synergie
+                </div>
+
+                <div class="relative w-full max-w-5xl h-64 flex items-center">
+                    <!-- Horizontal Eye-Level Line -->
+                    <div class="eye-level-line"></div>
+                    
+                    <div class="grid grid-cols-3 w-full gap-8 relative z-10">
+                        <!-- PPD Card -->
+                        <div class="bg-blue-600 text-white p-6 rounded-3xl shadow-2xl flex flex-col items-center justify-center h-48 hover:-translate-y-2 transition-transform border-4 border-white">
+                            <div class="budget-badge">€</div>
+                            <h3 class="text-2xl font-black mb-2">PPD</h3>
+                            <p class="text-[10px] text-center font-bold opacity-80">PROGRAMM-STRATEGIE</p>
+                        </div>
+
+                        <!-- DESIGN Card (Central Anchor) -->
+                        <div class="bg-emerald-600 text-white p-6 rounded-3xl shadow-2xl flex flex-col items-center justify-center h-56 hover:-translate-y-2 transition-transform border-8 border-emerald-100 relative -top-4">
+                            <div class="budget-badge">€</div>
+                            <div class="text-3xl mb-1">⚓</div>
+                            <h3 class="text-2xl font-black mb-2 text-center">Grafik & Design</h3>
+                            <p class="text-[10px] text-center font-bold opacity-90">SYSTEM-ANKER & PARTNER</p>
+                            <div class="absolute -bottom-8 w-full text-center text-emerald-600 font-extrabold text-[10px] tracking-tighter">MITGESTALTER GESAMTAUFTRITT</div>
+                        </div>
+
+                        <!-- Hakomm Card -->
+                        <div class="bg-orange-500 text-white p-6 rounded-3xl shadow-2xl flex flex-col items-center justify-center h-48 hover:-translate-y-2 transition-transform border-4 border-white">
+                            <div class="budget-badge">€</div>
+                            <h3 class="text-2xl font-black mb-2">Hakomm</h3>
+                            <p class="text-[10px] text-center font-bold opacity-80">UNTERNEHMENS-DIREKTION</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white px-12 py-6 rounded-2xl shadow-inner border border-slate-100 flex flex-col items-center">
+                    <div class="text-xs font-bold text-slate-400 uppercase mb-2">Zentrales Wirkungsziel</div>
+                    <div class="text-2xl font-black text-slate-800 tracking-tight">MDR Akzeptanz & Glaubwürdigkeit</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Section 3: Radar Chart Analysis -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="border-l-8 border-indigo-600 pl-6">
+                    <h2 class="text-3xl font-black text-slate-800">Wirkungsanalyse</h2>
+                    <p class="text-slate-500">Die Verschiebung von reiner Dienstleistung zu strategischer Partnerschaft erhöht die System-Effizienz.</p>
+                </div>
+                
+                <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-2xl space-y-4">
+                    <h3 class="text-emerald-400 font-bold uppercase tracking-widest text-sm">Kernmetriken</h3>
+                    <div id="statsContainer" class="space-y-4">
+                        <!-- Content via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-slate-100">
+                <div class="chart-container">
+                    <canvas id="mainRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Role Deep Dive -->
+        <section>
+            <h2 class="text-3xl font-black text-slate-800 mb-8 text-center">Rollenverständnis im Wandel</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-white p-8 rounded-3xl shadow-md border-t-8 border-blue-600 group hover:shadow-xl transition-all">
+                    <h3 class="text-xl font-bold text-blue-700 mb-4">PPD (Strategie)</h3>
+                    <div id="role-ppd" class="text-slate-600 text-sm leading-relaxed fade-content">
+                        <!-- JS Content -->
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl shadow-md border-t-8 border-orange-500 group hover:shadow-xl transition-all">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4">Hakomm (Komm.)</h3>
+                    <div id="role-hakomm" class="text-slate-600 text-sm leading-relaxed fade-content">
+                        <!-- JS Content -->
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl shadow-md border-t-8 border-emerald-500 group hover:shadow-xl transition-all">
+                    <h3 class="text-xl font-bold text-emerald-700 mb-4">Design (Schnittstelle)</h3>
+                    <div id="role-design" class="text-slate-600 text-sm leading-relaxed fade-content">
+                        <!-- JS Content -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-20">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="font-bold text-white mb-2">MDR Strategische Transformation</p>
+            <p class="text-sm">"Effizienz durch Augenhöhe und klare Zuständigkeiten."</p>
+        </div>
+    </footer>
+
+    <script>
+        const appData = {
+            ist: {
+                intro: "Die aktuelle Struktur ist geprägt von hierarchischen Anweisungen und punktuellem Druck. Design agiert als reiner Dienstleister am Ende der Kette.",
+                badge: "Status: Hierarchisches Problem",
+                badgeClass: "bg-red-100 text-red-700",
+                radar: [30, 85, 20, 25, 40], // Transparenz, Druck, Synergie, Augenhöhe, Effizienz
+                stats: [
+                    { label: "Hierarchie-Druck", val: "Sehr Hoch", color: "text-red-400" },
+                    { label: "Abstimmungs-Effizienz", val: "Kritisch", color: "text-red-400" },
+                    { label: "Strategie-Transparenz", val: "Niedrig", color: "text-slate-400" }
+                ],
+                roles: {
+                    ppd: "Gibt Druck ungefiltert weiter. Nutzt Budgethoheit als Durchsetzungsinstrument für Programmpromotion in Leipzig.",
+                    hakomm: "Steuert den Gesamtauftritt isoliert. Gibt Anweisungen ohne gestalterischen Rückkanal.",
+                    design: "Reiner Gestaltungs-Dienstleister. Muss 'Redaktionserziehung' leisten, statt strategisch zu beraten. Fehlende Augenhöhe."
+                }
+            },
+            soll: {
+                intro: "Alle drei Bereiche agieren als strategische Partner auf Augenhöhe. Design ist die effiziente Schnittstelle für den Gesamtauftritt des Hauses.",
+                badge: "Status: Augenhöhe & Synergie",
+                badgeClass: "bg-emerald-100 text-emerald-700",
+                radar: [95, 20, 90, 100, 95],
+                stats: [
+                    { label: "System-Effizienz", val: "Optimal", color: "text-emerald-400" },
+                    { label: "Shared Budgeting", val: "Aktiv", color: "text-emerald-400" },
+                    { label: "MDR Akzeptanz", val: "Steigend", color: "text-emerald-400" }
+                ],
+                roles: {
+                    ppd: "Sorgt dafür, dass Programm-Designs nahtlos in die Gesamtstrategie passen. Partner im Prozess.",
+                    hakomm: "Verantwortet den Unternehmens-Gesamtauftritt durch kooperative Steuerung statt Anweisung.",
+                    design: "System-Anker & strategischer Partner. Sorgt für effiziente Abläufe und wird als Mitgestalter des Gesamtauftritts wahrgenommen. Keine 'Prügelknabe'-Rolle mehr."
+                }
+            }
+        };
+
+        let radarChart = null;
+
+        function initRadar() {
+            const ctx = document.getElementById('mainRadarChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Transparenz', 'Hierarchie-Druck', 'Synergie', 'Augenhöhe', 'Effizienz'],
+                    datasets: [{
+                        label: 'Status Quo',
+                        data: appData.ist.radar,
+                        borderColor: '#dc2626',
+                        backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                        borderWidth: 4,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: { 
+                            min: 0, max: 100, 
+                            ticks: { display: false },
+                            grid: { color: '#e2e8f0' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function setMode(mode) {
+            const data = appData[mode];
+            const body = document.getElementById('appBody');
+            body.className = `text-slate-800 transition-colors duration-500 mode-${mode}`;
+
+            // Toggle Visuals
+            const toggleBg = document.getElementById('toggleBg');
+            toggleBg.style.transform = mode === 'ist' ? 'translateX(0)' : 'translateX(120px)';
+            
+            // Text Updates
+            document.getElementById('introText').innerText = data.intro;
+            document.getElementById('statusLabel').innerText = data.badge;
+            document.getElementById('statusBadge').className = `inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold shadow-sm transition-all duration-300 ${data.badgeClass}`;
+            document.getElementById('statusIndicator').className = `w-2 h-2 rounded-full ${mode === 'ist' ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`;
+
+            // Roles
+            updateRole('role-ppd', data.roles.ppd);
+            updateRole('role-hakomm', data.roles.hakomm);
+            updateRole('role-design', data.roles.design);
+
+            // Stats
+            const statsContainer = document.getElementById('statsContainer');
+            statsContainer.innerHTML = data.stats.map(s => `
+                <div class="flex justify-between items-center group">
+                    <span class="text-slate-400 text-sm group-hover:text-white transition-colors">${s.label}</span>
+                    <span class="font-black ${s.color}">${s.val}</span>
+                </div>
+            `).join('');
+
+            // Chart Update
+            if (radarChart) {
+                radarChart.data.datasets[0].data = data.radar;
+                radarChart.data.datasets[0].borderColor = mode === 'ist' ? '#dc2626' : '#10b981';
+                radarChart.data.datasets[0].backgroundColor = mode === 'ist' ? 'rgba(220, 38, 38, 0.2)' : 'rgba(16, 185, 129, 0.2)';
+                radarChart.update();
+            }
+        }
+
+        function updateRole(id, text) {
+            const el = document.getElementById(id);
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.innerText = text;
+                el.style.opacity = '1';
+            }, 200);
+        }
+
+        window.onload = () => {
+            initRadar();
+            setMode('ist');
+        };
+    </script>
+</body>
+</html>
