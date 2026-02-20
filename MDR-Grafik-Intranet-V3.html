@@ -551,35 +551,40 @@ h2 em { font-style: italic; color: var(--accent); }
 /* ─── HERO SLIDER ──────────────────────────────────── */
 .hero-slider {
   position: relative;
-  height: 22rem; /* tall enough for 5-line slide at any viewport */
+  /* height set dynamically by JS to match tallest slide */
+  overflow: hidden;
   margin-bottom: 0;
 }
 
-@media (max-width: 1400px) { .hero-slider { height: 26rem; } }
-@media (max-width: 1100px) { .hero-slider { height: 30rem; } }
-
 .hero-slide {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  display: none;
+  /* All slides stacked, invisible by default */
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.55s ease;
 }
+
 .hero-slide.active {
-  display: block;
-  animation: slideIn 0.65s ease both;
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  overflow: visible;
+  animation: slideIn 0.55s ease both;
 }
 
 .hero-slide h1 {
   font-family: 'DM Serif Display', serif;
-  font-size: clamp(3.8rem, 6.5vw, 7.5rem);
-  line-height: 0.95;
+  font-size: clamp(3.2rem, 5.5vw, 7rem);
+  line-height: 1.0;
   font-weight: 400;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  margin-bottom: 0;
 }
 .hero-slide h1 em { font-style: italic; color: var(--accent); }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -588,7 +593,7 @@ h2 em { font-style: italic; color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .slider-arrow {
@@ -598,13 +603,10 @@ h2 em { font-style: italic; color: var(--accent); }
   color: var(--muted);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  transition: border-color 0.2s, color 0.2s;
   flex-shrink: 0;
 }
-.slider-arrow:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.slider-arrow:hover { border-color: var(--accent); color: var(--accent); }
 
 .slider-dots {
   display: flex;
@@ -620,10 +622,7 @@ h2 em { font-style: italic; color: var(--accent); }
   padding: 0;
   transition: background 0.3s, width 0.3s;
 }
-.slider-dot.active {
-  background: var(--accent);
-  width: 36px;
-}
+.slider-dot.active { background: var(--accent); width: 36px; }
 
 .cartoon-box-label {
   font-family: 'Space Mono', monospace;
@@ -972,60 +971,34 @@ h2 em { font-style: italic; color: var(--accent); }
   z-index: 1;
   background: #0d0d0d;
   color: #f0ece4;
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: 1fr auto;
   overflow: hidden;
 }
 
-/* Main footer content: big claim left, compact info right */
-.footer-body {
+/* TOP: Claim left, info right — like Agntix/Syndicate */
+.footer-top-row {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0;
-  min-height: 0;
-}
-
-/* Left: Big typographic claim */
-.footer-claim {
   padding: 5rem 5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-right: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.footer-claim-eyebrow {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(240,236,228,0.3);
-  margin-bottom: 3rem;
+.footer-claim-big {
+  grid-column: 1;
+  padding-right: 3rem;
 }
 
-.footer-claim-text {
+.footer-claim-big-text {
   font-family: 'DM Serif Display', serif;
-  font-size: clamp(3.5rem, 6vw, 7.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.4rem, 3.5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
   color: #f0ece4;
-  flex: 1;
-  display: flex;
-  align-items: center;
+  margin-bottom: 2.5rem;
 }
-
-.footer-claim-text em {
+.footer-claim-big-text em {
   font-style: italic;
   color: #e8d5a3;
-  display: block;
-}
-
-.footer-claim-action {
-  margin-top: 4rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
 }
 
 .footer-cta-btn {
@@ -1033,81 +1006,111 @@ h2 em { font-style: italic; color: var(--accent); }
   align-items: center;
   gap: 0.6rem;
   font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #0c0c0c;
   background: #e8d5a3;
-  padding: 1rem 2rem;
-  transition: background 0.2s;
+  padding: 0.9rem 1.8rem;
   text-decoration: none;
+  transition: background 0.2s;
 }
 .footer-cta-btn:hover { background: #c8a45a; }
 
-.footer-claim-sub {
-  font-size: 0.88rem;
-  color: rgba(240,236,228,0.35);
-  max-width: 30ch;
-  line-height: 1.65;
+/* middle col — nav links */
+.footer-nav-col {
+  padding: 0 2rem;
+  border-left: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Right: Compact info panel */
-.footer-info-panel {
-  padding: 5rem 3.5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.footer-info-block h6 {
+.footer-col-label {
   font-family: 'Space Mono', monospace;
   font-size: 0.55rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(240,236,228,0.25);
-  margin-bottom: 1.2rem;
+  color: rgba(240,236,228,0.22);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.footer-col-label::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(240,236,228,0.22);
+  flex-shrink: 0;
 }
 
 .footer-links {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
-
 .footer-links a {
-  font-size: 0.85rem;
-  color: rgba(240,236,228,0.45);
+  font-size: 0.88rem;
+  color: rgba(240,236,228,0.42);
   text-decoration: none;
   transition: color 0.2s;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 .footer-links a:hover { color: #f0ece4; }
 
-.footer-meta p {
-  font-size: 0.82rem;
-  color: rgba(240,236,228,0.38);
+/* right col — contact */
+.footer-contact-col {
+  padding: 0 0 0 2rem;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-contact-col p {
+  font-size: 0.88rem;
+  color: rgba(240,236,228,0.42);
   line-height: 1.75;
 }
-.footer-meta strong {
-  color: rgba(240,236,228,0.6);
+.footer-contact-col strong {
+  color: rgba(240,236,228,0.7);
   font-weight: 400;
 }
 
-/* Bottom bar */
+/* BIG wordmark at bottom — full bleed, Agntix style */
+.footer-wordmark {
+  padding: 1rem 0 0;
+  overflow: hidden;
+  line-height: 0.82;
+}
+
+.footer-wordmark-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(10vw, 14vw, 16vw);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: rgba(240,236,228,0.06);
+  -webkit-text-stroke: 1px rgba(240,236,228,0.12);
+  white-space: nowrap;
+  padding: 0 4rem;
+  display: block;
+  user-select: none;
+  transform: translateY(30%);
+  transition: transform 1.4s cubic-bezier(0.16,1,0.3,1);
+}
+.footer-wordmark-text.revealed {
+  transform: translateY(0);
+}
+
+/* bottom bar */
 .footer-bottom-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.25rem 5rem;
+  padding: 1.2rem 5rem;
   border-top: 1px solid rgba(255,255,255,0.05);
 }
-
 .footer-bottom-bar p {
   font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-  color: rgba(240,236,228,0.18);
+  font-size: 0.57rem;
+  letter-spacing: 0.1em;
+  color: rgba(240,236,228,0.16);
   text-transform: uppercase;
 }
 
@@ -1647,52 +1650,43 @@ h2 em { font-style: italic; color: var(--accent); }
 <!-- ═══════════════════════════════════════════════════ REVEALING FOOTER -->
 <footer class="footer-reveal">
 
-  <div class="footer-body">
+  <!-- TOP ROW: Claim + Nav + Contact — 3 columns -->
+  <div class="footer-top-row">
 
-    <!-- LEFT: Big typographic claim -->
-    <div class="footer-claim">
-      <div class="footer-claim-eyebrow">Grafik & Design · MDR Mitteldeutscher Rundfunk</div>
-
-      <div class="footer-claim-text">
-        <div>
-          Lasst uns<br>
-          <em>zusammen&shy;arbeiten.</em>
-        </div>
+    <div class="footer-claim-big">
+      <div class="footer-claim-big-text">
+        Lasst uns<br><em>zusammen&shy;arbeiten.</em>
       </div>
-
-      <div class="footer-claim-action">
-        <a href="#kontakt" class="footer-cta-btn">
-          Anfrage stellen
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <p class="footer-claim-sub">Je früher ihr uns einbezieht, desto besser wird das Ergebnis — immer.</p>
-      </div>
+      <a href="#kontakt" class="footer-cta-btn">
+        Anfrage stellen
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
 
-    <!-- RIGHT: Compact info -->
-    <div class="footer-info-panel">
-
-      <div class="footer-info-block">
-        <h6>Navigation</h6>
-        <ul class="footer-links">
-          <li><a href="#kompetenzen">Kompetenzfelder</a></li>
-          <li><a href="#ki">KI & Zukunft</a></li>
-          <li><a href="#arbeiten">Ausgewählte Arbeiten</a></li>
-          <li><a href="#kontakt">Team & Kontakt</a></li>
-          <li><a href="#">→ Ticketsystem / Anfrage</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-info-block footer-meta">
-        <h6>Kontakt</h6>
-        <p><strong>Grafik & Design</strong></p>
-        <p>Mitteldeutscher Rundfunk</p>
-        <p>Leipzig · Halle · Erfurt</p>
-        <p style="margin-top:0.8rem;"><strong>Leitung:</strong> Denis Mocigemba</p>
-      </div>
-
+    <div class="footer-nav-col">
+      <div class="footer-col-label">Navigation</div>
+      <ul class="footer-links">
+        <li><a href="#kompetenzen">Kompetenzfelder</a></li>
+        <li><a href="#ki">KI & Zukunft</a></li>
+        <li><a href="#arbeiten">Ausgewählte Arbeiten</a></li>
+        <li><a href="#kontakt">Team & Kontakt</a></li>
+        <li><a href="#">Ticketsystem / Anfrage →</a></li>
+      </ul>
     </div>
 
+    <div class="footer-contact-col">
+      <div class="footer-col-label">Kontakt</div>
+      <p><strong>Grafik & Design</strong></p>
+      <p>Mitteldeutscher Rundfunk</p>
+      <p>Leipzig · Halle · Erfurt</p>
+      <p style="margin-top:0.8rem;"><strong>Leitung:</strong><br>Denis Mocigemba</p>
+    </div>
+
+  </div>
+
+  <!-- WORDMARK — full bleed, Agntix-style -->
+  <div class="footer-wordmark">
+    <span class="footer-wordmark-text" id="footerWordmark">Grafik & Design.</span>
   </div>
 
   <!-- BOTTOM BAR -->
@@ -1724,18 +1718,19 @@ function startAuto() {
   autoTimer = setInterval(() => goToSlide(current + 1), 4500);
 }
 
-document.getElementById('sliderPrev').addEventListener('click', () => {
-  goToSlide(current - 1); startAuto();
-});
-document.getElementById('sliderNext').addEventListener('click', () => {
-  goToSlide(current + 1); startAuto();
-});
-dots.forEach(dot => {
-  dot.addEventListener('click', () => {
-    goToSlide(+dot.dataset.slide); startAuto();
-  });
-});
+document.getElementById('sliderPrev').addEventListener('click', () => { goToSlide(current - 1); startAuto(); });
+document.getElementById('sliderNext').addEventListener('click', () => { goToSlide(current + 1); startAuto(); });
+dots.forEach(dot => dot.addEventListener('click', () => { goToSlide(+dot.dataset.slide); startAuto(); }));
 startAuto();
+
+// ── FOOTER WORDMARK REVEAL ────────────────────────────
+const wordmark = document.getElementById('footerWordmark');
+if (wordmark) {
+  const wObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) wordmark.classList.add('revealed'); });
+  }, { threshold: 0.05 });
+  wObs.observe(wordmark);
+}
 
 // ── THEME TOGGLE ──────────────────────────────────────
 const toggle = document.getElementById('themeToggle');
