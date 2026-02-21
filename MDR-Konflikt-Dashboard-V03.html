@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDR – Von der Konfrontation zur Kooperation</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #0e0f13;
+            --surface: #16181f;
+            --surface2: #1e2028;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f2;
+            --muted: #7a7d8a;
+            --accent-red: #e8473f;
+            --accent-green: #27ae76;
+            --accent-blue: #3a7bd5;
+            --accent-amber: #e8a84a;
+            --mdr-blue: #003f87;
+            --font-display: 'DM Serif Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-bg: rgba(14,15,19,0.92);
+            --card-overlay: rgba(255,255,255,0.04);
+            --chart-grid: rgba(255,255,255,0.06);
+            --chart-label: #7a7d8a;
+        }
+
+        [data-theme="light"] {
+            --bg: #f2f3f6;
+            --surface: #ffffff;
+            --surface2: #e5e7eb;
+            --border: rgba(0,0,0,0.09);
+            --text: #111218;
+            --muted: #565b6e;
+            --nav-bg: rgba(242,243,246,0.92);
+            --card-overlay: rgba(0,0,0,0.03);
+            --chart-grid: rgba(0,0,0,0.08);
+            --chart-label: #565b6e;
+        }
+
+        [data-theme="light"] .pillar-goal { background: rgba(0,0,0,0.05); }
+        [data-theme="light"] .ctag:not(.red):not(.green) { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); color: var(--muted); }
+        [data-theme="light"] .wi { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
+        [data-theme="light"] .sysmap-top { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.12); }
+        [data-theme="light"] .arrow-body { background: var(--surface2); }
+        [data-theme="light"] .orbit-item:not(.blue):not(.orange):not(.red) { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
+        [data-theme="light"] .hero-eyebrow { background: var(--surface); }
+        [data-theme="light"] .manifest { background: linear-gradient(135deg, rgba(58,123,213,0.07) 0%, rgba(39,174,118,0.07) 100%); border-color: rgba(0,0,0,0.07); }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ──────────────────────────────── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--mdr-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .nav-title {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-title span { color: var(--muted); font-weight: 300; }
+
+        /* Mode Toggle */
+        .toggle-wrap {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            display: flex;
+            gap: 0;
+            position: relative;
+        }
+
+        .toggle-pill {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: 130px;
+            border-radius: 50px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        .toggle-btn {
+            position: relative;
+            z-index: 1;
+            width: 130px;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            transition: color 0.25s;
+        }
+
+        .toggle-btn.active-ist { color: var(--accent-red); }
+        .toggle-btn.active-soll { color: var(--accent-green); }
+
+        /* ── HERO ─────────────────────────────── */
+        .hero {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 72px 32px 48px;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 28px;
+        }
+
+        .hero-eyebrow .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 64px);
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent-green);
+        }
+
+        .hero-sub {
+            font-size: 16px;
+            color: var(--muted);
+            max-width: 640px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.4s;
+        }
+
+        .status-badge.ist { background: rgba(232,71,63,0.12); color: var(--accent-red); border: 1px solid rgba(232,71,63,0.25); }
+        .status-badge.soll { background: rgba(39,174,118,0.12); color: var(--accent-green); border: 1px solid rgba(39,174,118,0.25); }
+
+        /* ── SECTIONS ─────────────────────────── */
+        .section {
+            max-width: 1100px;
+            margin: 0 auto 80px;
+            padding: 0 32px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(24px, 3vw, 38px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            margin-bottom: 40px;
+        }
+
+        /* ── CONFLICT VISUALIZER ──────────────── */
+        .conflict-grid {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            gap: 0;
+            align-items: center;
+        }
+
+        .conflict-side {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px;
+            position: relative;
+            transition: all 0.5s;
+        }
+
+        .conflict-side.ist-side {
+            border-color: rgba(232,71,63,0.3);
+        }
+
+        .conflict-side.soll-side {
+            border-color: rgba(39,174,118,0.3);
+        }
+
+        .conflict-side-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+
+        .ist-tag { background: rgba(232,71,63,0.15); color: var(--accent-red); }
+        .soll-tag { background: rgba(39,174,118,0.15); color: var(--accent-green); }
+
+        .conflict-side h3 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .conflict-side p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .conflict-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ctag {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .ctag.red { background: rgba(232,71,63,0.1); border-color: rgba(232,71,63,0.2); color: #e87a76; }
+        .ctag.green { background: rgba(39,174,118,0.1); border-color: rgba(39,174,118,0.2); color: #5ec89a; }
+
+        .conflict-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .arrow-body {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.4s;
+        }
+
+        .arrow-body.active { background: rgba(39,174,118,0.15); border-color: rgba(39,174,118,0.3); }
+
+        /* ── DREI SÄULEN ──────────────────────── */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .pillar-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: default;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .pillar-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+
+        .pillar-1::before { background: var(--accent-blue); }
+        .pillar-2::before { background: var(--accent-amber); }
+        .pillar-3::before { background: var(--accent-green); }
+
+        .pillar-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .pillar-1 .pillar-icon { background: rgba(58,123,213,0.12); }
+        .pillar-2 .pillar-icon { background: rgba(232,168,74,0.12); }
+        .pillar-3 .pillar-icon { background: rgba(39,174,118,0.12); }
+
+        .pillar-card h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .pillar-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .pillar-card p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        .pillar-goal {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+        }
+
+        .pillar-1 .pillar-goal { color: #7ba8e8; }
+        .pillar-2 .pillar-goal { color: #e8c48a; }
+        .pillar-3 .pillar-goal { color: #5ec89a; }
+
+        /* ── SYSTEM MAP ──────────────────────── */
+        .system-map {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            position: relative;
+        }
+
+        /* IST-State */
+        .sysmap-ist {
+            display: grid;
+            grid-template-rows: auto auto auto;
+            gap: 0;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .sysmap-top {
+            background: rgba(120,120,140,0.15);
+            border: 1px solid rgba(120,120,140,0.2);
+            border-radius: 16px;
+            padding: 20px 40px;
+            text-align: center;
+            position: relative;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .sysmap-top .q { font-family: var(--font-display); font-size: 32px; color: var(--muted); }
+        .sysmap-top h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .sysmap-top p { font-size: 11px; color: var(--muted); }
+
+        .sysmap-mid-row {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 24px;
+            padding: 28px 0;
+            width: 100%;
+        }
+
+        .dept-card {
+            flex: 1;
+            max-width: 260px;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .dept-card.blue { background: rgba(58,123,213,0.12); border: 1px solid rgba(58,123,213,0.25); }
+        .dept-card.orange { background: rgba(232,168,74,0.12); border: 1px solid rgba(232,168,74,0.25); }
+        .dept-card.green { background: rgba(39,174,118,0.12); border: 1px solid rgba(39,174,118,0.25); }
+
+        .dept-card h4 { font-weight: 700; font-size: 14px; line-height: 1.3; margin-bottom: 6px; }
+        .dept-card p { font-size: 11px; color: var(--muted); }
+
+        .dept-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+
+        .dept-card.blue .dept-badge { background: rgba(58,123,213,0.2); color: #7ba8e8; }
+        .dept-card.orange .dept-badge { background: rgba(232,168,74,0.2); color: #e8c48a; }
+        .dept-card.green .dept-badge { background: rgba(39,174,118,0.2); color: #5ec89a; }
+
+        /* Pressure arrows */
+        .pressure-arrows {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            padding: 0 0 24px;
+        }
+
+        .press-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .press-arrow .label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-red);
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .press-arrow-line {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, var(--accent-red));
+            position: relative;
+        }
+
+        .press-arrow-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid var(--accent-red);
+        }
+
+        /* SOLL State */
+        .sysmap-soll {
+            display: none;
+        }
+
+        .soll-ring {
+            position: relative;
+            width: 480px;
+            height: 480px;
+            margin: 0 auto;
+        }
+
+        .soll-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(39,174,118,0.12);
+            border: 2px solid rgba(39,174,118,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .soll-center .anchor { font-size: 28px; margin-bottom: 4px; }
+        .soll-center h4 { font-size: 12px; font-weight: 700; line-height: 1.3; }
+        .soll-center p { font-size: 10px; color: var(--accent-green); margin-top: 4px; }
+
+        .orbit-item {
+            position: absolute;
+            width: 140px;
+            padding: 16px;
+            border-radius: 14px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .orbit-item.blue {
+            background: rgba(58,123,213,0.12);
+            border: 1px solid rgba(58,123,213,0.25);
+            top: 20px; left: 50%; transform: translateX(-50%);
+        }
+
+        .orbit-item.orange {
+            background: rgba(232,168,74,0.12);
+            border: 1px solid rgba(232,168,74,0.25);
+            bottom: 20px; left: 50%; transform: translateX(-50%);
+        }
+
+        .orbit-item.red {
+            background: rgba(232,71,63,0.12);
+            border: 1px solid rgba(232,71,63,0.25);
+            top: 50%; left: 10px; transform: translateY(-50%);
+        }
+
+        .orbit-item h4 { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+        .orbit-item p { font-size: 10px; color: var(--muted); }
+
+        /* Orbit lines SVG */
+        .orbit-svg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        /* ── METRICS ──────────────────────────── */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .metric-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.4s;
+        }
+
+        .metric-ring {
+            flex-shrink: 0;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metric-ring svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .metric-ring .val {
+            font-size: 13px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .metric-info p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+        /* Chart container */
+        .chart-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .chart-wrap h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+
+        /* ── WARNSIGNAL ───────────────────────── */
+        .warning-card {
+            background: rgba(232,71,63,0.06);
+            border: 1px solid rgba(232,71,63,0.2);
+            border-radius: 20px;
+            padding: 36px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .warning-icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(232,71,63,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .warning-card h3 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: #e87a76;
+        }
+
+        .warning-card p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 16px;
+        }
+
+        .warning-indicators {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .wi {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .wi .dot-red { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-red); animation: pulse 1.5s infinite; }
+
+        /* ── ZIEL ─────────────────────────────── */
+        .goal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .goal-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .goal-item:hover { transform: translateY(-3px); }
+
+        .goal-num {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-style: italic;
+            color: var(--accent-green);
+            line-height: 1;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+
+        .goal-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+        .goal-item p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+        /* ── MANIFEST ─────────────────────────── */
+        .manifest {
+            background: linear-gradient(135deg, rgba(58,123,213,0.08) 0%, rgba(39,174,118,0.08) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manifest::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(39,174,118,0.08) 0%, transparent 70%);
+        }
+
+        .manifest h2 {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 48px);
+            line-height: 1.15;
+            margin-bottom: 24px;
+        }
+
+        .manifest h2 em { font-style: italic; color: var(--accent-green); }
+
+        .manifest p {
+            font-size: 16px;
+            color: var(--muted);
+            max-width: 680px;
+            margin: 0 auto 36px;
+            line-height: 1.65;
+        }
+
+        .manifest-pillars {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .mp {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .mp-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ── TRANSITIONS ──────────────────────── */
+        .mode-ist .ist-only { display: block; }
+        .mode-ist .soll-only { display: none; }
+        .mode-soll .ist-only { display: none; }
+        .mode-soll .soll-only { display: block; }
+
+        .fade-transition { transition: opacity 0.3s ease; }
+
+        /* Utility */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .mt-8 { margin-top: 8px; }
+        .mt-16 { margin-top: 16px; }
+
+        /* ── THEME TOGGLE BUTTON ─────────────── */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            line-height: 1;
+            transition: all 0.25s;
+            flex-shrink: 0;
+            color: var(--text);
+        }
+
+        .theme-btn:hover {
+            background: var(--surface);
+            transform: scale(1.1);
+        }
+
+        /* ── TOGGLE-WRAP MODE GLOW ────────────── */
+        .toggle-wrap {
+            transition: border-color 0.4s;
+        }
+
+        .mode-ist .toggle-wrap { border-color: rgba(232,71,63,0.4); }
+        .mode-soll .toggle-wrap { border-color: rgba(39,174,118,0.4); }
+
+        /* ── CONFLICT SIDE MODE EMPHASIS ─────── */
+        .conflict-side {
+            transition: opacity 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+        }
+
+        .mode-ist .conflict-side.ist-side {
+            box-shadow: 0 0 0 2px rgba(232,71,63,0.3), 0 12px 40px rgba(232,71,63,0.12);
+        }
+
+        .mode-ist .conflict-side.soll-side {
+            opacity: 0.42;
+            filter: saturate(0.5);
+        }
+
+        .mode-soll .conflict-side.soll-side {
+            box-shadow: 0 0 0 2px rgba(39,174,118,0.3), 0 12px 40px rgba(39,174,118,0.12);
+        }
+
+        .mode-soll .conflict-side.ist-side {
+            opacity: 0.42;
+            filter: saturate(0.5);
+        }
+
+        /* ── POSITION BADGE (inside conflict cards) */
+        .pos-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 14px;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .mode-ist .ist-pos-badge {
+            opacity: 1;
+            transform: translateY(0);
+            background: rgba(232,71,63,0.15);
+            color: #e87a76;
+        }
+
+        .mode-soll .soll-pos-badge {
+            opacity: 1;
+            transform: translateY(0);
+            background: rgba(39,174,118,0.15);
+            color: #5ec89a;
+        }
+
+        /* ── S1 SUBTEXT ───────────────────────── */
+        .s1-sub {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 28px;
+            line-height: 1.6;
+            max-width: 680px;
+            transition: opacity 0.3s;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 12px 16px; }
+            .hero { padding: 48px 16px 32px; }
+            .section { padding: 0 16px; }
+            .conflict-grid { grid-template-columns: 1fr; }
+            .conflict-arrow { display: none; }
+            .pillars-grid { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .goal-grid { grid-template-columns: 1fr; }
+            .soll-ring { width: 320px; height: 320px; }
+            .manifest { padding: 32px 20px; }
+        }
+    </style>
+</head>
+<body id="appBody" class="mode-ist">
+
+<!-- ── NAV ──────────────────────────────────────── -->
+<nav>
+    <div class="nav-logo">
+        <div class="nav-logo-mark">M</div>
+        <span class="nav-title">MDR Strategie<span>Design</span></span>
+    </div>
+
+    <div class="nav-right">
+        <div class="toggle-wrap">
+            <div class="toggle-pill" id="togglePill"></div>
+            <button class="toggle-btn active-ist" id="btnIst" onclick="setMode('ist')">⚠️ IST-Zustand</button>
+            <button class="toggle-btn" id="btnSoll" onclick="setMode('soll')">🚀 SOLL-Zustand</button>
+        </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Hell / Dunkel wechseln">☀️</button>
+    </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────── -->
+<div class="hero">
+    <div class="hero-eyebrow">
+        <div class="dot"></div>
+        <span id="eyebrowText">Analyse · Systemische Spannungen · MDR</span>
+    </div>
+    <h1 id="heroTitle">Von der <em>Konfrontation</em><br>zur Kooperation</h1>
+    <p class="hero-sub" id="heroSub">
+        Das strategische Dashboard für Hauptabteilungsleiterinnen und -leiter: Systemspannungen verstehen – Handlungswege erkennen – Wirkung erzeugen.
+    </p>
+    <div class="status-badge ist" id="statusBadge">
+        <span>●</span>
+        <span id="statusLabel">Status: System-Irritation</span>
+    </div>
+</div>
+
+<!-- ── SECTION 1: KONFRONTATION VS. KOOPERATION ──── -->
+<div class="section">
+    <div class="section-label">01 · Kerndiagnose</div>
+    <h2 class="section-title" id="s1title">Die zwei Welten: Macht-Logik vs. Fach-Logik</h2>
+    <p class="s1-sub" id="s1sub">Der aktuelle Zustand: Hierarchie-Logik dominiert den Alltag. Die linke Karte zeigt die Realität – die rechte das Ziel der Transformation. Schalte oben auf <strong>SOLL-Zustand</strong>, um die Zielseite zu aktivieren.</p>
+
+    <div class="conflict-grid">
+        <!-- IST -->
+        <div class="conflict-side ist-side">
+            <div class="pos-badge ist-pos-badge">📍 Aktueller Stand</div>
+            <div class="conflict-side-tag ist-tag">⚠ IST · Macht-Kompetenz</div>
+            <h3>„Ich entscheide das, weil ich die Position habe."</h3>
+            <p>Kontrolle durch Hierarchie. Vorgaben werden erwartet, nicht erklärt. Angst vor Ressourcenverlust führt zu Macht-Diktaten. Das Ergebnis: Dienst nach Vorschrift statt Engagement.</p>
+            <div class="conflict-tags">
+                <span class="ctag red">Angst-System</span>
+                <span class="ctag red">Silodenken</span>
+                <span class="ctag red">Design-Polizei</span>
+                <span class="ctag red">Filterfunktion</span>
+                <span class="ctag red">Blockade</span>
+            </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="conflict-arrow flex-center" style="flex-direction:column; gap:12px;">
+            <div class="arrow-body" id="conflictArrow">→</div>
+            <div id="conflictArrowLabel" style="font-size:10px; color:var(--muted); text-align:center; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; transition: color 0.4s;">Transform</div>
+        </div>
+
+        <!-- SOLL -->
+        <div class="conflict-side soll-side">
+            <div class="pos-badge soll-pos-badge">✦ Ziel-Zustand</div>
+            <div class="conflict-side-tag soll-tag">✦ SOLL · Fach-Kompetenz</div>
+            <h3>„Wir lösen das so, weil es die beste Wirkung erzielt."</h3>
+            <p>Kooperation durch Nutzen. Werkzeuge statt Verbote. Wer Menschen hilft, ihren Job besser zu machen, gewinnt Unterstützung – ganz ohne Hierarchie-Keule. Das Ergebnis: Stolz und Qualität.</p>
+            <div class="conflict-tags">
+                <span class="ctag green">Sog-Prinzip</span>
+                <span class="ctag green">Augenhöhe</span>
+                <span class="ctag green">Strategischer Anker</span>
+                <span class="ctag green">Ermöglichung</span>
+                <span class="ctag green">Vertrauen</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 2: BEDROHUNGSLAGE ─────────────────── -->
+<div class="section">
+    <div class="section-label">02 · Externer Kontext</div>
+    <h2 class="section-title">Warum jetzt? Die externe Drucklage</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div class="pillar-card" style="padding: 28px;">
+            <div class="pillar-icon" style="background: rgba(232,71,63,0.1); font-size: 26px;">🏛️</div>
+            <h3 style="font-size: 17px; margin-bottom: 8px;">Existenzdruck</h3>
+            <p style="font-size: 13px; color: var(--muted); line-height: 1.6;">Politischer Beschuss und Legitimationszwang des ÖRR erfordern ein geschlossenes, überzeugendes Bild nach außen.</p>
+        </div>
+        <div class="pillar-card" style="padding: 28px;">
+            <div class="pillar-icon" style="background: rgba(58,123,213,0.1); font-size: 26px;">🤖</div>
+            <h3 style="font-size: 17px; margin-bottom: 8px;">Technologische Disruption</h3>
+            <p style="font-size: 13px; color: var(--muted); line-height: 1.6;">KI verändert den Nachrichtenkonsum radikal – vom passiven Sender zum aktiven Dialogpartner. Reaktionsfähigkeit ist Überlebensstrategie.</p>
+        </div>
+        <div class="pillar-card" style="padding: 28px;">
+            <div class="pillar-icon" style="background: rgba(232,168,74,0.1); font-size: 26px;">🎯</div>
+            <h3 style="font-size: 17px; margin-bottom: 8px;">Wirkungs-Zwang</h3>
+            <p style="font-size: 13px; color: var(--muted); line-height: 1.6;">Interne Zersplitterung kostet Glaubwürdigkeit. Einheitlichkeit entsteht nicht durch Kontrolle, sondern durch geteilte Überzeugung.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 3: SYSTEM-MAP ──────────────────────── -->
+<div class="section">
+    <div class="section-label">03 · Systemvisualisierung</div>
+    <h2 class="section-title" id="s3title">Das Organisations-System im Überblick</h2>
+
+    <div class="system-map">
+        <!-- IST View -->
+        <div class="ist-only sysmap-ist" id="sysmapIst">
+            <div class="sysmap-top">
+                <div class="q">?</div>
+                <h4>Versteckte Strategie</h4>
+                <p>Angst vor Gegenwehr · Fehlende Kommunikation · Macht-Diktate</p>
+            </div>
+
+            <div class="sysmap-mid-row">
+                <div class="dept-card blue">
+                    <div class="dept-badge">PPD</div>
+                    <h4>Programm-Promotion<br>& Design</h4>
+                    <p style="margin-top: 8px;">Erwartet Filterfunktion und Meldung bei Abweichungen</p>
+                    <div style="margin-top: 12px; font-size: 11px; color: var(--accent-red); font-weight: 600;">→ Kontrolle einfordern</div>
+                </div>
+
+                <div class="dept-card orange">
+                    <div class="dept-badge">Hakomm</div>
+                    <h4>Unternehmens-<br>kommunikation</h4>
+                    <p style="margin-top: 8px;">Kommuniziert Strategien nicht ausreichend ins Haus</p>
+                    <div style="margin-top: 12px; font-size: 11px; color: var(--accent-red); font-weight: 600;">→ Strategie unklar</div>
+                </div>
+            </div>
+
+            <div class="pressure-arrows">
+                <div class="press-arrow">
+                    <div class="label">Filterfunktion erwartet</div>
+                    <div class="press-arrow-line"></div>
+                </div>
+                <div class="press-arrow">
+                    <div class="label">Meldung machen</div>
+                    <div class="press-arrow-line"></div>
+                </div>
+            </div>
+
+            <div class="dept-card green" style="max-width: 280px; text-align: center;">
+                <div class="dept-badge" style="background: rgba(39,174,118,0.2); color: #5ec89a;">Grafik & Design</div>
+                <h4>Betriebsdirektion</h4>
+                <p style="margin-top: 8px; color: var(--accent-red);">Rolle: Reaktive Design-Polizei<br>Keine strategische Sichtbarkeit</p>
+                <div style="margin-top: 16px; background: rgba(232,71,63,0.1); border: 1px solid rgba(232,71,63,0.2); border-radius: 8px; padding: 8px; font-size: 11px; font-weight: 700; color: var(--accent-red);">⚠ System-Irritation</div>
+            </div>
+        </div>
+
+        <!-- SOLL View -->
+        <div class="soll-only" id="sysmapSoll" style="display:none;">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div class="status-badge soll" style="display: inline-flex;">✦ Strategische Mitgestaltung & Synergie</div>
+            </div>
+            <div class="soll-ring" style="position: relative;">
+                <svg class="orbit-svg" viewBox="0 0 480 480">
+                    <circle cx="240" cy="240" r="170" fill="none" stroke="rgba(39,174,118,0.12)" stroke-width="1" stroke-dasharray="4,6"/>
+                    <line x1="240" y1="80" x2="240" y2="160" stroke="rgba(39,174,118,0.3)" stroke-width="1.5"/>
+                    <line x1="240" y1="320" x2="240" y2="400" stroke="rgba(232,168,74,0.3)" stroke-width="1.5"/>
+                    <line x1="80" y1="240" x2="160" y2="240" stroke="rgba(58,123,213,0.3)" stroke-width="1.5"/>
+                    <line x1="320" y1="240" x2="400" y2="240" stroke="rgba(232,71,63,0.3)" stroke-width="1.5"/>
+                </svg>
+
+                <div class="soll-center">
+                    <div class="anchor">⚓</div>
+                    <h4>Grafik &<br>Design</h4>
+                    <p>Strategischer Anker</p>
+                </div>
+
+                <div class="orbit-item blue">
+                    <h4>PPD</h4>
+                    <p>Partner auf Augenhöhe</p>
+                </div>
+
+                <div class="orbit-item orange">
+                    <h4>Hakomm</h4>
+                    <p>Proaktive Strategie-Kommunikation</p>
+                </div>
+
+                <div class="orbit-item red" style="width: 130px;">
+                    <h4>Redaktionen</h4>
+                    <p>Eigenverantwortlich im Sinne der Strategie</p>
+                </div>
+
+                <div class="orbit-item" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border); top: 50%; right: 10px; transform: translateY(-50%); width: 130px;">
+                    <h4>Leitungsebene</h4>
+                    <p>Vertrauen in operative Fachkraft</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 4: DIE DREI SÄULEN ────────────────── -->
+<div class="section">
+    <div class="section-label">04 · Strategie-Kern</div>
+    <h2 class="section-title">Die Ermöglichungs-Strategie:<br>Drei Säulen der Mitwirkung</h2>
+    <p style="font-size: 15px; color: var(--muted); margin-bottom: 36px; max-width: 680px; line-height: 1.6;">
+        Statt Angst und Kontrolle: ein <strong style="color: var(--text);">Sog-System</strong>, das auf echtem Mehrwert basiert. Kooperation wird nicht verordnet – sie wird zur logischen Wahl, weil sie die Arbeit erleichtert.
+    </p>
+
+    <div class="pillars-grid">
+        <div class="pillar-card pillar-1">
+            <div class="pillar-icon">🔧</div>
+            <div class="pillar-subtitle">Säule 1 · Empowerment</div>
+            <h3>Tools &<br>Werkzeuge</h3>
+            <p>Bereitstellung geeigneter Werkzeuge: Templates, KI-Assistenz, Workflows. Die Hürden für gute Gestaltung und Kommunikation werden aktiv gesenkt.</p>
+            <div class="pillar-goal">→ Arbeitserleichterung im Tagesgeschäft</div>
+        </div>
+
+        <div class="pillar-card pillar-2">
+            <div class="pillar-icon">📡</div>
+            <div class="pillar-subtitle">Säule 2 · Transparenz</div>
+            <h3>Strategische<br>Information</h3>
+            <p>Strategische Infos für alle zugänglich machen. Jeder versteht das „Warum" und kann eigenverantwortlich im Sinne der Gesamtstrategie handeln.</p>
+            <div class="pillar-goal">→ Multiplikations-Effekt durch Wissen</div>
+        </div>
+
+        <div class="pillar-card pillar-3">
+            <div class="pillar-icon">⚡</div>
+            <div class="pillar-subtitle">Säule 3 · Reaktionsfähigkeit</div>
+            <h3>Schneller<br>Support</h3>
+            <p>Ein System, das Probleme löst, statt neue zu schaffen. Schnelle, praktische Hilfe im Tagesgeschäft – statt langwieriger Freigabeprozesse.</p>
+            <div class="pillar-goal">→ Blockaden lösen, nicht verwalten</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 5: METRICS ─────────────────────────── -->
+<div class="section">
+    <div class="section-label">05 · Dashboard-KPIs</div>
+    <h2 class="section-title">Indikatoren der Veränderung</h2>
+
+    <div class="metrics-grid">
+        <div class="metric-cards" id="metricCards">
+            <!-- Filled by JS -->
+        </div>
+
+        <div class="chart-wrap">
+            <h3>System-Radar</h3>
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 6: WARNSIGNAL ──────────────────────── -->
+<div class="section">
+    <div class="section-label">06 · Systemisches Warnsignal</div>
+
+    <div class="warning-card">
+        <div class="warning-icon-wrap">⚡</div>
+        <div>
+            <h3>Die Mikromanagement-Falle</h3>
+            <p>Wenn Strategie-Abteilungen operativ „reingrätschen", ersticken sie die Fachkompetenz derjenigen, die eigentlich liefern sollen. Das Ergebnis: Lähmung des Systems, Demotivation der Experten und Verlust an Geschwindigkeit – genau dann, wenn Tempo gefragt ist.</p>
+            <div class="warning-indicators">
+                <div class="wi"><div class="dot-red"></div>Blockade-Momente steigen</div>
+                <div class="wi"><div class="dot-red"></div>Expertise wird unterboten</div>
+                <div class="wi"><div class="dot-red"></div>Reaktionszeit sinkt</div>
+                <div class="wi"><div class="dot-red"></div>Frust in Fachteams wächst</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── SECTION 7: ZIELBILD ────────────────────────── -->
+<div class="section">
+    <div class="section-label">07 · Zielbild</div>
+    <h2 class="section-title">Die Wirkungs-Partnerschaft</h2>
+    <p style="font-size: 15px; color: var(--muted); margin-bottom: 36px; line-height: 1.6; max-width: 680px;">
+        Wir beenden das Denken in „Abteilung A meldet Fehler bei Abteilung B". Stattdessen entsteht ein System, das drei Dinge gleichzeitig leistet:
+    </p>
+
+    <div class="goal-grid">
+        <div class="goal-item">
+            <div class="goal-num">1</div>
+            <h4>Probleme im Keim lösen</h4>
+            <p>Durch gute Tools und klare Prozesse entstehen Fehler gar nicht erst. Prävention schlägt Korrektur.</p>
+        </div>
+        <div class="goal-item">
+            <div class="goal-num">2</div>
+            <h4>Menschen befähigen</h4>
+            <p>Durch geteiltes Wissen handeln alle im Sinne der Gesamtstrategie – ohne Kontrolle von oben.</p>
+        </div>
+        <div class="goal-item">
+            <div class="goal-num">3</div>
+            <h4>Wirkung maximieren</h4>
+            <p>Durch Vertrauen in die operative Fachkraft entsteht Qualität aus intrinsischer Motivation.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── MANIFEST ────────────────────────────────────── -->
+<div class="section" style="margin-bottom: 80px;">
+    <div class="manifest">
+        <div class="section-label" style="justify-content: center; margin-bottom: 32px;">Leitprinzip</div>
+        <h2>Wer <em>Werkzeuge statt Verbote</em> liefert,<br>braucht keine Macht-Kompetenz mehr.</h2>
+        <p>
+            Die strategischen Bereiche verstehen sich als Dienstleister der Operativen – um deren Wirkung zu maximieren. Das ist kein Machtverlust. Es ist die einzig nachhaltige Form von Führung in einer Welt, die Tempo, Qualität und Vertrauen gleichzeitig verlangt.
+        </p>
+        <div class="manifest-pillars">
+            <div class="mp"><div class="mp-dot" style="background: var(--accent-blue)"></div>Empowerment durch Tools</div>
+            <div class="mp"><div class="mp-dot" style="background: var(--accent-amber)"></div>Transparenz durch Info</div>
+            <div class="mp"><div class="mp-dot" style="background: var(--accent-green)"></div>Reaktionsfähigkeit durch Support</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        ist: {
+            eyebrow: 'Analyse · IST-Zustand · Systemische Spannungen',
+            heroSub: 'Das strategische Dashboard für Hauptabteilungsleiterinnen und -leiter: Systemspannungen verstehen – Handlungswege erkennen – Wirkung erzeugen.',
+            status: 'Status: System-Irritation',
+            statusClass: 'ist',
+            s1title: 'Die zwei Welten: Macht-Logik vs. Fach-Logik',
+            s1sub: 'Der aktuelle Zustand: Hierarchie-Logik dominiert den Alltag. Die linke Karte zeigt die Realität – die rechte das Ziel der Transformation. Schalte oben auf SOLL-Zustand, um die Zielseite zu aktivieren.',
+            s3title: 'Das Organisations-System im IST-Zustand',
+            radarData: [15, 90, 20, 12, 25, 85],
+            radarColor: { border: '#e8473f', bg: 'rgba(232,71,63,0.15)', point: '#e8473f' },
+            metrics: [
+                { label: 'Irritations-Potenzial', val: 'Kritisch', pct: 92, color: '#e8473f', desc: 'Hoher Reibungsverlust durch unklare Rollenverteilung' },
+                { label: 'Marken-Akzeptanz', val: 'Niedrig', pct: 18, color: '#e87a76', desc: 'Strategie kommt nicht an der Basis an' },
+                { label: 'System-Effizienz', val: 'Minimal', pct: 12, color: '#e87a76', desc: 'Blockade-Momente überwiegen Lösungs-Momente' }
+            ]
+        },
+        soll: {
+            eyebrow: 'Analyse · SOLL-Zustand · Wirkungs-Partnerschaft',
+            heroSub: 'Das Zielbild ist erreicht: strategische Mitgestaltung auf Augenhöhe – durch Ermöglichung statt Kontrolle, durch Nutzen statt Macht.',
+            status: 'Status: Strategischer Dialog',
+            statusClass: 'soll',
+            s1title: 'Das Ziel: Fach-Kompetenz als gemeinsame Grundlage',
+            s1sub: 'Die Transformation ist vollzogen: Fach-Kompetenz hat die Macht-Logik abgelöst. Die rechte Karte ist jetzt die Realität – die linke der überwundene Ausgangspunkt.',
+            s3title: 'Das Organisations-System im SOLL-Zustand',
+            radarData: [95, 12, 92, 98, 95, 18],
+            radarColor: { border: '#27ae76', bg: 'rgba(39,174,118,0.15)', point: '#27ae76' },
+            metrics: [
+                { label: 'System-Effizienz', val: 'Optimal', pct: 95, color: '#27ae76', desc: 'Lösungs-Momente dominieren den Alltag' },
+                { label: 'Strategische Beratung', val: 'Etabliert', pct: 92, color: '#27ae76', desc: 'Proaktive Beratung auf Basis geteilter Leitplanken' },
+                { label: 'Tool-Adoption', val: 'Wachsend', pct: 78, color: '#5ec89a', desc: 'Teams nutzen Werkzeuge eigenverantwortlich' }
+            ]
+        }
+    };
+
+    let radarChart = null;
+    let currentMode = 'ist';
+
+    function isLightTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light';
+    }
+
+    function getGridColor() {
+        return isLightTheme() ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.06)';
+    }
+
+    function getLabelColor() {
+        return isLightTheme() ? '#565b6e' : '#7a7d8a';
+    }
+
+    function toggleTheme() {
+        const light = isLightTheme();
+        if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('themeBtn').textContent = '☀️';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.getElementById('themeBtn').textContent = '🌙';
+        }
+        if (radarChart) {
+            const gc = getGridColor();
+            radarChart.options.scales.r.grid.color = gc;
+            radarChart.options.scales.r.angleLines.color = gc;
+            radarChart.options.scales.r.pointLabels.color = getLabelColor();
+            radarChart.update();
+        }
+    }
+
+    function initRadar() {
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const d = data.ist;
+        radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Akzeptanz', 'Druck', 'Beratung', 'Augenhöhe', 'Effizienz', 'Kontrolle'],
+                datasets: [{
+                    label: 'Indikatoren',
+                    data: d.radarData,
+                    borderColor: d.radarColor.border,
+                    backgroundColor: d.radarColor.bg,
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointBackgroundColor: d.radarColor.point,
+                    pointBorderColor: 'transparent'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                animation: { duration: 600, easing: 'easeInOutCubic' },
+                scales: {
+                    r: {
+                        min: 0, max: 100,
+                        ticks: { display: false, stepSize: 20 },
+                        grid: { color: getGridColor() },
+                        angleLines: { color: getGridColor() },
+                        pointLabels: {
+                            color: getLabelColor(),
+                            font: { family: 'DM Sans', weight: '600', size: 11 }
+                        }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    function renderMetrics(mode) {
+        const container = document.getElementById('metricCards');
+        const metrics = data[mode].metrics;
+        const r = 28;
+        const circ = 2 * Math.PI * r;
+
+        container.innerHTML = metrics.map(m => {
+            const offset = circ - (m.pct / 100) * circ;
+            return `
+            <div class="metric-card">
+                <div class="metric-ring">
+                    <svg viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="${r}" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                        <circle cx="32" cy="32" r="${r}" stroke="${m.color}" stroke-width="4"
+                            stroke-dasharray="${circ.toFixed(1)}"
+                            stroke-dashoffset="${offset.toFixed(1)}"
+                            stroke-linecap="round"/>
+                    </svg>
+                    <div class="val" style="color:${m.color}">${m.pct}%</div>
+                </div>
+                <div class="metric-info">
+                    <h4>${m.label} <span style="font-weight:700; color:${m.color}; font-size:12px;">· ${m.val}</span></h4>
+                    <p>${m.desc}</p>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        const d = data[mode];
+        const body = document.getElementById('appBody');
+
+        body.className = `mode-${mode}`;
+
+        document.getElementById('eyebrowText').textContent = d.eyebrow;
+        document.getElementById('heroSub').textContent = d.heroSub;
+        document.getElementById('statusLabel').textContent = d.status;
+
+        const badge = document.getElementById('statusBadge');
+        badge.className = `status-badge ${d.statusClass}`;
+
+        document.getElementById('s1title').textContent = d.s1title;
+        document.getElementById('s1sub').textContent = d.s1sub;
+        document.getElementById('s3title').textContent = d.s3title;
+
+        // Arrow label
+        const arrowLabel = document.getElementById('conflictArrowLabel');
+        if (mode === 'soll') {
+            arrowLabel.textContent = 'Vollzogen';
+            arrowLabel.style.color = 'var(--accent-green)';
+        } else {
+            arrowLabel.textContent = 'Transform';
+            arrowLabel.style.color = 'var(--muted)';
+        }
+
+        // Toggle buttons
+        document.getElementById('btnIst').className = `toggle-btn ${mode === 'ist' ? 'active-ist' : ''}`;
+        document.getElementById('btnSoll').className = `toggle-btn ${mode === 'soll' ? 'active-soll' : ''}`;
+
+        // Toggle pill
+        document.getElementById('togglePill').style.transform = mode === 'ist' ? 'translateX(0)' : 'translateX(130px)';
+
+        // Conflict arrow
+        const arrow = document.getElementById('conflictArrow');
+        if (mode === 'soll') {
+            arrow.classList.add('active');
+            arrow.textContent = '✓';
+        } else {
+            arrow.classList.remove('active');
+            arrow.textContent = '→';
+        }
+
+        // IST/SOLL maps
+        document.getElementById('sysmapIst').style.display = mode === 'ist' ? 'grid' : 'none';
+        document.getElementById('sysmapSoll').style.display = mode === 'soll' ? 'block' : 'none';
+
+        // Radar
+        if (radarChart) {
+            radarChart.data.datasets[0].data = d.radarData;
+            radarChart.data.datasets[0].borderColor = d.radarColor.border;
+            radarChart.data.datasets[0].backgroundColor = d.radarColor.bg;
+            radarChart.data.datasets[0].pointBackgroundColor = d.radarColor.point;
+            radarChart.update();
+        }
+
+        renderMetrics(mode);
+    }
+
+    window.onload = () => {
+        initRadar();
+        setMode('ist');
+    };
+</script>
+</body>
+</html>
