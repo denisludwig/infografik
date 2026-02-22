@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denis Ludwig – Strategie wird erst real, wenn sie sichtbar ist.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #242424;
+    --border: #2a2a2a;
+    --muted: #555;
+    --mid: #888;
+    --light: #c8c8c8;
+    --white: #f0ede8;
+    --accent: #c8a96e;
+    --accent2: #8b5e3c;
+    --accent-dim: rgba(200, 169, 110, 0.12);
+    --accent-glow: rgba(200, 169, 110, 0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* TYPOGRAPHY */
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.15; }
+  .mono { font-family: 'DM Mono', monospace; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid transparent;
+    transition: all 0.4s ease;
+    background: transparent;
+  }
+  nav.scrolled {
+    background: rgba(10,10,10,0.92);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10rem 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 40%, rgba(200,169,110,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(139,94,60,0.04) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-headline {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    max-width: 14ch;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--light);
+    max-width: 52ch;
+    line-height: 1.8;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--accent);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 1.1rem 2.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .hero-cta:hover {
+    background: var(--white);
+    gap: 1.4rem;
+  }
+  .hero-cta svg { width: 16px; height: 16px; }
+
+  .hero-stats {
+    position: absolute;
+    right: 4rem;
+    bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .stat {
+    text-align: right;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--accent);
+    animation: slideRight 2s ease-in-out infinite;
+  }
+  .scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTIONS GENERAL */
+  section {
+    padding: 8rem 4rem;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* PROBLEM SECTION */
+  .problem {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .problem-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .problem h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+  .problem h2 em { font-style: italic; color: var(--accent); }
+
+  .problem-text { color: var(--light); font-size: 1rem; }
+  .problem-text p + p { margin-top: 1.2rem; }
+
+  .problem-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .truth-item {
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .truth-item:first-child { border-top: 1px solid var(--border); }
+
+  .truth-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding-top: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  .truth-text {
+    font-size: 0.95rem;
+    color: var(--light);
+    line-height: 1.6;
+  }
+  .truth-text strong { color: var(--white); font-weight: 500; }
+
+  /* APPROACH */
+  .approach { background: var(--black); }
+  .approach-inner { max-width: 1200px; margin: 0 auto; }
+
+  .approach h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    max-width: 20ch;
+    margin-bottom: 1.5rem;
+  }
+  .approach-lead {
+    font-size: 1.1rem;
+    color: var(--light);
+    max-width: 60ch;
+    margin-bottom: 5rem;
+    line-height: 1.8;
+  }
+
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .approach-card {
+    background: var(--dark);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .approach-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .approach-card:hover::before { transform: scaleX(1); }
+  .approach-card:hover { background: var(--dark2); }
+
+  .card-icon {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--dark3);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+
+  .card-text { font-size: 0.9rem; color: var(--mid); line-height: 1.7; }
+
+  /* SERVICES */
+  .services {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .services h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    margin-bottom: 4rem;
+  }
+
+  .services-list { display: flex; flex-direction: column; }
+
+  .service-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .service-item:first-child { border-top: 1px solid var(--border); }
+  .service-item:hover { padding-left: 1rem; }
+
+  .service-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding-top: 0.3rem;
+  }
+
+  .service-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+
+  .service-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent2);
+    padding: 0.2rem 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-desc { font-size: 0.9rem; color: var(--mid); line-height: 1.7; }
+
+  /* CASE STUDIES */
+  .cases { background: var(--black); }
+  .cases-inner { max-width: 1200px; margin: 0 auto; }
+  .cases h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    margin-bottom: 4rem;
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .case-card {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .case-card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-4px);
+  }
+
+  .case-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.8rem;
+  }
+
+  .case-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 0.25rem 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .case-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .case-problem {
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .case-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.65; margin-bottom: 1.5rem; }
+
+  .case-result {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+
+  /* ABOUT */
+  .about {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+  }
+  .about-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: start;
+  }
+
+  .about h2 {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    margin-bottom: 2rem;
+  }
+  .about-text { color: var(--light); font-size: 0.95rem; line-height: 1.85; }
+  .about-text p + p { margin-top: 1.2rem; }
+
+  .about-values {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .value-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem;
+  }
+
+  .about-timeline { }
+  .timeline-item {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:first-child { border-top: 1px solid var(--border); }
+  .timeline-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    padding-top: 0.2rem;
+    min-width: 80px;
+  }
+  .timeline-info {}
+  .timeline-role {
+    font-size: 0.92rem;
+    color: var(--white);
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+  .timeline-org {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* CONTACT */
+  .contact {
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .contact-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .contact h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1.5rem;
+  }
+  .contact h2 em { font-style: italic; color: var(--accent); }
+  .contact-sub {
+    font-size: 1rem;
+    color: var(--mid);
+    margin-bottom: 3rem;
+    line-height: 1.7;
+  }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent2);
+    padding-bottom: 0.3rem;
+    transition: all 0.3s;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .contact-link:hover { color: var(--white); border-color: var(--white); }
+
+  .contact-phone {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 0.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .footer-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+    margin: 3rem 0;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideRight {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 2rem; }
+    .hero { padding: 8rem 2rem 5rem; }
+    .hero-stats { display: none; }
+    .problem-inner,
+    .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .approach-grid,
+    .cases-grid { grid-template-columns: 1fr; }
+    .service-item { grid-template-columns: 50px 1fr; }
+    .service-desc { display: none; }
+    footer { padding: 1.5rem 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Denis Ludwig</a>
+  <ul class="nav-links">
+    <li><a href="#ansatz">Ansatz</a></li>
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#projekte">Projekte</a></li>
+    <li><a href="#ueber">Über mich</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <p class="hero-label mono">Visual Strategy · Live Prototyping · Transformation</p>
+
+  <h1 class="hero-headline">
+    Strategie wird erst real, wenn sie <em>sichtbar</em> ist.
+  </h1>
+
+  <p class="hero-sub">
+    Ich übersetze komplexe Strategien in Bilder, Modelle und Prototypen –
+    live, im Raum, mit Ihrem Team. Nicht danach. Nicht als Illustration.
+    Sondern als Denkwerkzeug, das Entscheidungen beschleunigt.
+  </p>
+
+  <a href="#kontakt" class="hero-cta">
+    Erstgespräch vereinbaren
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </a>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">20+</div>
+      <div class="stat-label mono">Jahre Expertise</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">50</div>
+      <div class="stat-label mono">Geführte Kreative</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5M</div>
+      <div class="stat-label mono">Views · TikTok MDR</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-text mono">Scroll</span>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="problem-inner">
+    <div class="problem-left reveal">
+      <p class="section-label mono">Das Problem</p>
+      <h2>Warum gute Strategien <em>scheitern</em>.</h2>
+      <div class="divider"></div>
+      <div class="problem-text">
+        <p>In den meisten Unternehmen kommt das Visuelle ganz am Ende. Inhalte werden formuliert, diskutiert, beschlossen – und dann soll jemand „das mal hübsch machen."</p>
+        <p>Das ist ein grundlegender Fehler. Nicht weil das Design schlecht ist, sondern weil visuelle Klarheit gnadenlos ist: Sie deckt auf, was im Text noch verborgen war. Logische Lücken. Widersprüche. Unklarheiten im Denken.</p>
+        <p>Wer Visualisierung an das Ende stellt, verliert genau den Moment, in dem sie am wertvollsten wäre.</p>
+      </div>
+    </div>
+    <div class="problem-right reveal reveal-delay-2">
+      <div class="truth-item">
+        <span class="truth-num mono">01</span>
+        <p class="truth-text"><strong>Text schützt Unschärfe.</strong> Schwammige Strategien überleben endlose Abstimmungsschleifen – weil niemand sie wirklich prüft. Visualisierung zwingt zur Präzision.</p>
+      </div>
+      <div class="truth-item">
+        <span class="truth-num mono">02</span>
+        <p class="truth-text"><strong>Silos entstehen durch fehlende Bilder.</strong> Was nicht gemeinsam sichtbar ist, kann nicht gemeinsam verstanden werden. Dashboards, Modelle und Skizzen schaffen geteiltes Verständnis.</p>
+      </div>
+      <div class="truth-item">
+        <span class="truth-num mono">03</span>
+        <p class="truth-text"><strong>Entscheidungen brauchen Anker.</strong> Abstrakte Begriffe lösen sich im Gedächtnis auf. Bilder bleiben. Wer seine Vision visualisiert, verankert sie in den Köpfen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section class="approach" id="ansatz">
+  <div class="approach-inner">
+    <p class="section-label mono reveal">Mein Ansatz</p>
+    <h2 class="reveal reveal-delay-1">Live Strategic Prototyping.</h2>
+    <p class="approach-lead reveal reveal-delay-2">
+      Ich arbeite nicht im stilles Kämmerlein. Ich arbeite live – direkt in Ihrer Strategie-Klausur, 
+      Ihrem Führungsmeeting, Ihrem Transformationsprozess. Mit KI, 3D-Tools und Echtzeit-Dashboards 
+      entstehen Ideen sofort als prüfbare Modelle. Was visuell nicht funktioniert, ist strategisch 
+      noch nicht fertig gedacht.
+    </p>
+
+    <div class="approach-grid">
+      <div class="approach-card reveal">
+        <div class="card-icon">I</div>
+        <h3 class="card-title">Input Mapping</h3>
+        <p class="card-text">Ich höre zu und übersetze live. Aus gesprochenen Ideen werden sofort sichtbare Strukturen. Missverständnisse werden im Entstehen erkannt, nicht Monate später.</p>
+      </div>
+      <div class="approach-card reveal reveal-delay-1">
+        <div class="card-icon">II</div>
+        <h3 class="card-title">Struktur-Prototyping</h3>
+        <p class="card-text">Komplexe Zusammenhänge werden als 3D-Modelle, Dashboards oder visuelle Frameworks greifbar gemacht. Nicht als Dekoration – als Entscheidungswerkzeug.</p>
+      </div>
+      <div class="approach-card reveal reveal-delay-2">
+        <div class="card-icon">III</div>
+        <h3 class="card-title">Synthesis & Konsens</h3>
+        <p class="card-text">Was gemeinsam gesehen wurde, kann gemeinsam entschieden werden. Am Ende der Session haben Sie kein Protokoll, sondern einen validierten visuellen Strategieprototypen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="leistungen">
+  <div class="services-inner">
+    <p class="section-label mono reveal">Leistungen</p>
+    <h2 class="reveal reveal-delay-1">Was ich für Sie tue.</h2>
+
+    <div class="services-list">
+      <div class="service-item reveal">
+        <span class="service-num mono">01</span>
+        <div>
+          <span class="service-tag mono">Live-Session</span>
+          <h3 class="service-title">Visual Strategy Session</h3>
+        </div>
+        <div>
+          <p class="service-desc">Ich begleite Ihre Strategie-Klausur oder Ihr Führungsmeeting als visueller Sparringspartner. Live-Visualisierung komplexer Zusammenhänge, Echtzeit-Dashboards und 3D-Modelle – direkt im Prozess, nicht danach.</p>
+        </div>
+      </div>
+
+      <div class="service-item reveal">
+        <span class="service-num mono">02</span>
+        <div>
+          <span class="service-tag mono">Transformation</span>
+          <h3 class="service-title">Visual Change Architecture</h3>
+        </div>
+        <div>
+          <p class="service-desc">Als zertifizierter Change Architekt begleite ich Transformationsprozesse visuell. Von der IT-Umstellung bis zur Reorganisation: Ich schaffe visuelle Anker, die Widerstände abbauen und Orientierung geben.</p>
+        </div>
+      </div>
+
+      <div class="service-item reveal">
+        <span class="service-num mono">03</span>
+        <div>
+          <span class="service-tag mono">KI & Workflows</span>
+          <h3 class="service-title">GenAI Strategy & Workflow Design</h3>
+        </div>
+        <div>
+          <p class="service-desc">Beratung zur Einführung von KI-gestützten Kreativprozessen. Ich entwickle Workflows, die Projekte möglich machen, die sonst zu teuer oder zu komplex wären – mit messbarem Effizienzgewinn von 30–50%.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="cases" id="projekte">
+  <div class="cases-inner">
+    <p class="section-label mono reveal">Referenzprojekte</p>
+    <h2 class="reveal reveal-delay-1">Systeme, die täglich liefern müssen.</h2>
+
+    <div class="cases-grid">
+      <div class="case-card reveal">
+        <p class="case-year mono">2019 – 2023</p>
+        <span class="case-tag mono">Effizienz · Technologie</span>
+        <h3 class="case-title">Virtuelles Studio ARD Mittagsmagazin & BRISANT</h3>
+        <p class="case-problem mono">Strategisches Problem:</p>
+        <p class="case-desc">Wie schafft man täglich hochwertige Broadcast-Grafik für ein Millionenpublikum – skalierbar, effizient und kompatibel über mehrere ARD-Formate hinweg?</p>
+        <p class="case-result mono">→ Fortschrittlichstes Infografikpaket in der ARD. Täglich live, datengebunden, vollständig intern produziert.</p>
+      </div>
+
+      <div class="case-card reveal reveal-delay-1">
+        <p class="case-year mono">2016 – 2018</p>
+        <span class="case-tag mono">Führung · Reorganisation</span>
+        <h3 class="case-title">Reorganisation MDR Fernsehgrafik</h3>
+        <p class="case-problem mono">Strategisches Problem:</p>
+        <p class="case-desc">Ein fragmentiertes Team aus 8 Festen und 35 Freien zu einer inhaltlich ausgerichteten, crossmedialen Einheit formen – ohne Produktionsverluste, mit neuer Kultur.</p>
+        <p class="case-result mono">→ Crossmediales Designteam für TV, Online, Print, Social und Event. Strukturbruch aufgelöst.</p>
+      </div>
+
+      <div class="case-card reveal reveal-delay-2">
+        <p class="case-year mono">2021</p>
+        <span class="case-tag mono">Reichweite · Gen Z</span>
+        <h3 class="case-title">MDR TikTok – „Wahrscheinlich Peinlich"</h3>
+        <p class="case-problem mono">Strategisches Problem:</p>
+        <p class="case-desc">Wie erreicht ein öffentlich-rechtlicher Sender die Generation Z authentisch – ohne Markenverlust, mit begrenztem Budget und unter täglichem Produktionsdruck?</p>
+        <p class="case-result mono">→ 5 Mio. Views · 169K Follower · 2,3M Likes. Erstes MDR-Format mit TikTok-Relevanz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="ueber">
+  <div class="about-inner">
+    <div class="about-left reveal">
+      <p class="section-label mono">Über mich</p>
+      <h2>Kein Grafiker. Ein strategischer Dolmetscher.</h2>
+      <div class="divider"></div>
+      <div class="about-text">
+        <p>Ich bin Denis Ludwig. Kommunikationsdesigner, Teamleiter, Change Architekt. Mit über 20 Jahren Erfahrung in den großen deutschen Medienunternehmen – ARD, ZDF, SRF, MDR – habe ich gelernt, was es bedeutet, kreative Systeme zu bauen, die täglich unter Hochdruckbedingungen liefern müssen.</p>
+        <p>Ich bringe keine klassische Beratervita mit. Ich bringe etwas anderes: die Fähigkeit, live im Raum zu arbeiten, komplexe Anforderungen sofort sichtbar zu machen und strategische Entscheidungen damit zu beschleunigen.</p>
+        <p>Was mich antreibt: Visuelle Klarheit ist gnadenlos. Sie deckt auf, was im Text verborgen bleibt. Genau das ist meine Dienstleistung.</p>
+      </div>
+      <div class="about-values">
+        <span class="value-tag mono">Ehrlichkeit</span>
+        <span class="value-tag mono">Nachhaltigkeit</span>
+        <span class="value-tag mono">Leidenschaft</span>
+        <span class="value-tag mono">Brücken bauen</span>
+        <span class="value-tag mono">Haltung</span>
+      </div>
+    </div>
+
+    <div class="about-right reveal reveal-delay-2">
+      <p class="section-label mono">Erfahrung</p>
+      <div class="about-timeline">
+        <div class="timeline-item">
+          <span class="timeline-year mono">seit 2016</span>
+          <div class="timeline-info">
+            <p class="timeline-role">Teamleiter Content Design & Graphics</p>
+            <p class="timeline-org mono">MDR – Mitteldeutscher Rundfunk</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">seit 2023</span>
+          <div class="timeline-info">
+            <p class="timeline-role">Ausbilder für Mediendesign</p>
+            <p class="timeline-org mono">Fernseh Akademie Mitteldeutschland</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2012 – 2014</span>
+          <div class="timeline-info">
+            <p class="timeline-role">Grafikredaktion & Art Direction</p>
+            <p class="timeline-org mono">Schweizer Fernsehen SRF, Zürich</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2009 – 2012</span>
+          <div class="timeline-info">
+            <p class="timeline-role">Projektleitung & Art Direction</p>
+            <p class="timeline-org mono">ZDF, Mainz</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2004 – 2008</span>
+          <div class="timeline-info">
+            <p class="timeline-role">Gründer & Creative Director</p>
+            <p class="timeline-org mono">grafiker.org, Jena</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="kontakt">
+  <div class="contact-inner">
+    <p class="section-label mono" style="justify-content: center; margin-bottom: 2rem;">Kontakt</p>
+    <h2 class="reveal">Lassen Sie uns <em>reden.</em></h2>
+    <p class="contact-sub reveal reveal-delay-1">
+      Ich freue mich auf ein erstes Gespräch. Kein Pitch, kein Deck –
+      nur ein ehrliches Gespräch darüber, ob mein Ansatz zu Ihrer Herausforderung passt.
+    </p>
+    <a href="mailto:ludwig.denis@gmail.com" class="contact-link reveal reveal-delay-2">
+      ludwig.denis@gmail.com
+    </a>
+    <p class="contact-phone mono reveal reveal-delay-3">+49 1511 78 72 321</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-name">Denis Ludwig · Leipzig</p>
+  <p class="footer-mono mono">Visual Strategy · Live Prototyping · Transformation</p>
+</footer>
+
+<script>
+  // Nav scroll behavior
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

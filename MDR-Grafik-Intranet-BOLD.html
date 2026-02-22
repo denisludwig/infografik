@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRFK DSGN — MDR Grafik & Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ─── FARBEN & THEMES ────────────────────────────────── */
+:root {
+  --orange: #FF5500;
+  --lime:   #CCFF00;
+  --pink:   #FF1177;
+  --blue:   #00AAFF;
+  --yellow: #FFE000;
+}
+
+[data-theme="dark"] {
+  --bg:       #080808;
+  --bg2:      #111111;
+  --bg3:      #1a1a1a;
+  --text:     #F5F5F0;
+  --text2:    rgba(245,245,240,0.55);
+  --muted:    rgba(245,245,240,0.25);
+  --border:   rgba(255,255,255,0.07);
+  --nav-bg:   #080808;
+  --hero-outline-color: var(--orange);
+  --hero-fill-color:    var(--orange);
+  --card-bg:    #111111;
+  --card-hover: #080808;
+}
+
+[data-theme="light"] {
+  --bg:       #F0EDE6;
+  --bg2:      #E8E4DC;
+  --bg3:      #DDD9CF;
+  --text:     #0A0A0A;
+  --text2:    rgba(10,10,10,0.6);
+  --muted:    rgba(10,10,10,0.35);
+  --border:   rgba(0,0,0,0.1);
+  --nav-bg:   #F0EDE6;
+  --hero-outline-color: var(--orange);
+  --hero-fill-color:    var(--orange);
+  --card-bg:    #E8E4DC;
+  --card-hover: #F0EDE6;
+}
+
+/* ─── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+a { text-decoration: none; color: inherit; }
+
+.bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
+.mono  { font-family: 'Space Mono', monospace; }
+
+/* ─── NAV ─────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 2.5rem;
+  background: var(--nav-bg);
+  border-bottom: 2px solid var(--orange);
+  transition: background 0.4s;
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  line-height: 1;
+}
+.nav-logo span { color: var(--orange); }
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--orange); }
+
+/* THEME TOGGLE */
+.theme-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toggle-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.theme-btn {
+  width: 48px; height: 26px;
+  background: var(--border);
+  border: 1.5px solid var(--orange);
+  border-radius: 13px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.theme-btn::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--orange);
+  transition: transform 0.3s;
+}
+[data-theme="light"] .theme-btn::after {
+  transform: translateX(22px);
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 26px;
+}
+.hamburger span {
+  display: block; width: 100%; height: 2px;
+  background: var(--text);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translateY(10px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translateY(-10px); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 58px; left: 0; right: 0;
+  background: var(--nav-bg);
+  border-bottom: 2px solid var(--orange);
+  z-index: 499;
+  flex-direction: column;
+  padding: 1rem 2rem;
+}
+.mobile-menu.active { display: flex; }
+.mobile-menu a {
+  padding: 0.8rem 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--orange); }
+
+/* ─── TICKER ─────────────────────────────────────────── */
+.ticker-wrap {
+  margin-top: 58px;
+  background: var(--orange);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.45rem 0;
+}
+.ticker-track {
+  display: inline-flex;
+  animation: ticker 30s linear infinite;
+}
+.ticker-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #080808;
+  padding: 0 3rem;
+  font-weight: 700;
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── HERO ───────────────────────────────────────────── */
+/* site-main wraps everything above footer so footer can reveal underneath */
+.site-main {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+}
+
+.hero {
+  min-height: calc(100vh - 58px);
+  background: var(--bg);
+  display: grid;
+  grid-template-columns: 55% 45%;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border);
+}
+
+/* LEFT: Slider side */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5rem 4rem 3rem;
+  position: relative;
+  z-index: 2;
+  border-right: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.hero-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+.hero-eye-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Slide texts */
+.hero-slide {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  pointer-events: none;
+}
+.hero-slide.active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  position: relative;
+}
+
+.hero-slide-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.hero-slide h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 6.5vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+.hero-slide h1 .hl { color: var(--lime); }
+
+.hero-bottom-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.hero-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.h-dot {
+  width: 28px; height: 4px;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, width 0.3s;
+}
+.h-dot.active { background: var(--orange); width: 52px; }
+
+.hero-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: #080808;
+  background: var(--orange);
+  padding: 0.65rem 1.8rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-primary:hover { background: var(--lime); transform: translateX(4px); }
+
+.btn-ghost {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--muted);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--orange); border-color: var(--orange); }
+
+/* RIGHT: GRFK DSGN side */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 5rem 4rem 3rem;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Decorative bg grid */
+.hero-right::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.4;
+}
+
+.hero-logo-block {
+  position: relative; z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero-logo-line {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 11vw, 14rem);
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  display: block;
+  user-select: none;
+}
+
+.hero-logo-outline {
+  color: transparent;
+  -webkit-text-stroke: 2.5px var(--orange);
+}
+[data-theme="light"] .hero-logo-outline {
+  -webkit-text-stroke-color: var(--orange);
+}
+
+.hero-logo-fill {
+  color: var(--orange);
+}
+
+.hero-logo-sub {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hero-logo-sub-main {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  color: var(--lime);
+  line-height: 1;
+}
+.hero-logo-sub-small {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── STATS ─────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--bg);
+  border-top: 2px solid var(--orange);
+}
+.stat-block {
+  padding: 2.5rem 3rem;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.stat-block:last-child { border-right: none; }
+.stat-block:hover { background: var(--bg2); }
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.2rem;
+  line-height: 1;
+  color: var(--orange);
+  letter-spacing: 0.04em;
+}
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* ─── COLOR STRIPES ──────────────────────────────────── */
+.stripe        { height: 6px; background: var(--orange); }
+.stripe.lime   { background: var(--lime); }
+.stripe.pink   { background: var(--pink); }
+.stripe.blue   { background: var(--blue); }
+.stripe.yellow { background: var(--yellow); }
+
+/* ─── SECTION GEMEINSAM ──────────────────────────────── */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+  color: var(--muted);
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 22px; height: 2px;
+  background: currentColor;
+}
+
+.section-h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 5.5vw, 6.5rem);
+  line-height: 0.93;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+/* ─── PURPOSE ─────────────────────────────────────────── */
+.purpose {
+  background: var(--bg);
+  padding: 8rem 0;
+}
+.purpose-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+.purpose .section-label { color: var(--lime); }
+
+.purpose-quote {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 3vw, 3.8rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--lime);
+  padding: 2.5rem;
+  border: 3px solid var(--lime);
+  margin-bottom: 3rem;
+}
+[data-theme="light"] .purpose-quote {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.purpose-body p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+}
+.purpose-body strong { color: var(--text); font-weight: 600; }
+
+.purpose-visual {
+  aspect-ratio: 4/3;
+  border: 2px solid var(--lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg2);
+}
+[data-theme="light"] .purpose-visual { border-color: var(--orange); }
+.purpose-visual::before {
+  content: 'BILD';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  color: var(--border);
+  letter-spacing: 0.2em;
+}
+.ph-label {
+  position: absolute;
+  bottom: 1rem; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── KOMPETENZEN ────────────────────────────────────── */
+.kompetenzen {
+  background: var(--bg2);
+  padding: 8rem 0;
+}
+
+.cluster-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 2px solid var(--border);
+  margin-top: 4rem;
+}
+
+.cluster-card {
+  border: 1px solid var(--border);
+  padding: 3rem;
+  position: relative;
+  transition: background 0.25s, color 0.25s;
+  background: var(--bg2);
+}
+.cluster-card:hover { background: var(--bg3); }
+
+.cluster-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  margin-bottom: 1.5rem;
+}
+.cluster-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 2.8vw, 3.2rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+.cluster-card p {
+  font-size: 0.87rem;
+  line-height: 1.85;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+  max-width: 46ch;
+}
+.cluster-items {
+  list-style: none;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.cluster-li {
+  font-size: 0.82rem;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.cluster-li::before { content: '→'; color: var(--orange); font-size: 0.75rem; }
+.cluster-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cluster-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.2rem 0.5rem;
+}
+.cluster-visual {
+  margin: 2rem -3rem -3rem;
+  height: 80px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+}
+.cluster-visual span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* SPOTLIGHT */
+.spotlight-box {
+  grid-column: 1 / -1;
+  background: var(--orange);
+  color: #080808;
+  padding: 3rem;
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+.spotlight-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0.4;
+}
+.spotlight-content h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.8rem, 2.2vw, 2.8rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.spotlight-content p {
+  font-size: 0.87rem;
+  line-height: 1.8;
+  color: rgba(8,8,8,0.65);
+  max-width: 80ch;
+}
+
+/* ─── TOOLS ──────────────────────────────────────────── */
+.tools {
+  background: var(--pink);
+  color: #080808;
+  padding: 8rem 0;
+}
+.tools .section-h2 { color: #080808; }
+.tools .section-label { color: rgba(8,8,8,0.45); }
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  margin-top: 4rem;
+  align-items: start;
+}
+.tools-body {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: rgba(8,8,8,0.65);
+  margin-bottom: 2rem;
+}
+.tools-stages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 2px solid rgba(8,8,8,0.25);
+}
+.tools-stage {
+  padding: 1.2rem;
+  border-right: 2px solid rgba(8,8,8,0.15);
+  text-align: center;
+}
+.tools-stage:last-child { border-right: none; }
+.tools-stage-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: rgba(8,8,8,0.2);
+  line-height: 1;
+}
+.tools-stage-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(8,8,8,0.6);
+  margin-top: 0.4rem;
+}
+.tool-list { display: flex; flex-direction: column; gap: 0; }
+.tool-item {
+  padding: 2rem 0;
+  border-bottom: 2px solid rgba(8,8,8,0.15);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.tool-item:last-child { border-bottom: none; }
+.tool-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  color: #080808;
+  background: rgba(8,8,8,0.12);
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+  margin-top: 0.15rem;
+}
+.tool-text h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: #080808;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.tool-text p {
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: rgba(8,8,8,0.6);
+}
+
+/* ─── KI ─────────────────────────────────────────────── */
+.ki {
+  background: var(--yellow);
+  color: #080808;
+  padding: 8rem 0;
+}
+.ki .section-h2 { color: #080808; }
+.ki .section-label { color: rgba(8,8,8,0.45); }
+
+.ki-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  margin-bottom: 4rem;
+  align-items: end;
+}
+.ki-intro {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: rgba(8,8,8,0.65);
+}
+.ki-intro strong { color: #080808; font-weight: 600; }
+
+.ki-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 2px solid rgba(8,8,8,0.2);
+}
+.ki-card {
+  padding: 2.5rem;
+  border-right: 2px solid rgba(8,8,8,0.15);
+  transition: background 0.2s;
+}
+.ki-card:last-child { border-right: none; }
+.ki-card:hover { background: rgba(8,8,8,0.05); }
+.ki-icon {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: rgba(8,8,8,0.18);
+  margin-bottom: 1.5rem;
+}
+.ki-card h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  color: #080808;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+.ki-card p {
+  font-size: 0.83rem;
+  color: rgba(8,8,8,0.6);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+.ki-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+.ki-card ul li {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(8,8,8,0.5);
+  padding-left: 1rem;
+  position: relative;
+}
+.ki-card ul li::before { content: '·'; position: absolute; left: 0; color: #080808; }
+
+/* ─── SHOWREEL ───────────────────────────────────────── */
+.showreel {
+  background: var(--bg);
+  padding: 6rem 0;
+}
+.showreel .section-label { color: var(--orange); }
+
+.video-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 3px solid rgba(255,85,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  margin-top: 3rem;
+  background: var(--bg2);
+}
+.video-frame:hover { border-color: var(--orange); }
+.video-bg-text {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20vw;
+  color: var(--border);
+  letter-spacing: 0.1em;
+  user-select: none;
+  white-space: nowrap;
+}
+.video-play {
+  width: 80px; height: 80px;
+  border: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s;
+  position: relative; z-index: 1;
+}
+.video-frame:hover .video-play { background: var(--orange); }
+.video-play-icon { fill: var(--orange); transition: fill 0.25s; }
+.video-frame:hover .video-play-icon { fill: #080808; }
+.video-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: relative; z-index: 1;
+}
+
+/* ─── APPROACH ───────────────────────────────────────── */
+.approach {
+  background: var(--blue);
+  color: #080808;
+  padding: 8rem 0;
+}
+.approach .section-h2 { color: #080808; }
+.approach .section-label { color: rgba(8,8,8,0.45); }
+
+.approach-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 2px solid rgba(8,8,8,0.2);
+  margin-top: 4rem;
+}
+.step {
+  padding: 2.5rem;
+  border-right: 2px solid rgba(8,8,8,0.15);
+  position: relative;
+  min-height: 260px;
+}
+.step:last-child { border-right: none; }
+.step-bg-num {
+  position: absolute;
+  bottom: 1rem; right: 1.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 7rem;
+  color: rgba(8,8,8,0.07);
+  line-height: 1;
+  user-select: none;
+}
+.step h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.04em;
+  color: #080808;
+  margin-bottom: 1rem;
+  position: relative; z-index: 1;
+}
+.step p {
+  font-size: 0.83rem;
+  color: rgba(8,8,8,0.6);
+  line-height: 1.75;
+  position: relative; z-index: 1;
+}
+
+/* ─── PORTFOLIO ──────────────────────────────────────── */
+.portfolio {
+  background: var(--bg);
+  padding: 8rem 0;
+}
+.portfolio .section-label { color: var(--lime); }
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap: 3px;
+  background: var(--border);
+  border: 3px solid var(--border);
+  margin-top: 3rem;
+}
+.p-item {
+  background: var(--bg2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+.p-item:hover { opacity: 0.8; }
+.p-item:first-child { grid-row: span 2; }
+.p-item::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8,8,8,0.85) 0%, transparent 55%);
+}
+.p-bg {
+  position: absolute; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.p-info { position: relative; z-index: 2; }
+.p-info h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: #F5F5F0;
+  line-height: 1;
+}
+.p-info span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,245,240,0.3);
+}
+.p-item:nth-child(1) { border-left: 4px solid var(--orange); }
+.p-item:nth-child(2) { border-left: 4px solid var(--lime); }
+.p-item:nth-child(3) { border-left: 4px solid var(--pink); }
+.p-item:nth-child(4) { border-left: 4px solid var(--blue); }
+.p-item:nth-child(5) { border-left: 4px solid var(--yellow); }
+
+/* ─── CONTACT ────────────────────────────────────────── */
+.contact {
+  background: var(--orange);
+  color: #080808;
+  padding: 8rem 0;
+}
+.contact .section-label { color: rgba(8,8,8,0.45); }
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+.contact h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 5.5vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.04em;
+  color: #080808;
+  margin-bottom: 1.5rem;
+}
+.contact-desc {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: rgba(8,8,8,0.65);
+  margin-bottom: 2.5rem;
+}
+.contact-table { display: flex; flex-direction: column; }
+.c-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 2px solid rgba(8,8,8,0.15);
+  align-items: baseline;
+}
+.c-row:last-child { border-bottom: none; }
+.c-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(8,8,8,0.45);
+}
+.c-val { font-size: 0.9rem; color: #080808; font-weight: 500; }
+
+.contact-visual {
+  background: rgba(8,8,8,0.08);
+  border: 2px solid rgba(8,8,8,0.2);
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.contact-visual::before {
+  content: 'TEAM';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  color: rgba(8,8,8,0.07);
+  letter-spacing: 0.2em;
+}
+.contact-visual .ph-label { color: rgba(8,8,8,0.3); }
+
+/* ─── FOOTER REVEAL ──────────────────────────────────── */
+/* Footer bleibt sticky am bottom, site-main scrollt drüber */
+.footer-reveal {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #080808;
+  color: #F5F5F0;
+  overflow: hidden;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  padding: 5rem 4rem 4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.footer-claim {
+  padding-right: 3rem;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.footer-claim-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 3vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  color: #F5F5F0;
+  margin-bottom: 2rem;
+}
+.footer-claim-text span { color: var(--orange); }
+
+.footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  color: #080808;
+  background: var(--orange);
+  padding: 0.7rem 1.8rem;
+  transition: background 0.2s;
+}
+.footer-cta:hover { background: var(--lime); }
+
+.footer-nav-col {
+  padding: 0 3rem;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.footer-col-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,245,240,0.2);
+  margin-bottom: 1.5rem;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a {
+  font-size: 0.9rem;
+  color: rgba(245,245,240,0.4);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--orange); }
+
+.footer-contact-col { padding: 0 0 0 3rem; }
+.footer-contact-col p {
+  font-size: 0.88rem;
+  color: rgba(245,245,240,0.4);
+  line-height: 1.8;
+}
+.footer-contact-col strong { color: rgba(245,245,240,0.7); font-weight: 400; }
+
+/* Big wordmark */
+.footer-wordmark {
+  overflow: hidden;
+  line-height: 0.85;
+  padding: 0;
+}
+.footer-wm {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(12vw, 14vw, 17vw);
+  letter-spacing: 0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245,245,240,0.08);
+  white-space: nowrap;
+  display: block;
+  padding: 0 3.5rem;
+  transform: translateY(32%);
+  transition: transform 1.6s cubic-bezier(0.16,1,0.3,1);
+  user-select: none;
+}
+.footer-wm.revealed { transform: translateY(0); }
+
+.footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 4rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.footer-bar p {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,245,240,0.15);
+}
+
+/* ─── SCROLL REVEAL ──────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+.anim-1 { animation: fadeUp 0.9s ease both; }
+.anim-2 { animation: fadeUp 0.9s 0.15s ease both; }
+.anim-3 { animation: fadeUp 0.9s 0.3s ease both; }
+.anim-4 { animation: fadeUp 0.9s 0.45s ease both; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-right { display: none; }
+  .hero-left { padding: 5rem 2.5rem 3rem; }
+  .container { padding: 0 2.5rem; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .stat-block:nth-child(2) { border-right: none; }
+  .purpose-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .cluster-grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .ki-head { grid-template-columns: 1fr; gap: 2rem; }
+  .ki-grid { grid-template-columns: 1fr; }
+  .ki-card { border-right: none; border-bottom: 2px solid rgba(8,8,8,0.12); }
+  .ki-card:last-child { border-bottom: none; }
+  .approach-steps { grid-template-columns: repeat(2,1fr); }
+  .step:nth-child(2) { border-right: none; }
+  .portfolio-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 220px 220px 220px; }
+  .p-item:first-child { grid-row: span 1; }
+  .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .footer-top { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 2.5rem 3rem; }
+  .footer-claim { border-right: none; padding-right: 0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 2.5rem; }
+  .footer-nav-col { border-right: none; padding: 0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 2rem; }
+  .footer-contact-col { padding: 0; }
+  .footer-bar { padding: 1rem 2.5rem; }
+  .spotlight-box { grid-template-columns: 1fr; gap: 1.5rem; }
+  .spotlight-label { writing-mode: horizontal-tb; transform: none; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0.75rem 1.25rem; }
+  .nav-links { display: none; }
+  .theme-toggle-wrap { display: none; }
+  .hamburger { display: flex; }
+  .hero-left { padding: 4.5rem 1.25rem 2rem; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .approach-steps { grid-template-columns: 1fr; }
+  .step { border-right: none; border-bottom: 2px solid rgba(8,8,8,0.12); }
+  .step:last-child { border-bottom: none; }
+  .portfolio-grid { grid-template-columns: 1fr; grid-template-rows: repeat(5,200px); }
+  .container { padding: 0 1.25rem; }
+  .tools-stages { grid-template-columns: repeat(2,1fr); }
+  .tools-stage:nth-child(2) { border-right: none; }
+  .tools-stage:nth-child(3) { border-top: 2px solid rgba(8,8,8,0.12); }
+  .tools-stage:nth-child(4) { border-top: 2px solid rgba(8,8,8,0.12); border-right: none; }
+  .footer-wm { font-size: 18vw; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .stat-block { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat-block:last-child { border-bottom: none; }
+  .container { padding: 0 1rem; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════ NAV -->
+<nav>
+  <div class="nav-logo bebas">MDR // <span>Grafik &amp; Design</span></div>
+  <ul class="nav-links">
+    <li><a href="#kompetenzen">Kompetenzen</a></li>
+    <li><a href="#ki">KI &amp; Zukunft</a></li>
+    <li><a href="#arbeiten">Arbeiten</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <div class="theme-toggle-wrap">
+    <span class="toggle-label">Hell</span>
+    <button class="theme-btn" id="themeBtn" aria-label="Farbschema wechseln"></button>
+    <span class="toggle-label">Dunkel</span>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Navigation">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#kompetenzen">Kompetenzen</a>
+  <a href="#ki">KI &amp; Zukunft</a>
+  <a href="#arbeiten">Arbeiten</a>
+  <a href="#kontakt">Kontakt</a>
+</div>
+
+<!-- ════════════════════════════════════ TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">..+++ MDR // Abt. Grafik &amp; Design ..+</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">Keine Farbe ist illegal</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">Live · Narrative · Identität · Strategie · KI</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">50+ Kreative — Leipzig · Halle · Erfurt</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">..+++ MDR // Abt. Grafik &amp; Design ..+</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">Keine Farbe ist illegal</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">Live · Narrative · Identität · Strategie · KI</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+    <span class="ticker-item">50+ Kreative — Leipzig · Halle · Erfurt</span>
+    <span class="ticker-item" style="opacity:.35">★</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ SITE MAIN (scrolls over footer) -->
+<div class="site-main">
+
+<!-- ─── HERO ──────────────────────────────────────────── -->
+<section class="hero">
+
+  <!-- LEFT: rotating slide text -->
+  <div class="hero-left">
+    <div class="hero-eyebrow anim-1">
+      <div class="hero-dot"></div>
+      <div class="hero-eye-label mono">Interne Kreativabteilung · MDR Mitteldeutscher Rundfunk</div>
+    </div>
+
+    <div class="hero-slide-wrap anim-2">
+      <div class="hero-slide active" id="hSlide0">
+        <h1>Grafik,<br>die <span class="hl">wirkt.</span></h1>
+      </div>
+      <div class="hero-slide" id="hSlide1">
+        <h1>Wir denken<br>in Struktur.<br>Wir fühlen<br>in <span class="hl">Geschichten.</span></h1>
+      </div>
+      <div class="hero-slide" id="hSlide2">
+        <h1>Wir erzählen<br><span class="hl">Geschichten</span><br>mit Grafik,<br>Bewegung &amp; Tech.</h1>
+      </div>
+    </div>
+
+    <div class="hero-bottom-row anim-3">
+      <div class="hero-controls">
+        <button class="h-dot active" data-slide="0"></button>
+        <button class="h-dot" data-slide="1"></button>
+        <button class="h-dot" data-slide="2"></button>
+      </div>
+      <div class="hero-meta mono">
+        50+ Kreative · 365 Tage Sendebetrieb<br>
+        Leipzig · Halle · Erfurt
+      </div>
+      <div class="hero-cta-row anim-4">
+        <a href="#kompetenzen" class="btn-primary bebas">
+          Kompetenzen
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#arbeiten" class="btn-ghost mono">Arbeiten ansehen →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: GRFK DSGN logo -->
+  <div class="hero-right anim-2">
+    <div class="hero-logo-block">
+      <span class="hero-logo-line hero-logo-outline bebas">GRFK</span>
+      <span class="hero-logo-line hero-logo-fill bebas">DSGN</span>
+      <div class="hero-logo-sub">
+        <div class="hero-logo-sub-main bebas">Interne Kreativabteilung · <span style="color:var(--lime)">MDR</span></div>
+        <div class="hero-logo-sub-small mono">Grafik &amp; Design seit 20+ Jahren</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── STATS ──────────────────────────────────────────── -->
+<div class="stats-row">
+  <div class="stat-block reveal">
+    <div class="stat-num bebas">50+</div>
+    <div class="stat-label mono">Kreative im Team</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num bebas">365</div>
+    <div class="stat-label mono">Tage Sendebetrieb</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num bebas">3</div>
+    <div class="stat-label mono">Virtuelle Studios</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num bebas">20+</div>
+    <div class="stat-label mono">Jahre Medienerfahrung</div>
+  </div>
+</div>
+
+<div class="stripe"></div>
+
+<!-- ─── PURPOSE ───────────────────────────────────────── -->
+<section class="purpose">
+  <div class="container">
+    <div class="section-label reveal" style="color:var(--lime);">Unser Warum</div>
+    <div class="purpose-inner">
+      <div>
+        <div class="purpose-quote reveal">
+          „Design ist nicht nur Dekoration. Design ist Funktionalität."
+        </div>
+        <div class="purpose-body reveal">
+          <p>Als interne Kreativabteilung des MDR sind wir <strong>mehr als ein ausführender Dienstleister</strong>. Wir bringen gestalterischen Anspruch und technische Tiefe zusammen — und helfen Redaktionen dabei, mit ihren Inhalten wirklich anzukommen.</p>
+          <p>Wir begleiten Formate von der ersten Idee bis zum Sendebetrieb. Wir kennen das Publikum, kennen die Plattformen, kennen die Redaktionen. <strong>Das ist unser Vorteil gegenüber jeder externen Agentur</strong> — und unser Versprechen.</p>
+          <p>Nicht erst bestellen, wenn alles feststeht. Früh denken, gemeinsam entwickeln, schnell testen. <strong>Wir sind die kreative Infrastruktur.</strong></p>
+        </div>
+      </div>
+      <div class="purpose-visual reveal">
+        <div class="ph-label mono">Bild · Team / Studio / Work in Progress</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe lime"></div>
+
+<!-- ─── KOMPETENZEN ───────────────────────────────────── -->
+<section class="kompetenzen" id="kompetenzen">
+  <div class="container">
+    <div class="section-label reveal">Kompetenzfelder</div>
+    <div class="section-h2 bebas reveal">Was wir können<br>&amp; was wir lieben</div>
+
+    <div class="cluster-grid reveal">
+
+      <div class="cluster-card">
+        <div class="cluster-num mono">01</div>
+        <div class="cluster-name bebas">Live &amp;<br>On-Air</div>
+        <p>Das Rückgrat des Sendebetriebs — rund um die Uhr, 365 Tage im Jahr. Grafiksysteme in der Regie, Infografiken in Livesendungen, virtuelle Studios auf Broadcastniveau.</p>
+        <ul class="cluster-items">
+          <li class="cluster-li">Grafiksysteme &amp; Regie-Integration</li>
+          <li class="cluster-li">Virtuelle Studios (Planung, Bau, Betrieb)</li>
+          <li class="cluster-li">Live-Infografiken &amp; Breaking News</li>
+          <li class="cluster-li">Hintergrundbilder für Fernsehsendungen</li>
+        </ul>
+        <div class="cluster-tags">
+          <span class="cluster-tag">Live-Produktion</span>
+          <span class="cluster-tag">Virtual Studio</span>
+          <span class="cluster-tag">Regie</span>
+          <span class="cluster-tag">XR</span>
+        </div>
+        <div class="cluster-visual"><span>Bild / Video einfügen</span></div>
+      </div>
+
+      <div class="cluster-card">
+        <div class="cluster-num mono">02</div>
+        <div class="cluster-name bebas">Narrative &amp;<br>Erklärung</div>
+        <p>Komplexe Sachverhalte visuell zugänglich machen — von der tagesaktuellen Infografik bis zur aufwändigen 3D-Erklärgrafik und Charakteranimation.</p>
+        <ul class="cluster-items">
+          <li class="cluster-li">Infografiken &amp; Datenjournalismus</li>
+          <li class="cluster-li">Erklärgrafiken &amp; Animationen</li>
+          <li class="cluster-li">3D-Grafik &amp; Visualisierung</li>
+          <li class="cluster-li">Cartoon- &amp; Charakteranimation</li>
+        </ul>
+        <div class="cluster-tags">
+          <span class="cluster-tag">Infografik</span>
+          <span class="cluster-tag">3D</span>
+          <span class="cluster-tag">Animation</span>
+          <span class="cluster-tag">Storytelling</span>
+        </div>
+        <div class="cluster-visual"><span>Bild / Video einfügen</span></div>
+      </div>
+
+      <div class="spotlight-box">
+        <div class="spotlight-label bebas">Spotlight</div>
+        <div class="spotlight-content">
+          <h4 class="bebas">Cartoon &amp; Charakteranimation — das i-Tüpfelchen</h4>
+          <p>Was als KiKA-Projekt begann, ist zu einem echten Aushängeschild geworden: Wir bringen Charaktere zum Leben — mit Witz, Wärme und handwerklicher Sorgfalt. Vom animierten Maskottchen bis zur vollständigen Seriencharakterwelt.</p>
+        </div>
+      </div>
+
+      <div class="cluster-card">
+        <div class="cluster-num mono">03</div>
+        <div class="cluster-name bebas">Erscheinung &amp;<br>Identität</div>
+        <p>Konsistente Designsprachen auf allen Plattformen. Wir entwickeln und pflegen die visuelle Identität von Sendungen, Formaten und Marken innerhalb des MDR.</p>
+        <ul class="cluster-items">
+          <li class="cluster-li">Sendungspakete &amp; Formatdesign</li>
+          <li class="cluster-li">Thumbnails &amp; Mediathek-Gestaltung</li>
+          <li class="cluster-li">Social Media Templates &amp; Motion</li>
+          <li class="cluster-li">Titelmotive &amp; Eventgrafik</li>
+        </ul>
+        <div class="cluster-tags">
+          <span class="cluster-tag">Corporate Design</span>
+          <span class="cluster-tag">Social Media</span>
+          <span class="cluster-tag">Mediathek</span>
+          <span class="cluster-tag">Branding</span>
+        </div>
+        <div class="cluster-visual"><span>Bild / Video einfügen</span></div>
+      </div>
+
+      <div class="cluster-card">
+        <div class="cluster-num mono">04</div>
+        <div class="cluster-name bebas">Strategie &amp;<br>Beratung</div>
+        <p>Wir denken vor. Welche Bildsprache funktioniert auf welcher Plattform? Wie baut man ein Format auf, das auch morgen noch funktioniert? Wir sind Sparringspartner, nicht Auftragsabwickler.</p>
+        <ul class="cluster-items">
+          <li class="cluster-li">Rapid Prototyping &amp; Entscheidungsvorlagen</li>
+          <li class="cluster-li">Performance-Analyse &amp; Optimierung</li>
+          <li class="cluster-li">Format- &amp; Kanalberatung</li>
+          <li class="cluster-li">Workshops &amp; Design-Briefings</li>
+        </ul>
+        <div class="cluster-tags">
+          <span class="cluster-tag">Beratung</span>
+          <span class="cluster-tag">Prototyping</span>
+          <span class="cluster-tag">Strategy</span>
+          <span class="cluster-tag">Workshops</span>
+        </div>
+        <div class="cluster-visual"><span>Bild / Video einfügen</span></div>
+      </div>
+
+      <div class="spotlight-box" style="background:var(--bg3);color:var(--text);border-color:var(--border);">
+        <div class="spotlight-label bebas" style="opacity:0.2;">Spotlight</div>
+        <div class="spotlight-content">
+          <h4 class="bebas" style="color:var(--text);">Digital Publishing — von Print bis zum interaktiven Geschäftsbericht</h4>
+          <p style="color:var(--text2);">Neben dem Bewegtbild-Schwerpunkt gestalten und produzieren wir das gesamte Spektrum des Digital Publishing: von Printdokumenten über Plakate bis hin zu umfangreichen Geschäftsberichten — inhaltlich, grafisch und infografisch aufbereitet.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="stripe pink"></div>
+
+<!-- ─── TOOLS ──────────────────────────────────────────── -->
+<section class="tools" id="tools">
+  <div class="container">
+    <div class="section-label reveal">WebApp &amp; Tool-Entwicklung</div>
+    <div class="section-h2 bebas reveal">Wir bauen nicht nur<br>Grafik — wir bauen<br>Werkzeuge.</div>
+    <div class="tools-grid">
+      <div class="reveal">
+        <p class="tools-body">Vom ersten Prototyp bis zum produktiven Redaktionssystem: Wir entwickeln Software, die unsere eigenen Kernkompetenzen verlängert und Redakteurinnen und Redakteuren ermächtigt, Gestaltung selbst in die Hand zu nehmen.</p>
+        <div class="tools-stages">
+          <div class="tools-stage"><div class="tools-stage-num bebas">01</div><div class="tools-stage-label mono">Idee &amp; Konzept</div></div>
+          <div class="tools-stage"><div class="tools-stage-num bebas">02</div><div class="tools-stage-label mono">Rapid Prototype</div></div>
+          <div class="tools-stage"><div class="tools-stage-num bebas">03</div><div class="tools-stage-label mono">Redaktionstest</div></div>
+          <div class="tools-stage"><div class="tools-stage-num bebas">04</div><div class="tools-stage-label mono">Produktivsystem</div></div>
+        </div>
+      </div>
+      <div class="tool-list reveal">
+        <div class="tool-item">
+          <span class="tool-badge bebas">WebApp</span>
+          <div class="tool-text">
+            <h4 class="bebas">Wozniu — Charakteranimation für Redakteure</h4>
+            <p>Eine browserbasierte Produktionsumgebung: Text eingeben, Audio generieren, Animationen per Timeline synchronisieren — ähnlich einer vereinfachten Schnitt-Software.</p>
+          </div>
+        </div>
+        <div class="tool-item">
+          <span class="tool-badge bebas">Redaktionssystem</span>
+          <div class="tool-text">
+            <h4 class="bebas">Grafik-Steuerung im Sendebetrieb</h4>
+            <p>Benutzeroberflächen direkt in Redaktionssysteme integriert: Grafikelemente konfigurieren, virtuelle Studios einrichten, Live-Vorschauen abrufen.</p>
+          </div>
+        </div>
+        <div class="tool-item">
+          <span class="tool-badge bebas">Smart Templates</span>
+          <div class="tool-text">
+            <h4 class="bebas">Grafik-Vorlagen die wie Software funktionieren</h4>
+            <p>Designvorlagen mit schaltbaren Varianten, Datenanbindung und konfigurierbaren Parametern — weit mehr als statische Templates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe yellow"></div>
+
+<!-- ─── KI ─────────────────────────────────────────────── -->
+<section class="ki" id="ki">
+  <div class="container">
+    <div class="ki-head">
+      <div>
+        <div class="section-label reveal">Generative KI &amp; Zukunft</div>
+        <div class="section-h2 bebas reveal">KI als<br>Werkzeug,<br>nicht als<br>Ersatz.</div>
+      </div>
+      <div class="ki-intro reveal">
+        <p>Wir beschäftigen uns intensiv und praxisnah mit generativer KI — nicht als Hype, sondern als echte Erweiterung unserer Möglichkeiten. Strategisch sinnvoll, operativ erprobt, ethisch durchdacht.</p>
+        <p style="margin-top:1rem;">Das macht uns zu einem der wenigen Teams im Haus, das KI nicht nur nutzt, sondern <strong>souverän bewertet, einordnet und einführt</strong>.</p>
+      </div>
+    </div>
+    <div class="ki-grid reveal">
+      <div class="ki-card">
+        <div class="ki-icon bebas">◈</div>
+        <h4 class="bebas">Strategisch</h4>
+        <p>Welche KI-Tools sind für welche Aufgaben geeignet? Wie verändert sich die Produktionskette? Was bedeutet das für Budgets und Abläufe?</p>
+        <ul>
+          <li>Tool-Evaluation &amp; Empfehlungen</li>
+          <li>Workflow-Analyse &amp; Redesign</li>
+          <li>Einsatzszenarien nach Aufgabentyp</li>
+          <li>Budget- und Zeiteffekte</li>
+        </ul>
+      </div>
+      <div class="ki-card">
+        <div class="ki-icon bebas">◇</div>
+        <h4 class="bebas">Operativ</h4>
+        <p>Welche Workflows funktionieren in der Praxis? Wir haben echte Erfahrung — aus echter Produktion.</p>
+        <ul>
+          <li>Bildgenerierung &amp; Compositing</li>
+          <li>Animationsunterstützung</li>
+          <li>Promptdesign &amp; Quality Control</li>
+          <li>Mensch-KI-Collaboration</li>
+        </ul>
+      </div>
+      <div class="ki-card">
+        <div class="ki-icon bebas">◉</div>
+        <h4 class="bebas">Ethisch &amp; Compliance</h4>
+        <p>Im öffentlich-rechtlichen Kontext besonders relevant: Datenschutz, Bildrechte, Transparenzpflichten. Wir haben das durchdacht.</p>
+        <ul>
+          <li>Datenschutz &amp; Bildrechte</li>
+          <li>Transparenz &amp; Kennzeichnung</li>
+          <li>MDR-konforme KI-Workflows</li>
+          <li>Interne Schulungen &amp; Guidelines</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe" style="background:var(--bg);height:4px;"></div>
+
+<!-- ─── SHOWREEL ────────────────────────────────────────── -->
+<section class="showreel">
+  <div class="container">
+    <div class="section-label reveal" style="color:var(--orange);">Showreel</div>
+    <div class="video-frame reveal">
+      <div class="video-bg-text bebas">PLAY</div>
+      <div class="video-play">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M7 4l13 7-13 7V4z" class="video-play-icon"/>
+        </svg>
+      </div>
+      <div class="video-label mono">Showreel 2024/25 — Video einfügen</div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe blue"></div>
+
+<!-- ─── APPROACH ───────────────────────────────────────── -->
+<section class="approach">
+  <div class="container">
+    <div class="section-label reveal">Wie wir arbeiten</div>
+    <div class="section-h2 bebas reveal">Früh dabei.<br>Bis zum Ende.</div>
+    <div class="approach-steps reveal">
+      <div class="step">
+        <div class="step-bg-num bebas">01</div>
+        <h4 class="bebas">Verstehen</h4>
+        <p>Wir denken vom Publikum her. Was soll gesehen, verstanden, gefühlt werden? Erst dann entscheiden wir über Form und Medium.</p>
+      </div>
+      <div class="step">
+        <div class="step-bg-num bebas">02</div>
+        <h4 class="bebas">Explorieren</h4>
+        <p>Prototypen statt Konzeptpapiere. Wir testen Ideen schnell — mit modernen KI-Workflows und 20 Jahren Produktionserfahrung.</p>
+      </div>
+      <div class="step">
+        <div class="step-bg-num bebas">03</div>
+        <h4 class="bebas">Gestalten</h4>
+        <p>Von der ersten Skizze bis zur sendebereiten Grafik. Technische Exzellenz und gestalterische Haltung — in einem Team.</p>
+      </div>
+      <div class="step">
+        <div class="step-bg-num bebas">04</div>
+        <h4 class="bebas">Begleiten</h4>
+        <p>Wir sind im Sendebetrieb. 365 Tage. Wir lernen aus jeder Ausspielung — für das nächste Format, die nächste Entscheidung.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe lime"></div>
+
+<!-- ─── PORTFOLIO ───────────────────────────────────────── -->
+<section class="portfolio" id="arbeiten">
+  <div class="container">
+    <div class="section-label reveal" style="color:var(--lime);">Ausgewählte Arbeiten</div>
+    <div class="portfolio-grid reveal">
+      <div class="p-item"><div class="p-bg mono">Video / Bild einfügen</div><div class="p-info"><h4 class="bebas">Virtuelles Studio</h4><span class="mono">Video · Bild einfügen</span></div></div>
+      <div class="p-item"><div class="p-bg mono">Bild einfügen</div><div class="p-info"><h4 class="bebas">Infografik Bundestagswahl</h4><span class="mono">Bild einfügen</span></div></div>
+      <div class="p-item"><div class="p-bg mono">Bild einfügen</div><div class="p-info"><h4 class="bebas">Sendungsdesign</h4><span class="mono">Bild einfügen</span></div></div>
+      <div class="p-item"><div class="p-bg mono">Video einfügen</div><div class="p-info"><h4 class="bebas">Charakteranimation</h4><span class="mono">Video einfügen</span></div></div>
+      <div class="p-item"><div class="p-bg mono">Video einfügen</div><div class="p-info"><h4 class="bebas">3D-Erklärgrafik</h4><span class="mono">Video einfügen</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+<!-- ─── CONTACT ─────────────────────────────────────────── -->
+<section class="contact" id="kontakt">
+  <div class="container">
+    <div class="section-label reveal">Team &amp; Kontakt</div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <h2 class="bebas">Lass uns<br>früh<br>anfangen.</h2>
+        <p class="contact-desc">Ob kurzfristige Anfrage im Tagesgeschäft oder langfristige Zusammenarbeit beim Aufbau eines neuen Formats — wir sind besser, je früher ihr uns einbezieht.</p>
+        <div class="contact-table">
+          <div class="c-row"><div class="c-label mono">Team</div><div class="c-val">Grafik &amp; Design, MDR</div></div>
+          <div class="c-row"><div class="c-label mono">Teamgröße</div><div class="c-val">ca. 50 Kreative (30 Feste, 20+ Freelance)</div></div>
+          <div class="c-row"><div class="c-label mono">Leitung</div><div class="c-val">Denis Mocigemba</div></div>
+          <div class="c-row"><div class="c-label mono">Anfrage</div><div class="c-val">→ Ticketsystem im Intranet</div></div>
+          <div class="c-row"><div class="c-label mono">Standort</div><div class="c-val">Leipzig · Halle · Erfurt</div></div>
+        </div>
+      </div>
+      <div class="contact-visual reveal">
+        <div class="ph-label mono">Teamfoto einfügen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /site-main -->
+
+<!-- ════════════════════════════════════ FOOTER (revealing) -->
+<footer class="footer-reveal">
+  <div class="footer-top">
+    <div class="footer-claim">
+      <div class="footer-claim-text bebas">Lasst uns<br><span>zusammen&shy;arbeiten.</span></div>
+      <a href="#kontakt" class="footer-cta bebas">Anfrage stellen →</a>
+    </div>
+    <div class="footer-nav-col">
+      <div class="footer-col-label mono">Navigation</div>
+      <ul class="footer-links">
+        <li><a href="#kompetenzen">Kompetenzfelder</a></li>
+        <li><a href="#ki">KI &amp; Zukunft</a></li>
+        <li><a href="#arbeiten">Ausgewählte Arbeiten</a></li>
+        <li><a href="#kontakt">Team &amp; Kontakt</a></li>
+        <li><a href="#">Ticketsystem / Anfrage →</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact-col">
+      <div class="footer-col-label mono">Kontakt</div>
+      <p><strong>Grafik &amp; Design</strong></p>
+      <p>Mitteldeutscher Rundfunk</p>
+      <p>Leipzig · Halle · Erfurt</p>
+      <p style="margin-top:0.8rem;"><strong>Leitung:</strong><br>Denis Mocigemba</p>
+    </div>
+  </div>
+
+  <div class="footer-wordmark">
+    <span class="footer-wm bebas" id="footerWm">GRFK DSGN.</span>
+  </div>
+
+  <div class="footer-bar">
+    <p class="mono">© 2025 MDR Mitteldeutscher Rundfunk · Grafik &amp; Design</p>
+    <p class="mono">Intranet · Intern · Nicht zur Veröffentlichung</p>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════ SCRIPT -->
+<script>
+// ── HERO SLIDER ──────────────────────────────────────────
+const slides = [
+  document.getElementById('hSlide0'),
+  document.getElementById('hSlide1'),
+  document.getElementById('hSlide2')
+];
+const dots = document.querySelectorAll('.h-dot');
+let current = 0, timer;
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  current = ((n % slides.length) + slides.length) % slides.length;
+  slides[current].classList.add('active');
+  dots[current].classList.add('active');
+}
+function startAuto() {
+  clearInterval(timer);
+  timer = setInterval(() => goTo(current + 1), 5000);
+}
+dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.slide); startAuto(); }));
+startAuto();
+
+// ── THEME TOGGLE ─────────────────────────────────────────
+const themeBtn = document.getElementById('themeBtn');
+const html = document.documentElement;
+
+themeBtn.addEventListener('click', () => {
+  const t = html.getAttribute('data-theme');
+  html.setAttribute('data-theme', t === 'dark' ? 'light' : 'dark');
+});
+
+// ── FOOTER WORDMARK REVEAL ────────────────────────────────
+const wm = document.getElementById('footerWm');
+if (wm) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) wm.classList.add('revealed'); });
+  }, { threshold: 0.05 });
+  obs.observe(wm);
+}
+
+// ── SCROLL REVEAL ────────────────────────────────────────
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// Stagger für Card-Grids
+document.querySelectorAll('.cluster-grid .cluster-card, .ki-grid .ki-card, .approach-steps .step, .stats-row .stat-block').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.07) + 's';
+});
+
+// ── HAMBURGER ────────────────────────────────────────────
+const hb = document.getElementById('hamburger');
+const mm = document.getElementById('mobileMenu');
+if (hb && mm) {
+  hb.addEventListener('click', () => { hb.classList.toggle('active'); mm.classList.toggle('active'); });
+  mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    hb.classList.remove('active'); mm.classList.remove('active');
+  }));
+  document.addEventListener('click', e => {
+    if (!hb.contains(e.target) && !mm.contains(e.target)) {
+      hb.classList.remove('active'); mm.classList.remove('active');
+    }
+  });
+}
+</script>
+
+</body>
+</html>
