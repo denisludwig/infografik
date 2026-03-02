@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDR Grafik & Design · Rollenklarheit V08</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0e0f13;
+            --surface: #16181f;
+            --surface2: #1e2028;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f2;
+            --muted: #7a7d8a;
+            --red: #e8473f;
+            --green: #27ae76;
+            --blue: #3a7bd5;
+            --amber: #e8a84a;
+            --violet: #9b6dff;
+            --mdr-blue: #003f87;
+            --font-d: 'DM Serif Display', serif;
+            --font-b: 'DM Sans', sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { font-family: var(--font-b); background: var(--bg); color: var(--text); height: 100%; overflow: hidden; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            background: rgba(14,15,19,0.96); backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 32px; display: flex; align-items: center; justify-content: space-between;
+            height: 60px;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 12px; }
+        .nav-mark {
+            width: 34px; height: 34px; border-radius: 8px; background: var(--mdr-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-d); font-size: 17px; color: #fff;
+        }
+        .nav-label { font-size: 14px; font-weight: 600; }
+        .nav-label span { color: var(--muted); font-weight: 300; }
+
+        /* ── TOGGLE ── */
+        .toggle-wrap {
+            display: flex; background: var(--surface2);
+            border: 1px solid var(--border); border-radius: 50px; padding: 4px;
+            position: relative; transition: border-color 0.4s;
+        }
+        body.ist  .toggle-wrap { border-color: rgba(232,71,63,0.4); }
+        body.soll .toggle-wrap { border-color: rgba(39,174,118,0.4); }
+        .toggle-pill {
+            position: absolute; top: 4px; left: 4px;
+            height: calc(100% - 8px); width: 148px; border-radius: 50px;
+            background: var(--surface); border: 1px solid var(--border);
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none;
+        }
+        .toggle-btn {
+            position: relative; z-index: 1; width: 148px;
+            padding: 8px 16px; border: none; background: transparent;
+            cursor: pointer; border-radius: 50px;
+            font-family: var(--font-b); font-size: 13px; font-weight: 600;
+            color: var(--muted); transition: color 0.3s;
+        }
+        .toggle-btn.a-ist  { color: var(--red); }
+        .toggle-btn.a-soll { color: var(--green); }
+
+        /* ── PAGE CONTAINER ── */
+        .pages-container {
+            position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+        }
+
+        /* ── SLIDES ── */
+        .slides-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.55s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 56px 32px 100px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .slide-inner {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* IST/SOLL slot visibility */
+        .slot-ist  { display: block; }
+        .slot-soll { display: none; }
+        body.soll .slot-ist  { display: none; }
+        body.soll .slot-soll { display: block; }
+
+        .slot.fading {
+            animation: fadeSlide 0.35s ease forwards;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── MODE STRIP ── */
+        .mode-strip {
+            position: fixed; top: 60px; left: 0; right: 0; z-index: 150;
+            display: flex; justify-content: center; pointer-events: none;
+        }
+        .mode-strip-inner {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 16px; border-radius: 0 0 12px 12px;
+            font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+            transition: all .4s; backdrop-filter: blur(12px);
+        }
+        body.ist  .mode-strip-inner { background:rgba(232,71,63,0.15); color:#e87a76; border:1px solid rgba(232,71,63,0.2); border-top:none; }
+        body.soll .mode-strip-inner { background:rgba(39,174,118,0.15); color:#5ec89a; border:1px solid rgba(39,174,118,0.2); border-top:none; }
+
+        /* ── PAGE DOTS ── */
+        .page-nav {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+            z-index: 200;
+            display: flex; align-items: center; gap: 20px;
+            background: rgba(14,15,19,0.85); backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: 50px;
+            padding: 12px 20px;
+        }
+        .page-dots { display: flex; align-items: center; gap: 8px; }
+        .page-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); cursor: pointer;
+            transition: all 0.3s; border: none; padding: 0;
+        }
+        .page-dot.active {
+            width: 24px; border-radius: 4px;
+            background: var(--text);
+        }
+        body.ist  .page-dot.active { background: var(--red); }
+        body.soll .page-dot.active { background: var(--green); }
+
+        .page-arrow {
+            background: none; border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; border-radius: 50%;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; transition: all 0.2s;
+        }
+        .page-arrow:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,0.2); }
+        .page-arrow:disabled { opacity: 0.2; cursor: default; }
+
+        .page-counter {
+            font-size: 11px; font-weight: 700; color: var(--muted);
+            letter-spacing: .08em; min-width: 40px; text-align: center;
+        }
+
+        /* ── SLIDE TITLE PILL ── */
+        .slide-title-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 50px; padding: 5px 16px; margin-bottom: 36px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--muted);
+        }
+
+        /* ────────────────────────────────────────
+           CONTENT STYLES (copied from V07)
+        ──────────────────────────────────────── */
+
+        /* Section label + title */
+        .sec-label {
+            font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+        .sec-title {
+            font-family: var(--font-d);
+            font-size: clamp(22px,2.8vw,36px); line-height: 1.12;
+            letter-spacing: -0.01em; margin-bottom: 28px;
+        }
+
+        /* Hero */
+        .hero-slot { text-align: center; padding-top: 40px; }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 50px; padding: 6px 18px; margin-bottom: 28px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--muted);
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; animation: pulse 2s infinite; display: inline-block; }
+        .dot-r { background: var(--red); }
+        .dot-g { background: var(--green); }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
+        .hero-h1 {
+            font-family: var(--font-d);
+            font-size: clamp(38px,5.5vw,68px); line-height: 1.06;
+            letter-spacing: -0.025em; margin-bottom: 20px;
+        }
+        .hero-h1 em.r { font-style: italic; color: #e87a76; }
+        .hero-h1 em.g { font-style: italic; color: #5ec89a; }
+        .hero-sub {
+            font-size: 16px; color: var(--muted);
+            max-width: 560px; margin: 0 auto 28px; line-height: 1.65;
+        }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 22px; border-radius: 50px;
+            font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+        }
+        .sp-ist  { background: rgba(232,71,63,0.12); color: var(--red); border: 1px solid rgba(232,71,63,0.3); }
+        .sp-soll { background: rgba(39,174,118,0.12); color: var(--green); border: 1px solid rgba(39,174,118,0.3); }
+
+        /* Tension grid */
+        .tension-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .tnode {
+            border-radius: 16px; padding: 24px;
+            background: var(--surface); border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .tnode::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+        .tn-hk  { border-color: rgba(232,168,74,0.25); } .tn-hk::before  { background: var(--amber); }
+        .tn-ppd { border-color: rgba(58,123,213,0.25); } .tn-ppd::before { background: var(--blue); }
+        .tn-gud { border-color: rgba(39,174,118,0.25); grid-column:1/-1; } .tn-gud::before { background: var(--green); }
+        .tn-sys { grid-column:1/-1; background:rgba(232,71,63,0.04); border-color:rgba(232,71,63,0.18); text-align:center; }
+        .nbadge {
+            display: inline-block; font-size: 10px; font-weight: 700;
+            letter-spacing: .08em; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 50px; margin-bottom: 10px;
+        }
+        .nb-hk  { background:rgba(232,168,74,0.18); color:#e8c48a; }
+        .nb-ppd { background:rgba(58,123,213,0.18); color:#7ba8e8; }
+        .nb-gud { background:rgba(39,174,118,0.18); color:#5ec89a; }
+        .tnode h4 { font-size: 14px; font-weight: 700; margin-bottom: 7px; line-height: 1.3; }
+        .tnode p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+        .talert {
+            margin-top: 12px; font-size: 12px; font-weight: 600;
+            padding: 7px 12px; border-radius: 8px;
+            background: rgba(232,71,63,0.09); color: #e87a76;
+            border: 1px solid rgba(232,71,63,0.2);
+        }
+        .tsep { grid-column:1/-1; display:flex; align-items:center; gap:12px; margin:2px 0; }
+        .tsep-line { flex:1; height:1px; background:rgba(232,71,63,0.2); }
+        .tsep-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .1em; color: var(--red);
+            background: rgba(232,71,63,0.09); padding: 4px 12px; border-radius: 50px; white-space: nowrap;
+        }
+
+        /* Peer map */
+        .peer-map {
+            background: var(--surface); border: 1px solid rgba(39,174,118,0.15);
+            border-radius: 22px; padding: 36px 32px; position: relative; overflow: hidden;
+        }
+        .peer-map::before {
+            content:''; position:absolute; inset:0;
+            background: radial-gradient(ellipse at 50% 40%, rgba(39,174,118,0.05) 0%, transparent 60%);
+            pointer-events:none;
+        }
+        .lklammer {
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 14px 20px 44px;
+            position: relative; margin-bottom: -28px;
+        }
+        .lklammer-label {
+            position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+            background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px; padding: 4px 16px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .1em; color: var(--muted); white-space: nowrap;
+        }
+        .lklammer-desc { font-size: 11px; color: var(--muted); text-align: center; opacity: .6; font-style: italic; }
+        .peer-row {
+            display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center; gap: 0; position: relative; z-index: 2;
+        }
+        .peer-node { border-radius: 16px; padding: 20px 16px; text-align: center; transition: transform .3s; }
+        .peer-node:hover { transform: translateY(-3px); }
+        .pn-hk  { background:rgba(232,168,74,0.08); border:1px solid rgba(232,168,74,0.25); }
+        .pn-gud { background:rgba(39,174,118,0.10); border:2px solid rgba(39,174,118,0.35); }
+        .pn-ppd { background:rgba(58,123,213,0.08); border:1px solid rgba(58,123,213,0.25); }
+        .pbadge {
+            display:inline-block; font-size:10px; font-weight:700;
+            letter-spacing:.08em; text-transform:uppercase;
+            padding:3px 10px; border-radius:50px; margin-bottom:8px;
+        }
+        .pb-hk  { background:rgba(232,168,74,0.2); color:#e8c48a; }
+        .pb-gud { background:rgba(39,174,118,0.2); color:#5ec89a; }
+        .pb-ppd { background:rgba(58,123,213,0.2); color:#7ba8e8; }
+        .peer-node h4 { font-size:13px; font-weight:700; margin-bottom:5px; line-height:1.3; }
+        .peer-node p  { font-size:11px; color:var(--muted); line-height:1.5; }
+        .peer-mandate {
+            margin-top:10px; font-size:11px; font-weight:600;
+            padding:6px 10px; border-radius:8px; line-height:1.4;
+        }
+        .pn-hk  .peer-mandate { background:rgba(232,168,74,0.1); color:#e8c48a; border:1px solid rgba(232,168,74,0.2); }
+        .pn-gud .peer-mandate { background:rgba(39,174,118,0.1); color:#5ec89a; border:1px solid rgba(39,174,118,0.2); }
+        .pn-ppd .peer-mandate { background:rgba(58,123,213,0.1); color:#7ba8e8; border:1px solid rgba(58,123,213,0.2); }
+        .peer-connector {
+            display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 10px;
+        }
+        .flow-tag {
+            background:rgba(255,255,255,0.05); border:1px solid var(--border);
+            border-radius:50px; padding:3px 10px;
+            font-size:10px; font-weight:600; color:var(--muted); white-space:nowrap;
+        }
+        .flow-arr { font-size:13px; color:var(--muted); }
+        .redaktion-row { display:flex; justify-content:center; margin-top:24px; position:relative; z-index:2; }
+        .vert-conn { display:flex; flex-direction:column; align-items:center; gap:4px; margin-bottom:8px; }
+        .vert-line { width:1px; height:24px; background:linear-gradient(to bottom,rgba(39,174,118,0.4),rgba(155,109,255,0.4)); }
+        .vert-tag {
+            font-size:10px; font-weight:700; text-transform:uppercase;
+            letter-spacing:.06em; color:var(--muted);
+            background:rgba(255,255,255,0.05); border:1px solid var(--border);
+            padding:3px 10px; border-radius:50px;
+        }
+        .redaktion-node {
+            background:rgba(155,109,255,0.07); border:1px solid rgba(155,109,255,0.2);
+            border-radius:14px; padding:16px 28px; text-align:center; max-width:380px; width:100%;
+        }
+        .rb { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:50px; margin-bottom:6px; background:rgba(155,109,255,0.18); color:#c4a8ff; }
+        .redaktion-node h4 { font-size:13px; font-weight:700; margin-bottom:4px; }
+        .redaktion-node p  { font-size:11px; color:var(--muted); }
+
+        /* Warning */
+        .warning {
+            background:rgba(232,71,63,0.05); border:1px solid rgba(232,71,63,0.18);
+            border-radius:16px; padding:28px;
+            display:grid; grid-template-columns:52px 1fr; gap:22px;
+        }
+        .warn-icon {
+            width:52px; height:52px; border-radius:14px;
+            background:rgba(232,71,63,0.12);
+            display:flex; align-items:center; justify-content:center; font-size:22px;
+        }
+        .warning h3 { font-family:var(--font-d); font-size:19px; margin-bottom:8px; color:#e87a76; }
+        .warning p  { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:12px; }
+        .warn-pills { display:flex; flex-wrap:wrap; gap:8px; }
+        .warn-pill {
+            display:flex; align-items:center; gap:6px;
+            background:rgba(255,255,255,0.03); border:1px solid var(--border);
+            border-radius:8px; padding:6px 12px; font-size:11px; color:var(--muted);
+        }
+        .warn-dot { width:5px; height:5px; border-radius:50%; background:var(--red); animation:pulse 1.5s infinite; flex-shrink:0; }
+
+        /* Pillars */
+        .pillars-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .pillar {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:16px; padding:24px; position:relative; overflow:hidden; transition:transform .3s;
+        }
+        .pillar:hover { transform:translateY(-3px); }
+        .pillar::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+        .p1::before { background:var(--violet); }
+        .p2::before { background:var(--amber); }
+        .p3::before { background:var(--green); }
+        .pillar-icon { font-size:24px; margin-bottom:12px; }
+        .pillar-sub  { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+        .pillar h3   { font-family:var(--font-d); font-size:18px; margin-bottom:8px; }
+        .pillar p    { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+        .pillar-goal { font-size:12px; font-weight:600; padding:7px 12px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid var(--border); }
+        .p1 .pillar-goal { color:#c4a8ff; }
+        .p2 .pillar-goal { color:#e8c48a; }
+        .p3 .pillar-goal { color:#5ec89a; }
+
+        /* Metrics */
+        .metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .metric-cards { display:flex; flex-direction:column; gap:12px; }
+        .mcard {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:14px; padding:18px;
+            display:flex; align-items:center; gap:16px;
+        }
+        .mring { flex-shrink:0; width:56px; height:56px; position:relative; display:flex; align-items:center; justify-content:center; }
+        .mring svg { position:absolute; top:0; left:0; width:100%; height:100%; transform:rotate(-90deg); }
+        .mring .v  { font-size:12px; font-weight:700; position:relative; z-index:1; }
+        .mcard-info h4 { font-size:13px; font-weight:600; margin-bottom:3px; }
+        .mcard-info p  { font-size:11px; color:var(--muted); line-height:1.4; }
+        .chart-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; }
+        .chart-box h3 { font-family:var(--font-d); font-size:17px; margin-bottom:18px; }
+        .chart-container { position:relative; height:240px; }
+
+        /* Goals */
+        .goals-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .goal { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; transition:transform .3s; }
+        .goal:hover { transform:translateY(-3px); }
+        .goal-n { font-family:var(--font-d); font-size:42px; font-style:italic; color:var(--green); line-height:1; margin-bottom:10px; opacity:.65; }
+        .goal h4 { font-size:14px; font-weight:700; margin-bottom:6px; }
+        .goal p  { font-size:13px; color:var(--muted); line-height:1.55; }
+
+        /* Fundament styles */
+        .ho-banner {
+            background:rgba(155,109,255,0.05); border:1px solid rgba(155,109,255,0.18);
+            border-radius:16px; padding:30px;
+            display:grid; grid-template-columns:52px 1fr; gap:22px; margin-bottom: 28px;
+        }
+        .ho-icon {
+            width:52px; height:52px; border-radius:14px;
+            background:rgba(155,109,255,0.1);
+            display:flex; align-items:center; justify-content:center;
+            font-size:20px; font-weight:800; color:#c4a8ff; font-family:var(--font-d);
+        }
+        .ho-banner h3 { font-family:var(--font-d); font-size:19px; margin-bottom:8px; color:#c4a8ff; }
+        .ho-banner p  { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:14px; }
+        .ho-pills { display:flex; flex-wrap:wrap; gap:8px; }
+        .ho-pill { font-size:11px; font-weight:600; padding:5px 12px; border-radius:50px; background:rgba(155,109,255,0.1); color:#c4a8ff; border:1px solid rgba(155,109,255,0.18); }
+        .mandate-wrap { overflow-x:auto; border-radius:14px; margin-bottom: 28px; }
+        .mandate-table {
+            width:100%; border-collapse:separate; border-spacing:0;
+            background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden;
+        }
+        .mandate-table th {
+            font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+            color:var(--muted); padding:13px 18px; text-align:left;
+            background:var(--surface2); border-bottom:1px solid var(--border);
+        }
+        .mandate-table td { padding:14px 18px; font-size:13px; border-bottom:1px solid var(--border); line-height:1.5; }
+        .mandate-table tr:last-child td { border-bottom:none; }
+        .mandate-table tr:hover td { background:rgba(255,255,255,0.015); }
+        .mtag { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:3px 10px; border-radius:50px; }
+        .mt-h { background:rgba(232,168,74,0.15); color:#e8c48a; }
+        .mt-p { background:rgba(58,123,213,0.15); color:#7ba8e8; }
+        .mt-g { background:rgba(39,174,118,0.15); color:#5ec89a; }
+        .druck-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .druck-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px; }
+        .druck-icon { font-size:22px; margin-bottom:10px; }
+        .druck-card h4 { font-size:14px; font-weight:700; margin-bottom:6px; }
+        .druck-card p  { font-size:13px; color:var(--muted); line-height:1.6; }
+
+        /* Closing / final slide */
+        .closing-inner {
+            background:linear-gradient(135deg,rgba(58,123,213,0.07) 0%,rgba(39,174,118,0.07) 100%);
+            border:1px solid rgba(255,255,255,0.05);
+            border-radius:20px; padding:52px; text-align:center; position:relative; overflow:hidden;
+        }
+        .closing-inner::before {
+            content:''; position:absolute; top:-80px; right:-80px; width:280px; height:280px;
+            border-radius:50%; background:radial-gradient(circle,rgba(39,174,118,0.07) 0%,transparent 70%);
+        }
+        .closing h2 { font-family:var(--font-d); font-size:clamp(26px,4vw,44px); line-height:1.15; margin-bottom:18px; }
+        .closing h2 em { font-style:italic; color:var(--green); }
+        .closing p { font-size:15px; color:var(--muted); max-width:580px; margin:0 auto 28px; line-height:1.65; }
+        .closing-pills { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; }
+        .cp { display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; }
+        .cp-d { width:7px; height:7px; border-radius:50%; }
+
+        /* Slide labels top-right corner */
+        .slide-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .slide-num {
+            font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+            color: rgba(255,255,255,0.15);
+        }
+
+        /* Keyboard hint */
+        .kbd-hint {
+            position: fixed; bottom: 32px; right: 32px; z-index: 200;
+            font-size: 10px; color: rgba(255,255,255,0.18); font-weight: 600; letter-spacing: .06em;
+            display: flex; gap: 6px; align-items: center;
+        }
+        .kbd-hint span {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+        }
+
+        /* Progress line under nav */
+        .progress-bar {
+            position: fixed; top: 60px; left: 0; height: 2px; z-index: 180;
+            transition: width 0.5s cubic-bezier(0.77,0,0.175,1), background 0.4s;
+        }
+        body.ist  .progress-bar { background: var(--red); }
+        body.soll .progress-bar { background: var(--green); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            nav { padding: 12px 16px; }
+            .slide { padding: 40px 16px 90px; }
+            .tension-grid { grid-template-columns:1fr; }
+            .tn-gud, .tn-sys { grid-column:auto; }
+            .peer-row { grid-template-columns:1fr; }
+            .peer-connector { display:none; }
+            .pillars-grid,.goals-grid,.metrics-grid,.druck-grid { grid-template-columns:1fr; }
+            .ho-banner,.warning { grid-template-columns:1fr; }
+            .closing-inner { padding:32px 20px; }
+            .kbd-hint { display: none; }
+        }
+    </style>
+</head>
+<body id="body" class="ist">
+
+<!-- NAV -->
+<nav>
+    <div class="nav-logo">
+        <div class="nav-mark">M</div>
+        <span class="nav-label">MDR Grafik & Design<span> · Rollenklarheit</span></span>
+    </div>
+    <div class="toggle-wrap">
+        <div class="toggle-pill" id="pill"></div>
+        <button class="toggle-btn a-ist" id="btnIst" onclick="setMode('ist')">⚠ IST-Zustand</button>
+        <button class="toggle-btn"       id="btnSoll" onclick="setMode('soll')">✦ SOLL-Zustand</button>
+    </div>
+</nav>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- MODE STRIP -->
+<div class="mode-strip">
+    <div class="mode-strip-inner" id="modeStrip">● IST · Mandatskonflikte</div>
+</div>
+
+<!-- SLIDES -->
+<div class="pages-container">
+    <div class="slides-track" id="slidesTrack">
+
+        <!-- ═══ SEITE 1 · HERO ═══ -->
+        <div class="slide" id="slide-0">
+            <div class="slide-inner">
+                <!-- IST -->
+                <div class="slot slot-ist hero-slot">
+                    <div class="hero-eyebrow"><div class="dot dot-r"></div><span>IST-Analyse · Systemische Spannungen · MDR</span></div>
+                    <h1 class="hero-h1">Das <em class="r">dysfunktionale</em><br>Dreieck</h1>
+                    <p class="hero-sub">Drei Akteure, ungeklärte Mandatsgrenzen, blockierte Handlungsfähigkeit. Das System reibt sich selbst auf – statt gemeinsam zu wirken.</p>
+                    <div class="status-pill sp-ist">● Mandatskonflikte · Rollenunklarheit</div>
+                </div>
+                <!-- SOLL -->
+                <div class="slot slot-soll hero-slot">
+                    <div class="hero-eyebrow" style="border-color:rgba(39,174,118,0.2);"><div class="dot dot-g"></div><span>SOLL-Zustand · Augenhöhe · Handlungsfähigkeit · MDR</span></div>
+                    <h1 class="hero-h1">Das <em class="g">funktionierende</em><br>System</h1>
+                    <p class="hero-sub">Drei gleichwertige Partner mit klar abgegrenzten Mandaten. Kein Oben und Unten – Klarheit schlägt Kontrolle.</p>
+                    <div class="status-pill sp-soll">✦ Augenhöhe · Klare Mandate · Produktive Kooperation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 2 · SYSTEMDIAGRAMM ═══ -->
+        <div class="slide" id="slide-1">
+            <div class="slide-inner">
+                <!-- IST -->
+                <div class="slot slot-ist">
+                    <div class="sec-label">01 · Spannungsfeld</div>
+                    <h2 class="sec-title">Drei Akteure – drei ungeklärte Rollen</h2>
+                    <div class="tension-grid">
+                        <div class="tnode tn-hk">
+                            <span class="nbadge nb-hk">HA KOMM · Intendanz</span>
+                            <h4>Unternehmenskommunikation & Dachmarke</h4>
+                            <p>Formal zuständig für Corporate Design, Markenführung, strategische Kommunikation (DA C.5). Letztentscheidungsrecht über Marke. Direkt der Intendantin unterstellt.</p>
+                            <div class="talert">⚠ Kommuniziert Strategie nicht ausreichend ins Haus → Vakuum entsteht, das andere füllen</div>
+                        </div>
+                        <div class="tnode tn-ppd">
+                            <span class="nbadge nb-ppd">PPD · Programmdirektion</span>
+                            <h4>Programmpromotion & Design</h4>
+                            <p>Formal: Kampagnen, Trailer, Promotion. Selbstbild: „Art Direction des MDR" – definiert Vorgaben, kontrolliert Umsetzung, erteilt Freigaben.</p>
+                            <div class="talert">⚠ Beansprucht operative Design-Kontrolle ohne HO-Beschaffungsmandat – keine eigene Produktionskapazität</div>
+                        </div>
+                        <div class="tsep">
+                            <div class="tsep-line"></div>
+                            <span class="tsep-label">⚡ Rollenkonflikt · Unklare Weisungskette</span>
+                            <div class="tsep-line"></div>
+                        </div>
+                        <div class="tnode tn-gud">
+                            <span class="nbadge nb-gud">Grafik & Design · Betriebsdirektion</span>
+                            <h4>Operative Designproduktion & formale Beschaffungsstelle</h4>
+                            <p>Per HO (E.3.1): zuständige Beschaffungsstelle für alle Designprojekte. 50+ Kreative, 20+ Systeme, crossmediale Vollabdeckung. KI-Workflows, Motion, 3D, Erklärgrafik, Datenjournalismus.</p>
+                            <div class="talert">⚠ Trotz formalem HO-Mandat reaktiv positioniert · Fachkompetenz strategisch unsichtbar · Parallelstrukturen entstehen</div>
+                        </div>
+                        <div class="tnode tn-sys" style="padding:18px;">
+                            <h4 style="color:#e87a76; margin-bottom:6px;">⚡ Systemische Folge</h4>
+                            <p style="max-width:640px; margin:0 auto; font-size:13px;">PPD beansprucht Art-Direction ohne Produktionskapazität. HA KOMM setzt Markenrahmen ohne operative Einbindung von GuD. Das Ergebnis: Parallelstrukturen, ungeklärte Zuständigkeiten, Energieverlust.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- SOLL -->
+                <div class="slot slot-soll">
+                    <div class="sec-label">01 · Systemvisualisierung</div>
+                    <h2 class="sec-title">Drei Partner auf einer Ebene</h2>
+                    <p style="font-size:14px; color:var(--muted); margin-bottom:24px; max-width:600px; line-height:1.65;">Keine Hierarchie zwischen den drei Kernakteuren. Jeder trägt ein klar abgegrenztes Mandat. Die Leitungsebene ist Kontext – nicht Eingriff. Redaktionen sind Impulsgeber.</p>
+                    <div class="peer-map">
+                        <div class="lklammer">
+                            <div class="lklammer-label">Leitungsebene · Kontext & Vertrauen · kein operativer Eingriff</div>
+                            <div class="lklammer-desc">Schafft Rahmenbedingungen · delegiert Fachentscheidungen · vertraut der operativen Kompetenz</div>
+                        </div>
+                        <div class="peer-row">
+                            <div class="peer-node pn-hk">
+                                <span class="pbadge pb-hk">HA KOMM</span>
+                                <h4>Dachmarke &<br>CD-Strategie</h4>
+                                <p>Definiert Markenrahmen und Leitplanken – klar kommuniziert, nicht operativ</p>
+                                <div class="peer-mandate">Markenführung · Logo-Hoheit · CD-Richtlinien</div>
+                            </div>
+                            <div class="peer-connector">
+                                <div class="flow-tag">CD-Rahmen →</div>
+                                <div class="flow-arr">⇄</div>
+                                <div class="flow-tag">← Rückmeldung</div>
+                            </div>
+                            <div class="peer-node pn-gud">
+                                <div style="font-size:20px; margin-bottom:4px;">⚓</div>
+                                <span class="pbadge pb-gud">Grafik & Design · BD</span>
+                                <h4>Operativer Anker &<br>Beschaffungsstelle</h4>
+                                <p>Formales HO-Mandat · technische Tiefe · crossmediale Vollabdeckung</p>
+                                <div class="peer-mandate">HO-Beschaffungsstelle · 50+ Kreative · KI · Motion · 3D</div>
+                            </div>
+                            <div class="peer-connector">
+                                <div class="flow-tag">Briefing →</div>
+                                <div class="flow-arr">⇄</div>
+                                <div class="flow-tag">← Produktion</div>
+                            </div>
+                            <div class="peer-node pn-ppd">
+                                <span class="pbadge pb-ppd">PPD</span>
+                                <h4>Promotion &<br>Kampagnen</h4>
+                                <p>Erteilt Aufträge via HO-Prozess · fokussiert auf Programminhalte</p>
+                                <div class="peer-mandate">Programmpromotion · Trailer · Kampagnen · ARD</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:center; margin-top:18px; position:relative; z-index:2;">
+                            <div class="vert-conn">
+                                <div class="vert-tag">Auftragsfluss via HO</div>
+                                <div class="vert-line"></div>
+                            </div>
+                        </div>
+                        <div class="redaktion-row">
+                            <div class="redaktion-node">
+                                <div class="rb">Redaktionen · Bedarfsstellen</div>
+                                <h4>Direkte Auftragsgeberinnen</h4>
+                                <p>Klare Bestellwege · eigenverantwortlich im CD-Rahmen · verlässlicher Support durch GuD</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 3 · DIAGNOSE / STRATEGIE ═══ -->
+        <div class="slide" id="slide-2">
+            <div class="slide-inner">
+                <!-- IST -->
+                <div class="slot slot-ist">
+                    <div class="sec-label">02 · Systemisches Warnsignal</div>
+                    <h2 class="sec-title">Die Mandats-Drift</h2>
+                    <div class="warning">
+                        <div class="warn-icon">⚡</div>
+                        <div>
+                            <h3>Wenn Promotion die Produktion übernimmt</h3>
+                            <p>Wenn Promotionabteilungen operative Designentscheidungen treffen ohne die formale Beschaffungsstelle einzubinden, entstehen Parallelstrukturen und Mehrkosten. Die HO ist eindeutig: Beschaffungsentscheidungen liegen bei der Beschaffungsstelle – nicht bei der Bedarfsstelle.</p>
+                            <div class="warn-pills">
+                                <div class="warn-pill"><div class="warn-dot"></div>Parallele Briefings ohne GuD</div>
+                                <div class="warn-pill"><div class="warn-dot"></div>Freigaben ohne HO-Grundlage</div>
+                                <div class="warn-pill"><div class="warn-dot"></div>Fachkompetenz wird umgangen</div>
+                                <div class="warn-pill"><div class="warn-dot"></div>Mehrkosten durch Doppelarbeit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SOLL -->
+                <div class="slot slot-soll">
+                    <div class="sec-label">02 · Handlungsstrategie</div>
+                    <h2 class="sec-title">Drei Säulen der Handlungsfähigkeit</h2>
+                    <div class="pillars-grid">
+                        <div class="pillar p1">
+                            <div class="pillar-icon">§</div>
+                            <div class="pillar-sub">Säule 1 · Fundament</div>
+                            <h3>Mandat<br>aktivieren</h3>
+                            <p>Das HO-Mandat ist formal klar – es muss konsequent gelebt und kommuniziert werden. Beschaffungswege, Projektannahme, Qualitätskontrolle: alles bereits verankert.</p>
+                            <div class="pillar-goal">→ Vom reaktiven Dienstleister zum proaktiven Partner</div>
+                        </div>
+                        <div class="pillar p2">
+                            <div class="pillar-icon">📡</div>
+                            <div class="pillar-sub">Säule 2 · Sichtbarkeit</div>
+                            <h3>Leistungstiefe<br>zeigen</h3>
+                            <p>50+ Kreative, 20+ Systeme, KI-Workflows, Motion Design, 3D, Datenjournalismus. Diese Bandbreite ist einzigartig im MDR – und kaum sichtbar.</p>
+                            <div class="pillar-goal">→ Intranet · Referenzprojekte · ARD-Netzwerk</div>
+                        </div>
+                        <div class="pillar p3">
+                            <div class="pillar-icon">🤝</div>
+                            <div class="pillar-sub">Säule 3 · Kooperation</div>
+                            <h3>Augenhöhe<br>strukturieren</h3>
+                            <p>Feste Austauschformate mit HA KOMM und PPD. Klare Briefing-Wege. Qualitäts-Reviews. Augenhöhe entsteht durch Struktur – nicht durch guten Willen.</p>
+                            <div class="pillar-goal">→ Monatliche Reviews · Quartals-CD-Briefings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 4 · INDIKATOREN ═══ -->
+        <div class="slide" id="slide-3">
+            <div class="slide-inner">
+                <!-- IST -->
+                <div class="slot slot-ist">
+                    <div class="sec-label">03 · Indikatoren · IST</div>
+                    <h2 class="sec-title">Wo das System heute steht</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-cards" id="mcIst"></div>
+                        <div class="chart-box">
+                            <h3>System-Radar · IST</h3>
+                            <div class="chart-container"><canvas id="rIst"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SOLL -->
+                <div class="slot slot-soll">
+                    <div class="sec-label">03 · Indikatoren · SOLL</div>
+                    <h2 class="sec-title">Wo das System stehen kann</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-cards" id="mcSoll"></div>
+                        <div class="chart-box">
+                            <h3>System-Radar · SOLL</h3>
+                            <div class="chart-container"><canvas id="rSoll"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 5 · ZIELBILD / FOLGEN ═══ -->
+        <div class="slide" id="slide-4">
+            <div class="slide-inner">
+                <!-- IST -->
+                <div class="slot slot-ist">
+                    <div class="sec-label">04 · Konkrete Folgen</div>
+                    <h2 class="sec-title">Was das System heute kostet</h2>
+                    <div class="goals-grid">
+                        <div class="goal" style="border-color:rgba(232,71,63,0.2);">
+                            <div class="goal-n" style="color:var(--red);">A</div>
+                            <h4>Energie geht verloren</h4>
+                            <p>Ungeklärte Zuständigkeiten erzwingen Abstimmungsschleifen. Zeit, die in Produktion und Innovation fließen könnte, geht in interne Reibung.</p>
+                        </div>
+                        <div class="goal" style="border-color:rgba(232,71,63,0.2);">
+                            <div class="goal-n" style="color:var(--red);">B</div>
+                            <h4>Qualität leidet</h4>
+                            <p>Wenn Beschaffungsentscheidungen an der Fachkompetenz vorbeilaufen, entstehen Parallelproduktionen ohne Qualitätssicherung durch GuD.</p>
+                        </div>
+                        <div class="goal" style="border-color:rgba(232,71,63,0.2);">
+                            <div class="goal-n" style="color:var(--red);">C</div>
+                            <h4>Tempo sinkt</h4>
+                            <p>In einem Medienumfeld das Reaktionsfähigkeit fordert, kosten interne Blockaden das, was niemand mehr hat: Zeit.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- SOLL -->
+                <div class="slot slot-soll">
+                    <div class="sec-label">04 · Zielbild</div>
+                    <h2 class="sec-title">Die Wirkungs-Partnerschaft</h2>
+                    <div class="goals-grid">
+                        <div class="goal">
+                            <div class="goal-n">1</div>
+                            <h4>HA KOMM als Leitplanke</h4>
+                            <p>Gibt Dachmarke und CD-Strategie klar vor. Nicht operativ. GuD setzt um – mit fachlicher Autonomie innerhalb des Rahmens.</p>
+                        </div>
+                        <div class="goal">
+                            <div class="goal-n">2</div>
+                            <h4>PPD als Auftraggeber</h4>
+                            <p>Brieft GuD als formale Beschaffungsstelle. Keine parallele operative Designkontrolle. Promotion und Produktion greifen sauber ineinander.</p>
+                        </div>
+                        <div class="goal">
+                            <div class="goal-n">3</div>
+                            <h4>GuD als operativer Anker</h4>
+                            <p>Verlässliche, technisch exzellente Produktion. Proaktive Sichtbarkeit. Qualitätsführerschaft durch Expertise – nicht durch hierarchische Position.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 6 · FUNDAMENT ═══ -->
+        <div class="slide" id="slide-5">
+            <div class="slide-inner">
+                <div class="sec-label">F · Strukturelles Fundament · DA Kommunikation C.5 · Herstellungsordnung E.3.1</div>
+                <h2 class="sec-title" style="margin-bottom:24px;">Das Fundament <span style="font-family:var(--font-b);font-size:14px;font-weight:400;color:var(--muted);">— gilt unabhängig vom Zustand</span></h2>
+
+                <div class="sec-label" style="margin-bottom:12px;">F.1 · Formales Mandat</div>
+                <div class="ho-banner">
+                    <div class="ho-icon">§</div>
+                    <div>
+                        <h3>Eigenleistung vor Fremdleistung</h3>
+                        <p>Die Herstellungsordnung (E.3.1) ist eindeutig: HA Gestaltung und Produktion ist die zuständige Beschaffungsstelle für alle Produktionsdienstleistungen einschließlich Designprojekte. Eigenleistung hat Vorrang. Kein anderer Akteur hat dieses formale Beschaffungsrecht.</p>
+                        <div class="ho-pills">
+                            <span class="ho-pill">§ Eigenleistung vor Fremdleistung</span>
+                            <span class="ho-pill">§ Beschaffungsstelle für alle Designprojekte</span>
+                            <span class="ho-pill">§ Kalkulationsprüfung ab 50.000 €</span>
+                            <span class="ho-pill">§ Designvorhaben = Programmleistungen (7.1.4)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sec-label" style="margin-bottom:12px;">F.2 · Mandatskarte</div>
+                <div class="mandate-wrap">
+                    <table class="mandate-table">
+                        <thead><tr><th>Akteur</th><th>Formales Mandat</th><th>Quelle</th><th>Kernkompetenz</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="mtag mt-h">HA KOMM</span></td>
+                                <td>Dachmarke, Corporate Design, Markenführung, strategische Kommunikation</td>
+                                <td style="color:var(--muted);font-size:12px;">DA Komm. C.5</td>
+                                <td style="color:var(--muted)">Markenstrategie, Logo-Hoheit, externe Kommunikation</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mtag mt-p">PPD</span></td>
+                                <td>Programmpromotion, Kampagnen, Trailer, Schwerpunkte</td>
+                                <td style="color:var(--muted);font-size:12px;">Organigramm PD</td>
+                                <td style="color:var(--muted)">Narrative, Key Visuals, Promotion-Koordination MDR & ARD</td>
+                            </tr>
+                            <tr>
+                                <td><span class="mtag mt-g">Grafik & Design</span></td>
+                                <td>Produktionsdienstleistungen, Designprojekte, formale Beschaffungsstelle</td>
+                                <td style="color:var(--muted);font-size:12px;">HO E.3.1</td>
+                                <td style="color:var(--muted)">Technische Tiefe, 20+ Systeme, KI, Motion, 3D, crossmedial</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="sec-label" style="margin-bottom:12px;">F.3 · Kontext</div>
+                <div class="druck-grid">
+                    <div class="druck-card"><div class="druck-icon">🏛️</div><h4>Legitimationsdruck</h4><p>ÖRR unter politischem Beschuss. Interne Zersplitterung kostet Glaubwürdigkeit. Einheitlichkeit entsteht durch geteilte Überzeugung – nicht durch Kontrolle.</p></div>
+                    <div class="druck-card"><div class="druck-icon">🤖</div><h4>KI & Disruption</h4><p>KI verändert Design-Produktion radikal. GuD ist bereits führend in KI-Workflows – ein USP der sichtbar gemacht werden muss.</p></div>
+                    <div class="druck-card"><div class="druck-icon">✂️</div><h4>Spardruck</h4><p>Eigenleistung ist strukturell verankert. Parallelstrukturen durch ungeklärte Mandate erzeugen Mehrkosten die niemand braucht.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SEITE 7 · ABSCHLUSS ═══ -->
+        <div class="slide" id="slide-6">
+            <div class="slide-inner" style="display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 160px);">
+                <div style="width:100%;">
+                    <div class="closing-inner">
+                        <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:22px;">Leitprinzip</div>
+                        <h2>Klarheit <em>schlägt</em> Kontrolle.</h2>
+                        <p>Wer seinen Auftrag kennt, wer seine Fähigkeiten sichtbar macht und wer verlässlich liefert – der braucht keine Macht-Kompetenz. Das ist die Grundlage für echte Augenhöhe.</p>
+                        <div class="closing-pills">
+                            <div class="cp"><div class="cp-d" style="background:var(--violet)"></div>Formales Mandat (HO)</div>
+                            <div class="cp"><div class="cp-d" style="background:var(--amber)"></div>Dachmarke (HA KOMM)</div>
+                            <div class="cp"><div class="cp-d" style="background:var(--blue)"></div>Promotion-Partner (PPD)</div>
+                            <div class="cp"><div class="cp-d" style="background:var(--green)"></div>Operativer Anker (GuD)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /slides-track -->
+</div><!-- /pages-container -->
+
+<!-- PAGE NAVIGATION -->
+<div class="page-nav">
+    <button class="page-arrow" id="btnPrev" onclick="navigate(-1)" disabled>←</button>
+    <div class="page-dots" id="pageDots"></div>
+    <span class="page-counter" id="pageCounter">1 / 7</span>
+    <button class="page-arrow" id="btnNext" onclick="navigate(1)">→</button>
+</div>
+
+<!-- KEYBOARD HINT -->
+<div class="kbd-hint">
+    <span>←</span><span>→</span> navigieren &nbsp;·&nbsp; <span>I</span> / <span>S</span> wechseln
+</div>
+
+<script>
+/* ── DATA ── */
+const mIst = [
+    { label:'Mandatsklarheit',     val:'Kritisch', pct:14, color:'#e8473f', desc:'Überlappende Ansprüche ohne formale Grundlage' },
+    { label:'Sichtbarkeit GuD',    val:'Niedrig',  pct:20, color:'#e87a76', desc:'Leistungstiefe strategisch kaum kommuniziert' },
+    { label:'Kooperationsqualität',val:'Minimal',  pct:16, color:'#e87a76', desc:'Parallelstrukturen erzeugen Reibung' }
+];
+const mSoll = [
+    { label:'Mandatsklarheit',     val:'Etabliert', pct:94, color:'#27ae76', desc:'HO-Mandat gelebt, Beschaffungswege klar' },
+    { label:'Sichtbarkeit GuD',    val:'Wachsend',  pct:84, color:'#27ae76', desc:'Leistungstiefe sichtbar – intern & ARD-Netz' },
+    { label:'Kooperationsqualität',val:'Produktiv', pct:91, color:'#5ec89a', desc:'Strukturierte Abstimmung mit HA KOMM & PPD' }
+];
+
+/* ── SLIDE STATE ── */
+const TOTAL = 7;
+let current = 0;
+
+function navigate(dir) {
+    const next = current + dir;
+    if (next < 0 || next >= TOTAL) return;
+    current = next;
+    updateSlide();
+}
+
+function goTo(n) {
+    current = n;
+    updateSlide();
+}
+
+function updateSlide() {
+    const track = document.getElementById('slidesTrack');
+    track.style.transform = `translateX(-${current * 100}%)`;
+
+    // Dots
+    document.querySelectorAll('.page-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+    });
+
+    // Counter
+    document.getElementById('pageCounter').textContent = `${current + 1} / ${TOTAL}`;
+
+    // Arrows
+    document.getElementById('btnPrev').disabled = current === 0;
+    document.getElementById('btnNext').disabled = current === TOTAL - 1;
+
+    // Progress
+    const pct = ((current + 1) / TOTAL) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+
+    // Fade incoming slots
+    const mode = document.getElementById('body').className;
+    const incoming = mode === 'ist' ? '.slot-ist' : '.slot-soll';
+    const slide = document.getElementById('slide-' + current);
+    if (slide) {
+        slide.querySelectorAll(incoming).forEach(el => {
+            el.classList.remove('fading');
+            void el.offsetWidth;
+            el.classList.add('fading');
+        });
+    }
+}
+
+/* ── MODE TOGGLE ── */
+function setMode(mode) {
+    const body = document.getElementById('body');
+    body.className = mode;
+
+    document.getElementById('pill').style.transform = mode === 'ist' ? 'translateX(0)' : 'translateX(148px)';
+    document.getElementById('btnIst').className  = 'toggle-btn' + (mode==='ist'  ? ' a-ist'  : '');
+    document.getElementById('btnSoll').className = 'toggle-btn' + (mode==='soll' ? ' a-soll' : '');
+
+    const strip = document.getElementById('modeStrip');
+    if (mode === 'ist') {
+        strip.textContent = '● IST · Mandatskonflikte';
+        strip.style.background = 'rgba(232,71,63,0.15)';
+        strip.style.color = '#e87a76';
+        strip.style.borderColor = 'rgba(232,71,63,0.2)';
+    } else {
+        strip.textContent = '✦ SOLL · Augenhöhe';
+        strip.style.background = 'rgba(39,174,118,0.15)';
+        strip.style.color = '#5ec89a';
+        strip.style.borderColor = 'rgba(39,174,118,0.2)';
+    }
+
+    // Dot active color updates via CSS body class
+    // Fade current slide
+    requestAnimationFrame(() => {
+        const incoming = mode === 'ist' ? '.slot-ist' : '.slot-soll';
+        const slide = document.getElementById('slide-' + current);
+        if (slide) {
+            slide.querySelectorAll(incoming).forEach(el => {
+                el.classList.remove('fading');
+                void el.offsetWidth;
+                el.classList.add('fading');
+            });
+        }
+    });
+}
+
+/* ── RENDER METRICS ── */
+function renderMetrics(data, id) {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const r=24, circ=2*Math.PI*r;
+    c.innerHTML = data.map(m => {
+        const off = circ-(m.pct/100)*circ;
+        return `<div class="mcard">
+            <div class="mring">
+                <svg viewBox="0 0 56 56" fill="none">
+                    <circle cx="28" cy="28" r="${r}" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                    <circle cx="28" cy="28" r="${r}" stroke="${m.color}" stroke-width="4"
+                        stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" stroke-linecap="round"/>
+                </svg>
+                <div class="v" style="color:${m.color}">${m.pct}%</div>
+            </div>
+            <div class="mcard-info">
+                <h4>${m.label} <span style="color:${m.color};font-size:11px;font-weight:700;">· ${m.val}</span></h4>
+                <p>${m.desc}</p>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function makeRadar(id, data, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const ctx = el.getContext('2d');
+    new Chart(ctx, {
+        type:'radar',
+        data:{
+            labels:['Mandat-Klarheit','Druck','Sichtbarkeit','Augenhöhe','Effizienz','Kontrolle'],
+            datasets:[{ data, borderColor:color.b, backgroundColor:color.bg,
+                borderWidth:2.5, pointRadius:5,
+                pointBackgroundColor:color.b, pointBorderColor:'transparent' }]
+        },
+        options:{
+            maintainAspectRatio:false, animation:{duration:500},
+            scales:{ r:{ min:0, max:100, ticks:{display:false},
+                grid:{color:'rgba(255,255,255,0.06)'},
+                angleLines:{color:'rgba(255,255,255,0.06)'},
+                pointLabels:{color:'#7a7d8a', font:{family:'DM Sans',weight:'600',size:11}} } },
+            plugins:{legend:{display:false}}
+        }
+    });
+}
+
+/* ── BUILD DOTS ── */
+function buildDots() {
+    const container = document.getElementById('pageDots');
+    const labels = ['Intro','System','Diagnose','Daten','Zielbild','Fundament','Fazit'];
+    for (let i = 0; i < TOTAL; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-dot' + (i === 0 ? ' active' : '');
+        btn.title = labels[i] || (i+1);
+        btn.onclick = () => goTo(i);
+        container.appendChild(btn);
+    }
+}
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+    if (e.key.toLowerCase() === 'i') setMode('ist');
+    if (e.key.toLowerCase() === 's') setMode('soll');
+});
+
+/* ── TOUCH/SWIPE ── */
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+/* ── INIT ── */
+window.onload = () => {
+    buildDots();
+    updateSlide();
+    renderMetrics(mIst,  'mcIst');
+    renderMetrics(mSoll, 'mcSoll');
+    makeRadar('rIst',  [14,88,20,12,16,84], {b:'#e8473f', bg:'rgba(232,71,63,0.15)'});
+    makeRadar('rSoll', [94,12,84,96,91,14], {b:'#27ae76', bg:'rgba(39,174,118,0.15)'});
+};
+</script>
+</body>
+</html>
