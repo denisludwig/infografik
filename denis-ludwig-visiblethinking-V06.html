@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denis Ludwig – Visible Thinking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #242424;
+    --border: #2a2a2a;
+    --muted: #555;
+    --mid: #888;
+    --light: #c8c8c8;
+    --white: #f0ede8;
+    --accent: #c8a96e;
+    --accent2: #8b5e3c;
+    --accent-dim: rgba(200,169,110,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
+  }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.15; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid transparent;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(10,10,10,0.92);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; letter-spacing: 0.05em;
+    color: var(--white); text-decoration: none;
+    display: flex; flex-direction: column; gap: 0;
+    line-height: 1.1;
+  }
+  .nav-logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--mid); text-decoration: none; transition: color 0.25s;
+    position: relative; padding-bottom: 0.25rem;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+    height: 1px; background: var(--accent);
+    transform: scaleX(0); transition: transform 0.3s ease;
+    transform-origin: left;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-links a.active { color: var(--white); }
+  .nav-links a.active::after { transform: scaleX(1); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 10rem 4rem 6rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 40%, rgba(200,169,110,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(139,94,60,0.04) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .hero-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-brand::before { content: ''; width: 30px; height: 1px; background: var(--accent); }
+  .hero-headline {
+    font-size: clamp(3rem, 7vw, 6.5rem); font-weight: 900;
+    line-height: 1.05; max-width: 14ch; margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero-headline em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-size: 1.1rem; font-weight: 300; color: var(--light);
+    max-width: 52ch; line-height: 1.8; margin-bottom: 3.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 1rem;
+    background: var(--accent); color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+    text-decoration: none; padding: 1.1rem 2.2rem; font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
+    align-self: flex-start;
+  }
+  .hero-cta:hover { background: var(--white); gap: 1.4rem; }
+  .hero-cta svg { width: 16px; height: 16px; }
+  .hero-stats {
+    position: absolute; right: 4rem; bottom: 5rem;
+    display: flex; flex-direction: column; gap: 2rem;
+    opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .stat { text-align: right; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; font-weight: 700; color: var(--accent); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); margin-top: 0.3rem;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 4rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
+  }
+  .scroll-line {
+    width: 40px; height: 1px; background: var(--muted);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%; background: var(--accent);
+    animation: slideRight 2s ease-in-out infinite;
+  }
+  .scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* SHARED */
+  section { padding: 8rem 4rem; position: relative; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before { content: ''; width: 30px; height: 1px; background: var(--accent); }
+  .divider { width: 60px; height: 1px; background: var(--border); margin: 3rem 0; }
+
+  /* PROBLEM */
+  .problem { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .problem-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+  }
+  .problem h2 { font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.2; margin-bottom: 2rem; }
+  .problem h2 em { font-style: italic; color: var(--accent); }
+  .problem-text { color: var(--light); font-size: 1rem; }
+  .problem-text p + p { margin-top: 1.2rem; }
+  .truth-item {
+    padding: 1.8rem 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 1.5rem; align-items: flex-start;
+  }
+  .truth-item:first-child { border-top: 1px solid var(--border); }
+  .truth-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent); letter-spacing: 0.1em; padding-top: 0.2rem; flex-shrink: 0; }
+  .truth-text { font-size: 0.95rem; color: var(--light); line-height: 1.6; }
+  .truth-text strong { color: var(--white); font-weight: 500; }
+
+  /* APPROACH */
+  .approach { background: var(--black); }
+  .approach-inner { max-width: 1200px; margin: 0 auto; }
+  .approach h2 { font-size: clamp(2rem, 4vw, 3.2rem); max-width: 20ch; margin-bottom: 1.5rem; }
+  .approach-lead { font-size: 1.1rem; color: var(--light); max-width: 60ch; margin-bottom: 5rem; line-height: 1.8; }
+  .approach-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+  }
+  .approach-card {
+    background: var(--dark); padding: 3rem 2.5rem;
+    position: relative; overflow: hidden; transition: background 0.3s;
+  }
+  .approach-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent); transform: scaleX(0);
+    transition: transform 0.4s ease; transform-origin: left;
+  }
+  .approach-card:hover::before { transform: scaleX(1); }
+  .approach-card:hover { background: var(--dark2); }
+  .card-icon {
+    font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900;
+    color: var(--dark3); line-height: 1; margin-bottom: 1.5rem; font-style: italic;
+  }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--white); }
+  .card-text { font-size: 0.9rem; color: var(--mid); line-height: 1.7; }
+
+  /* CANVAS */
+  .canvas { background: var(--black); border-top: 1px solid var(--border); }
+  .canvas-inner { max-width: 1200px; margin: 0 auto; }
+  .canvas-header { margin-bottom: 4rem; }
+  .canvas-header h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1.2rem; }
+  .canvas-header h2 em { font-style: italic; color: var(--accent); }
+  .canvas-intro { font-size: 1rem; color: var(--mid); max-width: 58ch; line-height: 1.8; }
+  .canvas-frame {
+    border: 1px solid var(--border); background: var(--dark);
+    position: relative; margin-bottom: 3rem;
+  }
+  .canvas-frame-label {
+    text-align: center; padding: 1.2rem;
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em;
+    color: var(--muted); border-bottom: 1px solid var(--border);
+  }
+  .canvas-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    position: relative;
+  }
+  .canvas-field {
+    background: var(--dark); padding: 2.5rem;
+    position: relative; min-height: 240px;
+    display: flex; flex-direction: column;
+    opacity: 0; transform: scale(0.97);
+    transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s;
+  }
+  .canvas-field.canvas-visible { opacity: 1; transform: scale(1); }
+  .canvas-field:nth-child(1) { transition-delay: 0.1s; }
+  .canvas-field:nth-child(2) { transition-delay: 0.25s; }
+  .canvas-field:nth-child(3) { transition-delay: 0.4s; }
+  .canvas-field:nth-child(4) { transition-delay: 0.55s; }
+  .canvas-field:hover { background: var(--dark2); }
+  .canvas-field-num { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.8rem; }
+  .canvas-field-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--accent); margin-bottom: 0.3rem; line-height: 1; }
+  .canvas-field-subtitle { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 1.5rem; text-transform: uppercase; }
+  .canvas-field-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.7; flex: 1; }
+  .canvas-field-question {
+    margin-top: 1.5rem; font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--accent); letter-spacing: 0.08em;
+    border-top: 1px solid var(--border); padding-top: 1rem;
+  }
+  .canvas-live {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .canvas-live-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .canvas-live-text { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .canvas-center {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 44px; height: 44px; background: var(--dark); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; z-index: 3;
+    font-family: 'Playfair Display', serif; font-size: 0.75rem; font-style: italic; color: var(--accent);
+  }
+  .canvas-cta-row { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .canvas-cta {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    background: transparent; color: var(--accent);
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    text-decoration: none; border: 1px solid var(--accent2);
+    padding: 1rem 2rem; transition: all 0.3s ease;
+  }
+  .canvas-cta:hover { background: var(--accent); color: var(--black); border-color: var(--accent); gap: 1.2rem; }
+  .canvas-cta svg { width: 14px; height: 14px; }
+  .canvas-note { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; line-height: 1.6; }
+
+  /* SERVICES */
+  .services { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .services-header { margin-bottom: 5rem; }
+  .services-header h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1rem; }
+  .services-process-hint {
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.18em;
+    color: var(--muted); text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.8rem; margin-top: 1.5rem;
+  }
+  .services-process-hint span { color: var(--accent); }
+  .services-process-hint .arrow { color: var(--border); font-size: 0.8rem; }
+
+  /* Process connector line */
+  .services-process {
+    position: relative;
+  }
+  .services-process::before {
+    content: '';
+    position: absolute; left: 39px; top: 0; bottom: 0;
+    width: 1px; background: linear-gradient(to bottom, var(--accent2), transparent);
+    z-index: 0;
+  }
+
+  .service-item {
+    display: grid; grid-template-columns: 80px 1fr 1fr;
+    gap: 3rem; align-items: start;
+    padding: 3rem 0; border-bottom: 1px solid var(--border);
+    transition: padding-left 0.3s;
+    position: relative; z-index: 1;
+  }
+  .service-item:first-child { border-top: 1px solid var(--border); }
+  .service-item:hover { padding-left: 1rem; }
+
+  .service-num-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    padding-top: 0.2rem;
+  }
+  .service-num {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 0.1em;
+    width: 32px; height: 32px; border: 1px solid var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--dark); flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .service-item:hover .service-num { background: var(--accent); color: var(--black); border-color: var(--accent); }
+  .service-phase {
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.08em;
+    color: var(--muted); text-transform: uppercase; writing-mode: vertical-lr;
+    transform: rotate(180deg); line-height: 1; white-space: nowrap;
+  }
+  .service-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--accent2); padding: 0.2rem 0.7rem; margin-bottom: 1rem;
+  }
+  .service-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.8rem; }
+  .service-desc { font-size: 0.9rem; color: var(--mid); line-height: 1.7; }
+  .service-outcome {
+    margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* CASES */
+  .cases { background: var(--black); }
+  .cases-inner { max-width: 1200px; margin: 0 auto; }
+  .cases h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1rem; }
+  .cases-lead { font-size: 0.88rem; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; margin-bottom: 4rem; line-height: 1.6; max-width: 60ch; }
+  .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .case-card {
+    background: var(--dark); border: 1px solid var(--border);
+    padding: 2.5rem; display: flex; flex-direction: column;
+    transition: all 0.3s;
+  }
+  .case-card:hover { border-color: var(--accent2); transform: translateY(-4px); }
+  .case-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--accent-dim); color: var(--accent); padding: 0.25rem 0.7rem; margin-bottom: 1.5rem;
+  }
+  .case-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
+  .case-situation { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .case-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.65; margin-bottom: 1.5rem; flex: 1; }
+  .case-result { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.05em; border-top: 1px solid var(--border); padding-top: 1rem; }
+  .case-confidential {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.8rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .case-confidential::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+
+  /* ABOUT */
+  .about { background: var(--dark); border-top: 1px solid var(--border); }
+  .about-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start; }
+  .about h2 { font-size: clamp(2rem, 3.5vw, 2.8rem); margin-bottom: 2rem; }
+  .about-text { color: var(--light); font-size: 0.95rem; line-height: 1.85; }
+  .about-text p + p { margin-top: 1.2rem; }
+  .about-values { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .value-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); border: 1px solid var(--border); padding: 0.4rem 0.9rem; }
+  .timeline-item { display: flex; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+  .timeline-item:first-child { border-top: 1px solid var(--border); }
+  .timeline-year { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0; padding-top: 0.2rem; min-width: 80px; }
+  .timeline-role { font-size: 0.92rem; color: var(--white); font-weight: 500; margin-bottom: 0.2rem; }
+  .timeline-org { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .timeline-note { font-size: 0.8rem; color: var(--muted); line-height: 1.5; font-style: italic; }
+
+  /* CONTACT */
+  .contact { background: var(--black); border-top: 1px solid var(--border); text-align: center; }
+  .contact-inner { max-width: 700px; margin: 0 auto; }
+  .contact h2 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1.5rem; }
+  .contact h2 em { font-style: italic; color: var(--accent); }
+  .contact-sub { font-size: 1rem; color: var(--mid); margin-bottom: 3rem; line-height: 1.7; }
+  .contact-link {
+    display: block; font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-style: italic; color: var(--accent);
+    text-decoration: none; border-bottom: 1px solid var(--accent2);
+    padding-bottom: 0.3rem; transition: all 0.3s; margin-bottom: 1.5rem;
+  }
+  .contact-link:hover { color: var(--white); border-color: var(--white); }
+  .contact-phone { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  /* FOOTER */
+  footer {
+    padding: 1.5rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--dark2);
+  }
+  .footer-name { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: var(--muted); }
+  .footer-brand {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* Page wrapper sits above footer zone so it's revealed on scroll */
+  .page-content {
+    position: relative; z-index: 1;
+    background: var(--black);
+    box-shadow: 0 30px 100px rgba(0,0,0,1);
+  }
+  /* Footer zone: contact + footer bar, sticky behind page-content */
+  .footer-zone {
+    position: sticky; bottom: 0; z-index: 0;
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+  }
+  .footer-zone .contact {
+    background: transparent;
+    border-top: none;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideRight { 0%, 100% { left: -100%; } 50% { left: 100%; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  /* BURGER MENU */
+  .burger {
+    display: none;
+    flex-direction: column; gap: 5px; cursor: pointer;
+    padding: 0.5rem; background: none; border: none;
+    z-index: 200;
+  }
+  .burger span {
+    display: block; width: 24px; height: 1.5px;
+    background: var(--white); transition: all 0.3s ease;
+    transform-origin: center;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0; z-index: 150;
+    background: rgba(10,10,10,0.97);
+    backdrop-filter: blur(16px);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .mobile-menu.open {
+    opacity: 1; pointer-events: all;
+  }
+  .mobile-menu a {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 700; font-style: italic;
+    color: var(--mid); text-decoration: none;
+    padding: 0.6rem 0;
+    transition: color 0.2s;
+    border-bottom: 1px solid var(--border);
+    width: 70vw; text-align: center;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover, .mobile-menu a.active { color: var(--accent); }
+  .mobile-menu-brand {
+    position: absolute; bottom: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .burger { display: flex; }
+    .mobile-menu { display: flex; }
+    section { padding: 5rem 2rem; }
+    .hero { padding: 8rem 2rem 5rem; }
+    .hero-stats { display: none; }
+    .problem-inner, .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .approach-grid, .cases-grid { grid-template-columns: 1fr; }
+    .canvas-grid { grid-template-columns: 1fr; }
+    .canvas-center { display: none; }
+    .service-item {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .service-num-wrap {
+      flex-direction: row; writing-mode: horizontal-tb;
+      align-items: center; gap: 1rem;
+    }
+    .service-phase { writing-mode: horizontal-tb; transform: none; }
+    .service-item > div:last-child { grid-column: 1; }
+    .service-desc { display: block; }
+    .service-outcome { display: none; }
+    .services-process::before { display: none; }
+    footer { padding: 1.5rem 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+<body>
+
+<div class="page-content">
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    Denis Ludwig
+    <span class="nav-logo-sub">Visible Thinking</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#ansatz">Ansatz</a></li>
+    <li><a href="#canvas">Canvas</a></li>
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#projekte">Projekte</a></li>
+    <li><a href="#ueber">Über mich</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <button class="burger" id="burger" aria-label="Menü öffnen">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#ansatz">Ansatz</a>
+  <a href="#canvas">Canvas</a>
+  <a href="#leistungen">Leistungen</a>
+  <a href="#projekte">Projekte</a>
+  <a href="#ueber">Über mich</a>
+  <a href="#kontakt">Kontakt</a>
+  <p class="mobile-menu-brand">visiblethink.ing</p>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <p class="hero-brand">Visible Thinking · visiblethink.ing</p>
+  <h1 class="hero-headline">Strategie wird erst real, wenn sie <em>sichtbar</em> ist.</h1>
+  <p class="hero-sub">Ich übersetze komplexe Strategien in Bilder, Modelle und Prototypen – live, im Raum, mit Ihrem Team. Nicht danach. Nicht als Illustration. Sondern als Denkwerkzeug, das Entscheidungen beschleunigt.</p>
+  <a href="#kontakt" class="hero-cta">
+    Erstgespräch vereinbaren
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Jahre Expertise</div></div>
+    <div class="stat"><div class="stat-num">50</div><div class="stat-label">Geführte Kreative</div></div>
+    <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Projekte · jährlich</div></div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="problem-inner">
+    <div class="reveal">
+      <p class="section-label">Das Problem</p>
+      <h2>Warum gute Strategien <em>scheitern.</em></h2>
+      <div class="divider"></div>
+      <div class="problem-text">
+        <p>In den meisten Unternehmen kommt das Visuelle ganz am Ende. Inhalte werden formuliert, diskutiert, beschlossen – und dann soll jemand „das mal hübsch machen."</p>
+        <p>Das ist ein grundlegender Fehler. Nicht weil das Design schlecht ist, sondern weil visuelle Klarheit gnadenlos ist: Sie deckt auf, was im Text noch verborgen war. Logische Lücken. Widersprüche. Unklarheiten im Denken.</p>
+        <p>Wer Visualisierung ans Ende stellt, verliert genau den Moment, in dem sie am wertvollsten wäre.</p>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="truth-item">
+        <span class="truth-num">01</span>
+        <p class="truth-text"><strong>Text schützt Unschärfe.</strong> Schwammige Strategien überleben endlose Abstimmungsschleifen – weil niemand sie wirklich prüft. Visualisierung zwingt zur Präzision.</p>
+      </div>
+      <div class="truth-item">
+        <span class="truth-num">02</span>
+        <p class="truth-text"><strong>Silos entstehen durch fehlende Bilder.</strong> Was nicht gemeinsam sichtbar ist, kann nicht gemeinsam verstanden werden. Dashboards und Modelle schaffen geteiltes Verständnis.</p>
+      </div>
+      <div class="truth-item">
+        <span class="truth-num">03</span>
+        <p class="truth-text"><strong>Entscheidungen brauchen Anker.</strong> Abstrakte Begriffe lösen sich im Gedächtnis auf. Bilder bleiben. Wer seine Vision visualisiert, verankert sie in den Köpfen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section class="approach" id="ansatz">
+  <div class="approach-inner">
+    <p class="section-label reveal">Mein Ansatz</p>
+    <h2 class="reveal reveal-delay-1">Live Strategic Prototyping.</h2>
+    <p class="approach-lead reveal reveal-delay-2">Ich arbeite nicht im stillen Kämmerlein. Ich arbeite live – direkt in Ihrer Strategie-Klausur, Ihrem Führungsmeeting, Ihrem Transformationsprozess. Mit KI, 3D-Tools und Echtzeit-Dashboards entstehen Ideen sofort als prüfbare Modelle. Was visuell nicht funktioniert, ist strategisch noch nicht fertig gedacht. Das Ziel ist nicht die einzelne Session – sondern dass Ihr Team am Ende selbst so denkt.</p>
+    <div class="approach-grid">
+      <div class="approach-card reveal">
+        <div class="card-icon">I</div>
+        <h3 class="card-title">Input Mapping</h3>
+        <p class="card-text">Ich höre zu und übersetze live. Aus gesprochenen Ideen werden sofort sichtbare Strukturen. Missverständnisse werden im Entstehen erkannt, nicht Monate später.</p>
+      </div>
+      <div class="approach-card reveal reveal-delay-1">
+        <div class="card-icon">II</div>
+        <h3 class="card-title">Struktur-Prototyping</h3>
+        <p class="card-text">Komplexe Zusammenhänge werden als Dashboards, Systemmodelle oder visuelle Frameworks greifbar gemacht. Nicht als Dekoration – als Entscheidungswerkzeug.</p>
+      </div>
+      <div class="approach-card reveal reveal-delay-2">
+        <div class="card-icon">III</div>
+        <h3 class="card-title">Synthesis &amp; Konsens</h3>
+        <p class="card-text">Was gemeinsam gesehen wurde, kann gemeinsam entschieden werden. Am Ende der Session haben Sie kein Protokoll, sondern einen validierten visuellen Strategieprototypen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CANVAS -->
+<section class="canvas" id="canvas">
+  <div class="canvas-inner">
+    <div class="canvas-header">
+      <p class="section-label reveal">Methoden-Framework</p>
+      <h2 class="reveal reveal-delay-1">Der <em>Visual Strategy Canvas.</em></h2>
+      <p class="canvas-intro reveal reveal-delay-2">Kein Ausfüllformular. Kein Template. Ein lebendiges Gesprächswerkzeug, das live im Raum entsteht – und Strategie von Wunschdenken zu Realitätsprüfung macht.</p>
+    </div>
+    <div class="canvas-frame reveal">
+      <div class="canvas-frame-label">Visual Strategy Canvas · Denis Ludwig · Visible Thinking</div>
+      <div class="canvas-grid">
+        <div class="canvas-field">
+          <div class="canvas-live">
+            <div class="canvas-live-dot"></div>
+            <span class="canvas-live-text">Live</span>
+          </div>
+          <p class="canvas-field-num">01</p>
+          <h3 class="canvas-field-title">Signal</h3>
+          <p class="canvas-field-subtitle">Was ist wirklich da?</p>
+          <p class="canvas-field-desc">Nicht die offizielle Agenda – sondern die echten Spannungen im Raum. Was wird zwischen den Zeilen gesagt? Welche Annahmen werden nie ausgesprochen? Das Ungesagte wird zur ersten Skizze.</p>
+          <p class="canvas-field-question">→ Was wird hier wirklich verhandelt?</p>
+        </div>
+        <div class="canvas-field">
+          <p class="canvas-field-num">02</p>
+          <h3 class="canvas-field-title">Struktur</h3>
+          <p class="canvas-field-subtitle">Was hängt womit zusammen?</p>
+          <p class="canvas-field-desc">Kein Organigramm – ein ehrliches Bild der tatsächlichen Abhängigkeiten, Machtströme und Informationswege. Entsteht live aus dem Gehörten. Zeigt, was im Text verborgen bleibt.</p>
+          <p class="canvas-field-question">→ Welche Logik steckt wirklich dahinter?</p>
+        </div>
+        <div class="canvas-field">
+          <p class="canvas-field-num">03</p>
+          <h3 class="canvas-field-title">Schnittstellen</h3>
+          <p class="canvas-field-subtitle">Wo hakt es wirklich?</p>
+          <p class="canvas-field-desc">Die meisten Strategieprobleme sind Schnittstellenprobleme: zwischen Abteilungen, zwischen Zielen, zwischen dem was gesagt und was gemeint wird. Der Canvas macht Reibungspunkte explizit – und bearbeitbar.</p>
+          <p class="canvas-field-question">→ Wo verliert sich Energie im System?</p>
+        </div>
+        <div class="canvas-field">
+          <p class="canvas-field-num">04</p>
+          <h3 class="canvas-field-title">Schritt</h3>
+          <p class="canvas-field-subtitle">Was ist der eine nächste Schritt?</p>
+          <p class="canvas-field-desc">Kein 100-Punkte-Maßnahmenplan. Ein einziger, visuell definierter nächster Schritt – für alle im Raum unmissverständlich sichtbar. Das ist das Ergebnis jeder Session.</p>
+          <p class="canvas-field-question">→ Was tun wir morgen als erstes?</p>
+        </div>
+        <div class="canvas-center">DL</div>
+      </div>
+    </div>
+    <div class="canvas-cta-row reveal">
+      <a href="#kontakt" class="canvas-cta">
+        Canvas für Ihr Team buchen
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <p class="canvas-note">Halbtägige Live-Session · für Führungsteams · mit dokumentiertem Output</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="leistungen">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <p class="section-label">Leistungen</p>
+      <h2>Was ich für Sie tue.</h2>
+      <p class="services-process-hint">
+        <span>Erkennen</span>
+        <span class="arrow">→</span>
+        <span>Verändern</span>
+        <span class="arrow">→</span>
+        <span>Verankern</span>
+      </p>
+    </div>
+    <div class="services-process">
+      <div class="service-item reveal">
+        <div class="service-num-wrap">
+          <div class="service-num">01</div>
+          <span class="service-phase">Erkennen</span>
+        </div>
+        <div>
+          <span class="service-tag">Live-Session</span>
+          <h3 class="service-title">Visual Strategy Session</h3>
+        </div>
+        <div>
+          <p class="service-desc">Ich begleite Ihre Strategie-Klausur oder Ihr Führungsmeeting als visueller Sparringspartner. Live-Visualisierung komplexer Zusammenhänge, Echtzeit-Dashboards und Systemmodelle – direkt im Prozess, nicht danach. Vertraulich. Präzise. Ohne Overhead.</p>
+          <p class="service-outcome">→ Sie verlassen den Raum mit einem Bild das hält.</p>
+        </div>
+      </div>
+      <div class="service-item reveal">
+        <div class="service-num-wrap">
+          <div class="service-num">02</div>
+          <span class="service-phase">Verändern</span>
+        </div>
+        <div>
+          <span class="service-tag">Transformation</span>
+          <h3 class="service-title">Visual Change Architecture</h3>
+        </div>
+        <div>
+          <p class="service-desc">Ich begleite Transformationsprozesse visuell – von der Reorganisation über die KI-Einführung bis zum kulturellen Wandel. Ich schaffe visuelle Anker, die Widerstände abbauen und Orientierung geben – auch wenn das Mandat von oben fehlt und die Bedingungen nicht ideal sind.</p>
+          <p class="service-outcome">→ Komplexität wird steuerbar. Auch unter Druck.</p>
+        </div>
+      </div>
+      <div class="service-item reveal">
+        <div class="service-num-wrap">
+          <div class="service-num">03</div>
+          <span class="service-phase">Verankern</span>
+        </div>
+        <div>
+          <span class="service-tag">Befähigung</span>
+          <h3 class="service-title">Visual Thinking Transfer</h3>
+        </div>
+        <div>
+          <p class="service-desc">Ich gehe wieder – aber die Fähigkeit bleibt. Gemeinsam installieren wir Frameworks und Denkroutinen, die Ihr Team befähigen, strategische Komplexität selbst sichtbar zu machen. Mit Begleitung, Evaluation und klarem Ablösepunkt.</p>
+          <p class="service-outcome">→ Ihr Team denkt nach der Zusammenarbeit anders.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="cases" id="projekte">
+  <div class="cases-inner">
+    <p class="section-label reveal">Referenzprojekte</p>
+    <h2 class="reveal reveal-delay-1">Sichtbar gemacht.</h2>
+    <p class="cases-lead reveal reveal-delay-2">Alle Cases sind neutralisiert. Vertraulichkeit ist kein Disclaimer – sie ist Teil der Dienstleistung.</p>
+    <div class="cases-grid">
+
+      <div class="case-card reveal">
+        <span class="case-tag">Datenvisualisierung · Entscheidung</span>
+        <h3 class="case-title">Wo berichten wir eigentlich? Blinde Flecken sichtbar machen.</h3>
+        <p class="case-situation">Ausgangssituation:</p>
+        <p class="case-desc">Ein Medienunternehmen wollte verstehen, aus welchen Regionen seine Berichterstattung tatsächlich stammt – und wo strukturelle Lücken entstanden sind. Die Daten existierten, aber niemand hatte sie je in ein Bild übersetzt.</p>
+        <p class="case-desc">In kurzer Zeit entstand ein interaktives Dashboard, das Berichterstattungsvolumen geografisch visualisiert, Direktionsbezirke vergleichbar macht und blinde Flecken auf einen Blick sichtbar macht.</p>
+        <p class="case-result">→ Aus einem Datenproblem wurde ein strategisches Steuerungsinstrument.</p>
+        <p class="case-confidential">Neutralisierter Case · Interne Daten anonymisiert</p>
+      </div>
+
+      <div class="case-card reveal reveal-delay-1">
+        <span class="case-tag">Konflikt · Systemvisualisierung</span>
+        <h3 class="case-title">Wenn Worte nicht mehr reichen. Komplexität in Spannungssituationen navigieren.</h3>
+        <p class="case-situation">Ausgangssituation:</p>
+        <p class="case-desc">Ein langjähriger institutioneller Konflikt zwischen zwei Abteilungen über Zuständigkeiten, Ressourcen und Entscheidungshoheit. Verhandlungen im Text hatten über Jahre keine Lösung gebracht.</p>
+        <p class="case-desc">Visualisierungen machten erstmals sichtbar, was wirklich strittig war: nicht die Sachfragen, sondern die Machtdynamiken darunter. Stakeholder-Karten, Zeitverläufe und Spannungsdiagramme strukturierten das Gespräch neu.</p>
+        <p class="case-result">→ Visualisierung als Mediationswerkzeug – dort, wo Sprache versagt hatte.</p>
+        <p class="case-confidential">Neutralisierter Case · Alle Beteiligten anonymisiert</p>
+      </div>
+
+      <div class="case-card reveal reveal-delay-2">
+        <span class="case-tag">Transformation · Führung · 10 Jahre</span>
+        <h3 class="case-title">Ein Medienbetrieb. Zehn Jahre. Keine idealen Bedingungen. Trotzdem.</h3>
+        <p class="case-situation">Ausgangssituation:</p>
+        <p class="case-desc">Ein klassisch aufgestelltes Produktionsteam soll crossmedial werden – unter Spardruck, ohne Neueinstellungen, mit internem Widerstand, ohne klares Mandat von oben. Die Transformation passiert trotzdem: virtuelles Studio, KI-Workflows, digitale Bestell- und Qualitätsprozesse, 120+ Projekte jährlich für 40 redaktionelle Partner.</p>
+        <p class="case-desc">Das eigentliche Produkt war nicht die Grafik. Es war ein Betriebssystem für kreative Teams unter institutionellem Druck – visuell gesteuert, menschlich verankert.</p>
+        <p class="case-result">→ Transformation ohne Mandat. Das ist der härteste Beweis.</p>
+        <p class="case-confidential">Erfahrungsbasierter Case · Auf Anfrage vertieft</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="ueber">
+  <div class="about-inner">
+    <div class="reveal">
+      <p class="section-label">Über mich</p>
+      <h2>Kein Grafiker.<br>Ein strategischer Dolmetscher.</h2>
+      <div class="divider"></div>
+      <div class="about-text">
+        <p>Ich bin Denis Ludwig. Kommunikationsdesigner, Teamleiter, Change Architekt.</p>
+        <p>Was mich von klassischen Beratern unterscheidet, hat mit meiner Vergangenheit zu tun: Über zehn Jahre habe ich für Nachrichtensendungen gearbeitet – bei ZDF, SRF und MDR/ARD. Tagesschau-Tempo. Keine zweite Chance. Komplexe politische, wirtschaftliche und gesellschaftliche Zusammenhänge mussten in Minuten visuell erfasst, bewertet und übersetzt werden – für ein Millionenpublikum.</p>
+        <p>Das hat mich zu etwas gemacht, das kein Designstudium lehrt: einen routinierten, professionellen Umgang mit strategisch relevanten Informationen unter Druck. Ich lese Komplexität. Ich erkenne Struktur wo andere noch diskutieren. Und ich mache sie sichtbar – schnell, präzise, verständlich.</p>
+        <p>Seit 2016 führe ich ein Team von rund 50 Grafikern, Designern und Entwicklern durch die größte Medientransformation der letzten Jahrzehnte. Was als klassisches TV-Grafikteam begann, ist heute eine crossfunktionale Einheit, die souverän alle Kanäle und Produktionsweisen beherrscht – unter Spardruck, ohne Wachstum, gegen interne Widerstände.</p>
+        <p>Das ist keine Designgeschichte. Das ist eine Transformationsgeschichte. Und sie zeigt, was möglich ist, wenn man Visualisierung nicht ans Ende stellt – sondern in den Mittelpunkt des Prozesses.</p>
+      </div>
+      <div class="about-values">
+        <span class="value-tag">Ehrlichkeit</span>
+        <span class="value-tag">Präzision</span>
+        <span class="value-tag">Leidenschaft</span>
+        <span class="value-tag">Brücken bauen</span>
+        <span class="value-tag">Haltung</span>
+        <span class="value-tag">Hartnäckigkeit</span>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <p class="section-label">Erfahrung</p>
+      <div>
+        <div class="timeline-item">
+          <span class="timeline-year">seit 2016</span>
+          <div>
+            <p class="timeline-role">Teamleiter Content Design &amp; Graphics</p>
+            <p class="timeline-org">MDR – Mitteldeutscher Rundfunk</p>
+            <p class="timeline-note">Führung von ~50 Kreativen durch vollständige Medientransformation. Crossmediale Neuausrichtung, virtuelle Studios, KI-Workflows, digitale Governance-Systeme – unter institutionellem Spardruck.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">seit 2023</span>
+          <div>
+            <p class="timeline-role">Ausbilder für Mediendesign</p>
+            <p class="timeline-org">Fernseh Akademie Mitteldeutschland</p>
+            <p class="timeline-note">Wissenstransfer in komplexen visuellen und technischen Produktionsprozessen.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2014 – 2016</span>
+          <div>
+            <p class="timeline-role">Creative Direction</p>
+            <p class="timeline-org">KiKA / MDR, Erfurt</p>
+            <p class="timeline-note">Komplexität kindgerecht und visuell unmissverständlich machen. Höchste Anforderungen an Klarheit – für das anspruchsvollste Publikum überhaupt.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2012 – 2014</span>
+          <div>
+            <p class="timeline-role">Grafikredaktion &amp; Art Direction</p>
+            <p class="timeline-org">Schweizer Fernsehen SRF, Zürich</p>
+            <p class="timeline-note">Tagesschau, 10vor10, Eco – internationale Nachrichtenformate, konvergente Produktion, interaktive Infografik. Präzision und crossmediales Denken als tägliche Anforderung.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2009 – 2012</span>
+          <div>
+            <p class="timeline-role">Projektleitung &amp; Art Direction</p>
+            <p class="timeline-org">ZDF, Mainz</p>
+            <p class="timeline-note">Heute, Heute-Journal, logo! – Echtzeit-Visualisierung komplexer Nachrichteninhalte für Millionenpublikum. Hier entstand mein Handwerk für strategische Informationsverarbeitung unter Hochdruck.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2004 – 2008</span>
+          <div>
+            <p class="timeline-role">Gründer &amp; Creative Director</p>
+            <p class="timeline-org">grafiker.org, Jena</p>
+            <p class="timeline-note">Erste eigene Strukturen: Kommunikationsdesign, Kundenberatung, unternehmerisches Denken.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+
+</div><!-- end page-content -->
+
+<!-- FOOTER ZONE: contact + footer bar revealed together as user scrolls to end -->
+<div class="footer-zone">
+
+<section class="contact" id="kontakt">
+  <div class="contact-inner">
+    <p class="section-label reveal" style="justify-content:center;">Kontakt</p>
+    <h2 class="reveal reveal-delay-1">Lassen Sie uns <em>reden.</em></h2>
+    <p class="contact-sub reveal reveal-delay-2">Ich freue mich auf ein erstes Gespräch. Kein Pitch, kein Deck – nur ein ehrliches Gespräch darüber, ob mein Ansatz zu Ihrer Herausforderung passt.</p>
+    <a href="mailto:mail@visiblethink.ing" class="contact-link reveal reveal-delay-2">mail@visiblethink.ing</a>
+    <p class="contact-phone reveal reveal-delay-3">+49 1523 46 19 837</p>
+  </div>
+</section>
+
+  <footer>
+    <p class="footer-name">Denis Ludwig · Leipzig</p>
+    <p class="footer-brand">visiblethink.ing</p>
+    <p class="footer-tagline">Strategie wird erst real, wenn sie sichtbar ist.</p>
+  </footer>
+</div>
+
+<script>
+  // Burger menu
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Canvas field animation
+  const canvasFields = document.querySelectorAll('.canvas-field');
+  const canvasObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('canvas-visible'); });
+  }, { threshold: 0.1 });
+  canvasFields.forEach(el => canvasObs.observe(el));
+
+  // General scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => revealObs.observe(el));
+
+  // Active nav: highlight current section while scrolling
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+  const setActive = (id) => {
+    navLinks.forEach(link => {
+      const isActive = link.getAttribute('href') === '#' + id;
+      link.classList.toggle('active', isActive);
+    });
+  };
+
+  const sectionObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, {
+    threshold: 0,
+    rootMargin: '-30% 0px -60% 0px'
+  });
+
+  sections.forEach(sec => sectionObs.observe(sec));
+
+  // Click sets active immediately without waiting for scroll observer
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
