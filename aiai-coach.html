@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aiai.coach — KI-Schulungen · Denis Ludwig</title>
+<meta name="description" content="KI-Schulungen mit Denis Ludwig. Drei Kurse: Kollege KI als kreativer Partner · Alternative Werkzeuge · Visueller Journalismus mit KI. Für Mediengestalter und Kreative.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..900;1,9..144,200..900&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system.css">
+<style>
+/* =====================================================================
+   aiai.coach — Page-spezifische Styles
+   Shared Styles → design-system.css
+   ===================================================================== */
+
+:root {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans:  'Inter Tight', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+
+  --t-xs:   0.75rem;  --t-sm:  0.875rem; --t-base: 1rem;
+  --t-md:   1.125rem; --t-lg:  1.375rem; --t-xl:   1.875rem;
+  --t-2xl:  2.5rem;   --t-3xl: 3.75rem;
+
+  --lh-tight: 0.95; --lh-snug: 1.1; --lh-base: 1.5; --lh-loose: 1.7;
+  --ls-tight: -0.03em; --ls-snug: -0.015em; --ls-wide: 0.06em; --ls-wider: 0.14em;
+
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px;  --s-7: 48px; --s-8: 64px;
+  --s-9: 96px; --s-10: 128px;
+
+  --gutter: clamp(20px, 5vw, 64px);
+  --r-pill: 999px;
+  --stroke: 1px;
+
+  --coral:      #FF8462;
+  --coral-2:    #FFB59B;
+  --coral-dark: #C04A28;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --d-fast: 160ms;
+  --d-base: 280ms;
+
+  /* AIAI THEME — DARK */
+  --bg:       #15110D;
+  --bg-2:     #1F1A14;
+  --bg-3:     #2A231B;
+  --fg:       #FAF4EA;
+  --fg-mute:  #A89D8B;
+  --line-c:   rgba(255,245,225,0.10);
+  --line-c-strong: rgba(255,245,225,0.22);
+  --accent:   var(--coral);
+  --accent-fg: #15110D;
+  --nav-bg-rgb: 21, 17, 13;
+}
+
+[data-theme="light"] {
+  --bg:       #FAF4EA;
+  --bg-2:     #F0E8D8;
+  --bg-3:     #E6DACC;
+  --fg:       #15110D;
+  --fg-mute:  #7A6A58;
+  --line-c:   rgba(21,17,13,0.08);
+  --line-c-strong: rgba(21,17,13,0.16);
+  --accent:   var(--coral-dark);
+  --accent-fg: #FAF4EA;
+  --nav-bg-rgb: 250, 244, 234;
+}
+
+[data-theme="light"] .site-nav__brand { color: var(--coral-dark); }
+
+/* ---- TYPOGRAPHY ---- */
+.t-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.t-eyebrow .accent { color: var(--accent); }
+.t-display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+.t-lead {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: var(--t-md);
+  line-height: var(--lh-loose);
+  font-style: italic;
+}
+.t-body { font-size: var(--t-base); line-height: var(--lh-base); }
+.t-small { font-size: var(--t-sm); color: var(--fg-mute); }
+.t-mono { font-family: var(--font-mono); font-size: var(--t-sm); }
+
+/* ---- SECTION HEADER ---- */
+.sectionhead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--s-5);
+  align-items: end;
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line-c);
+  margin-bottom: var(--s-7);
+}
+.sectionhead__num {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+}
+.sectionhead__title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  margin: 0;
+}
+.sectionhead__meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+
+/* ---- MARQUEE ---- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px solid var(--line-c);
+  border-bottom: 1px solid var(--line-c);
+  padding: 14px 0;
+}
+.marquee__track {
+  display: inline-block;
+  animation: marquee 38s linear infinite;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: var(--t-xl);
+}
+.marquee__track > span { padding: 0 28px; }
+.marquee__track > span::before {
+  content: '◇';
+  color: var(--accent);
+  margin-right: 28px;
+  font-size: 0.7em;
+  vertical-align: middle;
+}
+
+/* ---- KURS CARDS ---- */
+.kurs-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-c);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: border-color var(--d-base);
+}
+.kurs-card:hover { border-color: var(--accent); }
+.kurs-card__header {
+  padding: var(--s-6) var(--s-6) var(--s-5);
+  border-bottom: 1px solid var(--line-c);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.kurs-card__num {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--accent);
+}
+.kurs-card__format {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+  text-transform: uppercase;
+  text-align: right;
+}
+.kurs-card__body { padding: var(--s-6); flex: 1; display: flex; flex-direction: column; gap: var(--s-5); }
+.kurs-card__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 300;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+.kurs-card__subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--t-md);
+  font-weight: 300;
+  color: var(--fg-mute);
+  line-height: var(--lh-loose);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line-c);
+}
+.kurs-card__lead { color: var(--fg-mute); font-size: var(--t-sm); line-height: var(--lh-loose); }
+.kurs-lernen__label {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--s-3);
+}
+.kurs-lernen ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.kurs-lernen li {
+  display: flex;
+  gap: var(--s-3);
+  font-size: var(--t-sm);
+  color: var(--fg-mute);
+  line-height: var(--lh-loose);
+}
+.kurs-lernen li::before {
+  content: '→';
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.kurs-card__quote {
+  background: var(--bg-3);
+  padding: var(--s-5);
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--t-sm);
+  color: var(--fg-mute);
+  line-height: var(--lh-loose);
+}
+.kurs-card__footer {
+  padding: var(--s-5) var(--s-6);
+  border-top: 1px solid var(--line-c);
+  display: flex;
+  gap: var(--s-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tag {
+  display: inline-flex;
+  padding: 4px 10px;
+  border: 1px solid var(--line-c-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+/* ---- TOOLS GRID ---- */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--line-c);
+  border: 1px solid var(--line-c);
+}
+.tool-item {
+  background: var(--bg);
+  padding: var(--s-5) var(--s-4);
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background var(--d-base);
+}
+.tool-item:hover { background: var(--bg-3); }
+
+/* ---- RESPONSIVE (page-specific) ---- */
+@media (max-width: 900px) {
+  .kurse-grid { grid-template-columns: 1fr !important; }
+  .tools-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .about-grid { grid-template-columns: 1fr !important; }
+  .sectionhead { grid-template-columns: 1fr !important; }
+  .sectionhead__meta { display: none; }
+}
+@media (max-width: 600px) {
+  .tools-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .hero-stats { flex-direction: column; gap: var(--s-4) !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#kurse" onclick="closeMenu()">Kurse</a>
+  <a href="#werkzeug" onclick="closeMenu()">Werkzeug</a>
+  <a href="#ueber" onclick="closeMenu()">Über Denis</a>
+  <a href="visiblethink-ing.html">visiblethink.ing</a>
+  <a href="index.html">ludwig.fm</a>
+  <a href="#kontakt" class="menu-cta" onclick="closeMenu()">Anfragen</a>
+</div>
+
+<div class="page-content">
+
+<!-- ===================== STICKY NAV ===================== -->
+<nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">
+  <div class="site-nav__domains">
+    <a class="site-nav__brand" href="aiai-coach.html">
+      <span class="d-dot" style="background:linear-gradient(135deg,#FF8462,#FFB59B);"></span>
+      aiai.coach
+    </a>
+    <a href="index.html" class="nav-domain nav-hide-mobile">
+      <span class="d-dot" style="background:#D9FF00;"></span>ludwig.fm
+    </a>
+    <a href="visiblethink-ing.html" class="nav-domain nav-hide-mobile">
+      <span class="d-dot" style="background:linear-gradient(135deg,#FF5B2E,#2E6BFF);"></span>visiblethink.ing
+    </a>
+  </div>
+  <div class="site-nav__links">
+    <a href="#kurse" class="nav-hide-mobile">Kurse</a>
+    <a href="#werkzeug" class="nav-hide-mobile">Werkzeug</a>
+    <a href="#ueber" class="nav-hide-mobile">Über Denis</a>
+    <button class="theme-toggle nav-hide-mobile" id="themeToggle" aria-label="Hell/Dunkel umschalten">◐ Dunkel</button>
+    <a href="#kontakt" class="site-nav__cta">Anfragen →</a>
+    <button class="burger" id="burgerBtn" aria-label="Menü öffnen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section style="padding: var(--s-9) var(--gutter) var(--s-8); min-height: 90vh; display: flex; flex-direction: column; justify-content: flex-end;">
+  <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+
+    <div class="reveal t-eyebrow" style="margin-bottom: var(--s-6);">
+      <span class="accent">●</span>&nbsp;&nbsp;Lehrveranstaltungsangebote 2025/26 · Denis Ludwig
+    </div>
+
+    <h1 class="t-display reveal reveal-d1" style="font-size: clamp(3rem, 8vw, 8rem); max-width: 16ch; margin-bottom: var(--s-6);">
+      KI führen,<br>nicht nur
+      <span style="font-style: italic; color: var(--accent);">bedienen.</span>
+    </h1>
+
+    <p class="t-lead reveal reveal-d2" style="max-width: 58ch; margin-bottom: var(--s-7); color: var(--fg-mute);">
+      Generative KI verändert, wie Bilder entstehen, wie Konzepte entwickelt werden,
+      wie Inhalte visualisiert werden.
+      Wer diese Technologien nur bedient, bleibt Nutzer.
+      Wer sie führt, wird zum Regisseur.
+    </p>
+
+    <div class="reveal reveal-d2" style="display: flex; gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-7);">
+      <a href="#kurse" class="btn btn--primary">Kurse ansehen →</a>
+      <a href="#kontakt" class="btn btn--ghost">Anfragen</a>
+    </div>
+
+    <div class="reveal reveal-d3 hero-stats" style="display: flex; gap: var(--s-7); padding-top: var(--s-6); border-top: 1px solid var(--line-c); flex-wrap: wrap;">
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight);">3</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Buchbare Kurse</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight);">20+</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Jahre Produktionspraxis</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(1.1rem, 2.5vw, 1.9rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight); line-height: 1.2;">MDR · ZDF<br>SRF · KiKA</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Praxis, nicht Labor</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee">
+  <div class="marquee__track">
+    <span>Kollege KI</span><span>Neue Werkzeuge</span><span>Visueller Journalismus</span><span>Prompting-Methodik</span><span>Werkzeug-Souveränität</span><span>KI als Teammitglied</span>
+    <span>Kollege KI</span><span>Neue Werkzeuge</span><span>Visueller Journalismus</span><span>Prompting-Methodik</span><span>Werkzeug-Souveränität</span><span>KI als Teammitglied</span>
+  </div>
+</div>
+
+<!-- ===================== THESE ===================== -->
+<section style="padding: var(--s-9) var(--gutter); background: var(--bg-2); border-top: 1px solid var(--line-c); border-bottom: 1px solid var(--line-c);">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <div class="reveal t-eyebrow" style="margin-bottom: var(--s-5);"><span class="accent">●</span>&nbsp;&nbsp;Haltung</div>
+    <p class="reveal reveal-d1" style="font-family: var(--font-serif); font-size: clamp(1.6rem, 3.5vw, 3rem); font-weight: 300; line-height: 1.25; letter-spacing: var(--ls-snug);">
+      Man muss den Beruf trotzdem lernen.
+      Um ein gutes Ergebnis zu bekommen, muss ich wissen,
+      was ich eingebe — und <em style="color: var(--accent);">was ich bewerte.</em>
+    </p>
+  </div>
+</section>
+
+<!-- ===================== DREI KURSE ===================== -->
+<section id="kurse" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">01 / Kurse</span>
+      <h2 class="sectionhead__title">Drei Kurse.<br><em style="font-style: italic;">Buchbar ab sofort.</em></h2>
+      <span class="sectionhead__meta">Blockseminar · Flexibel</span>
+    </div>
+
+    <div class="kurse-grid reveal reveal-d1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5);">
+
+      <!-- KURS I -->
+      <article class="kurs-card">
+        <div class="kurs-card__header">
+          <span class="kurs-card__num">Kurs I</span>
+          <span class="kurs-card__format">Blockseminar · 2 Tage</span>
+        </div>
+        <div class="kurs-card__body">
+          <h3 class="kurs-card__title">Kollege KI als kreativer Partner.</h3>
+          <p class="kurs-card__subtitle">
+            Ein praxisnahes Seminar zu Creative- und Art Direction im Zeitalter der generativen KI — für Interessierte, die führen wollen, nicht nur bedienen.
+          </p>
+          <p class="kurs-card__lead">
+            Generative KI verändert, wie Bilder entstehen, wie Konzepte entwickelt werden, wie Inhalte visualisiert werden. Dieses Seminar vermittelt die Haltung: KI nicht als Ersatz kreativer Kompetenz — sondern als Teammitglied, das man brieft, bewertet und korrigiert.
+          </p>
+          <div class="kurs-lernen">
+            <div class="kurs-lernen__label">Was Studierende lernen</div>
+            <ul>
+              <li>Wie Bildgenerierung, Videoproduktion und Konzeptentwicklung mit KI zusammenwachsen</li>
+              <li>Wie man KI sinnvoll brieft — und warum gestalterisches Urteilsvermögen dabei entscheidend bleibt</li>
+              <li>Wie man KI multimodal einsetzt: vom ersten Konzept bis zur fertigen Visualisierung</li>
+              <li>Warum der Output nur so gut ist wie die Frage dahinter</li>
+              <li>Wie sich Berufsfelder verändern — und welche Kompetenzen im Wandel tragen</li>
+            </ul>
+          </div>
+          <div class="kurs-card__quote">
+            „Die meisten KI-Kurse kommen aus dem Grafik- oder Marketingkontext. Dieser Kurs verbindet gestalterisches Handwerk mit redaktionellem Denken."
+          </div>
+        </div>
+        <div class="kurs-card__footer">
+          <span class="tag">Mediendesign</span>
+          <span class="tag">Kommunikationsdesign</span>
+          <span class="tag">Journalismus</span>
+        </div>
+      </article>
+
+      <!-- KURS II -->
+      <article class="kurs-card">
+        <div class="kurs-card__header">
+          <span class="kurs-card__num">Kurs II</span>
+          <span class="kurs-card__format">Blockseminar · 2 Tage</span>
+        </div>
+        <div class="kurs-card__body">
+          <h3 class="kurs-card__title">Gestalten mit neuen Werkzeugen.</h3>
+          <p class="kurs-card__subtitle">
+            Ein Werkzeugkasten für die nächste Ära. Überblick und Einführung in zeitgemäße Alternativen zu etablierten Produktionstools — praxisnah, unabhängig, zukunftsfähig.
+          </p>
+          <p class="kurs-card__lead">
+            Grafik- und Medienproduktion hat jahrzehntelang auf einen Werkzeugkasten gesetzt, der teuer, lizenzabhängig und zunehmend intransparent ist. Gleichzeitig ist eine neue Generation von Tools entstanden — leistungsfähig, oft kostenlos oder deutlich günstiger, in vielen Bereichen funktional ebenbürtig.
+          </p>
+          <div class="kurs-lernen">
+            <div class="kurs-lernen__label">Was Studierende lernen</div>
+            <ul>
+              <li>Welche professionellen Alternativen für Grafik, Layout, Video und Animation heute verfügbar sind</li>
+              <li>Wie man gestalterisches Denken von einem bestimmten Tool löst und auf neue Umgebungen überträgt</li>
+              <li>Wie man mit modernen Open-Source- und KI-integrierten Tools professionelle Ergebnisse erzielt</li>
+              <li>Was es bedeutet, Produktionsmittel strategisch und souverän zu wählen</li>
+            </ul>
+          </div>
+          <div class="kurs-card__quote">
+            „Wer Tools nur in einer Umgebung gelernt hat, denkt in dieser Umgebung. Wer das Medium selbst versteht, kann mit jedem Werkzeug arbeiten."
+          </div>
+        </div>
+        <div class="kurs-card__footer">
+          <span class="tag">Canva</span>
+          <span class="tag">Affinity</span>
+          <span class="tag">DaVinci Fusion</span>
+          <span class="tag">Cavalry</span>
+        </div>
+      </article>
+
+      <!-- KURS III -->
+      <article class="kurs-card">
+        <div class="kurs-card__header">
+          <span class="kurs-card__num">Kurs III</span>
+          <span class="kurs-card__format">Flexibel buchbar</span>
+        </div>
+        <div class="kurs-card__body">
+          <h3 class="kurs-card__title">Visueller Journalismus mit KI.</h3>
+          <p class="kurs-card__subtitle">
+            Wenn Recherche und visueller Output zusammenwachsen. Ein interdisziplinäres Seminar für Journalistik- und Designstudierende — gemeinsam, mit KI als drittem Teammitglied.
+          </p>
+          <p class="kurs-card__lead">
+            Guter visueller Journalismus entsteht im Dialog: zwischen dem, der eine Geschichte versteht, und dem, der sie sichtbar macht. Generative KI verändert das grundlegend — und stellt eine neue Frage: Wer muss was noch selbst können, wenn man einen kompetenten Kollegen fragen kann?
+          </p>
+          <div class="kurs-lernen">
+            <div class="kurs-lernen__label">Was Studierende lernen</div>
+            <ul>
+              <li>Wie redaktionelle Inhalte und gestalterische Umsetzung mit KI ineinandergreifen</li>
+              <li>Wie man KI für Konzeption, Bildsprache, Infografik und Storytelling einsetzt</li>
+              <li>Wie man KI-Output journalistisch und gestalterisch bewertet und einordnet</li>
+              <li>Wie sich Berufsbilder an dieser Schnittstelle verändern</li>
+            </ul>
+          </div>
+          <div class="kurs-card__quote">
+            „Der gemischte Raum ist selbst schon das Thema. Journalistik und Design arbeiten gemeinsam — KI verbindet beide."
+          </div>
+        </div>
+        <div class="kurs-card__footer">
+          <span class="tag">Journalistik</span>
+          <span class="tag">Mediendesign</span>
+          <span class="tag">Kooperation</span>
+        </div>
+      </article>
+
+    </div><!-- /kurse-grid -->
+
+    <!-- Format-Hinweis -->
+    <div class="reveal" style="margin-top: var(--s-6); padding: var(--s-5) var(--s-6); background: var(--bg-2); border: 1px solid var(--line-c); display: flex; gap: var(--s-6); flex-wrap: wrap;">
+      <div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Output Kurs III</div>
+        <p class="t-small" style="color: var(--fg-mute); max-width: 40ch; line-height: var(--lh-loose);">Jede Gruppe entwickelt ein eigenes visuelles Storytelling-Projekt sowie einen persönlichen KI-Workflow.</p>
+      </div>
+      <div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Einsatzbereiter Toolstack</div>
+        <p class="t-small" style="color: var(--fg-mute); max-width: 40ch; line-height: var(--lh-loose);">Alle Kurse kommen mit einem in der Praxis getesteten Toolstack — sofort arbeitsfähig ab dem ersten Tag.</p>
+      </div>
+      <div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Voraussetzungen</div>
+        <p class="t-small" style="color: var(--fg-mute); max-width: 40ch; line-height: var(--lh-loose);">Kurs I & II: Grundkenntnisse digitaler Medienproduktion empfohlen, kein Vorwissen zu spezifischen Tools erforderlich.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== WERKZEUG ===================== -->
+<section id="werkzeug" style="padding: var(--s-9) var(--gutter); background: var(--bg-2); border-top: 1px solid var(--line-c);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">02 / Werkzeug</span>
+      <h2 class="sectionhead__title">Was wir benutzen.</h2>
+      <span class="sectionhead__meta">Aus der Produktion</span>
+    </div>
+
+    <div class="tools-grid reveal reveal-d1">
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">Canva</div>
+          <div class="t-small" style="margin-top: 4px;">Pro & Magic Studio</div>
+        </div>
+      </div>
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">Affinity</div>
+          <div class="t-small" style="margin-top: 4px;">Designer · Photo · Publisher</div>
+        </div>
+      </div>
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">DaVinci Fusion</div>
+          <div class="t-small" style="margin-top: 4px;">Resolve · Compositing</div>
+        </div>
+      </div>
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">Cavalry</div>
+          <div class="t-small" style="margin-top: 4px;">Motion Design</div>
+        </div>
+      </div>
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">Stitch</div>
+          <div class="t-small" style="margin-top: 4px;">KI-Videokomposition</div>
+        </div>
+      </div>
+      <div class="tool-item">
+        <div style="width: 24px; height: 24px; border-radius: 4px; background: linear-gradient(135deg, var(--coral), var(--coral-2));"></div>
+        <div>
+          <div style="font-family: var(--font-serif); font-size: var(--t-md); font-weight: 400;">Claude</div>
+          <div class="t-small" style="margin-top: 4px;">Konzept & Workflow-KI</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top: var(--s-5); color: var(--fg-mute); font-size: var(--t-sm); max-width: 72ch; line-height: var(--lh-loose);">
+      Alle Tools aus echtem Produktionseinsatz — nicht aus dem YouTube-Tutorial. Was funktioniert, was überbewertet ist, was welches Budget braucht: das sprechen wir konkret durch. Die Abhängigkeit von US-amerikanischen Plattformen und Abo-Modellen ist an Hochschulen, in Redaktionen und Agenturen ein zunehmendes Thema — dieser Toolstack gibt Handlungsfähigkeit zurück.
+    </p>
+
+  </div>
+</section>
+
+<!-- ===================== ÜBER DENIS ===================== -->
+<section id="ueber" style="padding: var(--s-9) var(--gutter); border-top: 1px solid var(--line-c);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">03 / Wer da redet</span>
+      <h2 class="sectionhead__title">Aus der Praxis,<br><em style="font-style: italic;">nicht aus dem Labor.</em></h2>
+      <span class="sectionhead__meta">Denis Ludwig</span>
+    </div>
+
+    <div class="about-grid reveal reveal-d1" style="display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--s-7); align-items: start;">
+      <div style="aspect-ratio: 4/5; background: linear-gradient(135deg, #3D2A1F 0%, #1F1612 100%); max-width: 380px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: var(--s-5);">
+        <span class="t-mono" style="color: rgba(255,255,255,0.4); font-size: var(--t-xs);">Denis Ludwig · Leipzig</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: var(--s-5);">
+        <div class="t-eyebrow"><span class="accent">●</span>&nbsp;&nbsp;Mediengestalter · Motion Designer · Creative Director · Strategischer Berater</div>
+        <h3 class="t-display" style="font-size: clamp(1.8rem, 4vw, 3.5rem); margin-top: var(--s-2);">
+          Über 20 Jahre<br>
+          <span style="font-style: italic;">an der Schnittstelle von Redaktion, Produktion und visueller Gestaltung.</span>
+        </h3>
+        <p style="color: var(--fg-mute); max-width: 54ch; line-height: var(--lh-loose);">
+          Denis Ludwig war dreimal vor dem Mainstream: Echtzeit-3D, virtuelles Studio, generative KI. Was er lehrt, hat er selbst in Produktion erprobt — unter echten Deadlines, mit echten Teams, für MDR, ZDF, SRF und KiKA. Dozent an der Fernseh-Akademie Mitteldeutschland.
+        </p>
+        <p style="color: var(--fg-mute); max-width: 54ch; line-height: var(--lh-loose);">
+          Dieser Kurs kommt nicht aus dem Tech-Kontext. KI wird hier nicht vorgeführt — sie wird im realen kreativen Prozess gezeigt, mit einem Toolstack, der in der täglichen Produktionsrealität erprobt ist.
+        </p>
+        <div style="display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2);">
+          <a href="index.html" class="btn btn--ghost">Mehr auf ludwig.fm →</a>
+          <a href="visiblethink-ing.html" class="btn btn--ghost">visiblethink.ing →</a>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: var(--ls-wider); color: var(--fg-mute); text-transform: uppercase; margin-top: var(--s-3);">
+          Denis Ludwig — strategischer visueller Dolmetscher
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /page-content -->
+
+<div class="footer-reveal">
+<!-- ===================== KONTAKT / CTA ===================== -->
+<div class="cta-zone reveal">
+<section id="kontakt" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); align-items: start;">
+      <div class="reveal-d1">
+        <h2 class="t-display" style="font-size: clamp(2.5rem, 5vw, 5rem); margin-bottom: var(--s-5); line-height: var(--lh-tight);">
+          Kein Formular.<br>
+          <span style="font-style: italic; color: var(--accent);">Gespräch anfangen.</span>
+        </h2>
+      </div>
+      <div class="reveal-d2" style="display: flex; flex-direction: column; gap: var(--s-4);">
+        <span class="t-eyebrow"><span class="accent">●</span>&nbsp;&nbsp;Buchungsanfrage</span>
+        <div style="font-family: var(--font-serif); font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 300; color: var(--fg); letter-spacing: var(--ls-snug);">
+          Buchen Sie einen Kurs.
+        </div>
+        <p style="color: var(--fg-mute); max-width: 50ch; font-size: var(--t-sm); line-height: var(--lh-loose);">
+          Kein Formular. Schreiben Sie mir, welchen Kurs Sie anfragen, was Ihre Studierenden mitbringen — und der Rest klärt sich im Gespräch.
+        </p>
+        <div style="display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2);">
+          <a href="mailto:hallo@visiblethink.ing?subject=Kursanfrage aiai.coach" class="btn btn--primary">Anfrage schreiben →</a>
+          <a href="#kurse" class="btn btn--ghost">Kurse ansehen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /cta-zone -->
+
+<!-- ===================== FOOTER ZONE ===================== -->
+<footer class="footer-zone">
+  <div class="sitefoot">
+    <div class="sitefoot__col">
+      <div class="t-eyebrow" style="margin-bottom: var(--s-3);">Drei Räume, ein Mensch</div>
+      <h3 style="font-family: var(--font-serif); font-weight: 300; font-size: var(--t-2xl); letter-spacing: var(--ls-tight); margin: var(--s-3) 0;">Denis Ludwig</h3>
+      <p style="max-width: 32ch; color: var(--fg-mute); font-size: var(--t-sm);">
+        Mediengestalter · Motion Designer ·<br>Creative Director · Dozent FAM Leipzig.<br>
+        25+ Jahre für MDR, ZDF, SRF &amp; KiKA.
+      </p>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Räume</h4>
+      <ul>
+        <li><a href="aiai-coach.html" style="color: var(--accent);">aiai.coach ·</a></li>
+        <li><a href="visiblethink-ing.html">visiblethink.ing</a></li>
+        <li><a href="index.html">ludwig.fm</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Kurse</h4>
+      <ul>
+        <li><a href="#kurse">Kollege KI als kreativer Partner</a></li>
+        <li><a href="#kurse">Gestalten mit neuen Werkzeugen</a></li>
+        <li><a href="#kurse">Visueller Journalismus mit KI</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Kontakt</h4>
+      <ul>
+        <li><a href="mailto:hallo@visiblethink.ing">hallo@visiblethink.ing</a></li>
+        <li>Leipzig, Deutschland</li>
+        <li><a href="mailto:hallo@visiblethink.ing?subject=Kursanfrage aiai.coach">Kurs anfragen</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__legal">
+      <span>© 2026 Denis Ludwig — aiai.coach</span>
+      <span>Impressum · Datenschutz</span>
+    </div>
+  </div>
+</footer>
+</div><!-- /footer-reveal -->
+
+<script>
+/* ---- SCROLL REVEAL ---- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ---- STICKY NAV — CSS-class approach ---- */
+const nav = document.getElementById('siteNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ---- THEME TOGGLE ---- */
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+const saved = localStorage.getItem('ai-theme') || 'dark';
+root.setAttribute('data-theme', saved);
+themeToggle.textContent = saved === 'dark' ? '◐ Dunkel' : '◑ Hell';
+
+themeToggle.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('ai-theme', next);
+  themeToggle.textContent = next === 'dark' ? '◐ Dunkel' : '◑ Hell';
+});
+
+/* ---- ACTIVE NAV LINKS ---- */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.site-nav__links a[href^="#"]');
+const linkObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => linkObserver.observe(s));
+
+/* ---- BURGER MENU ---- */
+const burgerBtn = document.getElementById('burgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+let menuOpen = false;
+
+function openMenu() {
+  menuOpen = true;
+  mobileMenu.style.display = 'flex';
+  setTimeout(() => mobileMenu.classList.add('open'), 10);
+  burgerBtn.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  mobileMenu.setAttribute('aria-hidden', 'false');
+}
+
+function closeMenu() {
+  menuOpen = false;
+  mobileMenu.classList.remove('open');
+  setTimeout(() => { mobileMenu.style.display = 'none'; }, 300);
+  burgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+  mobileMenu.setAttribute('aria-hidden', 'true');
+}
+
+burgerBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+</script>
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Denis Ludwig — Gestaltung · Technologie · Führung</title>
+<meta name="description" content="Denis Ludwig. Gestaltung, Technologie, Führung. Seit 25 Jahren an der Schnittstelle — für MDR, ZDF, SRF und KiKA. Leipzig.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..900;1,9..144,200..900&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system.css">
+<style>
+/* =====================================================================
+   ludwig.fm — Page-spezifische Styles
+   Shared Styles → design-system.css
+   ===================================================================== */
+
+:root {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans:  'Inter Tight', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+
+  --t-xs:   0.75rem;  --t-sm:  0.875rem; --t-base: 1rem;
+  --t-md:   1.125rem; --t-lg:  1.375rem; --t-xl:   1.875rem;
+  --t-2xl:  2.5rem;   --t-3xl: 3.75rem;  --t-4xl:  5.5rem;
+
+  --lh-tight: 0.95; --lh-snug: 1.1; --lh-base: 1.5; --lh-loose: 1.7;
+  --ls-tight: -0.03em; --ls-snug: -0.015em; --ls-wide: 0.06em; --ls-wider: 0.14em;
+
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px;  --s-7: 48px; --s-8: 64px;
+  --s-9: 96px; --s-10: 128px;
+
+  --gutter: clamp(20px, 5vw, 64px);
+  --r-pill: 999px;
+  --stroke: 1px;
+
+  --acid:      #D9FF00;
+  --acid-dark: #6B7800;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --d-fast: 160ms;
+  --d-base: 280ms;
+
+  /* LUDWIG THEME — DARK */
+  --bg:       #0A0A0A;
+  --bg-2:     #141414;
+  --bg-3:     #1F1F1F;
+  --fg:       #F4F1EA;
+  --fg-mute:  #6B6B6B;
+  --line-c:   rgba(255,255,255,0.08);
+  --line-c-strong: rgba(255,255,255,0.16);
+  --accent:   var(--acid);
+  --accent-fg: #0A0A0A;
+  --nav-bg-rgb: 10, 10, 10;
+}
+
+[data-theme="light"] {
+  --bg:       #F4F1EA;
+  --bg-2:     #EAE6DA;
+  --bg-3:     #DEDAD0;
+  --fg:       #0A0A0A;
+  --fg-mute:  #5A5A5A;
+  --line-c:   rgba(10,10,10,0.08);
+  --line-c-strong: rgba(10,10,10,0.16);
+  --accent:   var(--acid-dark);
+  --accent-fg: #F4F1EA;
+  --nav-bg-rgb: 244, 241, 234;
+}
+
+[data-theme="light"] .site-nav__brand { color: var(--acid-dark); }
+
+/* ---- TYPOGRAPHY ---- */
+.t-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.t-eyebrow .accent { color: var(--accent); }
+.t-display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+.t-lead {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: var(--t-md);
+  line-height: var(--lh-loose);
+  font-style: italic;
+}
+.t-body { font-size: var(--t-base); line-height: var(--lh-base); }
+.t-small { font-size: var(--t-sm); color: var(--fg-mute); }
+.t-mono { font-family: var(--font-mono); font-size: var(--t-sm); }
+
+/* ---- SECTION HEADER ---- */
+.sectionhead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--s-5);
+  align-items: end;
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line-c);
+  margin-bottom: var(--s-7);
+}
+.sectionhead__num {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+}
+.sectionhead__title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  margin: 0;
+}
+.sectionhead__meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+
+/* ---- MARQUEE ---- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px solid var(--line-c);
+  border-bottom: 1px solid var(--line-c);
+  padding: 14px 0;
+}
+.marquee__track {
+  display: inline-block;
+  animation: marquee 40s linear infinite;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: var(--t-xl);
+}
+.marquee__track > span { padding: 0 28px; }
+.marquee__track > span::before {
+  content: '◇';
+  color: var(--accent);
+  margin-right: 28px;
+  font-size: 0.7em;
+  vertical-align: middle;
+}
+
+/* ---- DOOR CARDS ---- */
+.doors-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--line-c);
+  border: 1px solid var(--line-c);
+}
+.door {
+  background: var(--bg);
+  padding: var(--s-7) var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  position: relative;
+  transition: background var(--d-base);
+}
+.door:hover { background: var(--bg-2); }
+.door__num {
+  font-family: var(--font-serif);
+  font-size: 5rem;
+  font-weight: 700;
+  color: rgba(217,255,0,0.06);
+  position: absolute;
+  top: var(--s-5);
+  right: var(--s-6);
+  line-height: 1;
+  user-select: none;
+}
+.door__title {
+  font-family: var(--font-serif);
+  font-size: var(--t-2xl);
+  font-weight: 300;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+.door__body {
+  color: var(--fg-mute);
+  max-width: 64ch;
+  line-height: var(--lh-loose);
+}
+.door__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.tag {
+  display: inline-flex;
+  padding: 4px 10px;
+  border: 1px solid var(--line-c-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+/* ---- QUOTE ---- */
+.quote-block {
+  padding: var(--s-9) var(--gutter);
+  text-align: center;
+  border-top: 1px solid var(--line-c);
+  border-bottom: 1px solid var(--line-c);
+}
+.quote-block blockquote {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.35;
+  letter-spacing: var(--ls-snug);
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--fg);
+  position: relative;
+  padding: 0 var(--s-6);
+}
+.quote-block blockquote::before {
+  content: '"';
+  font-family: var(--font-serif);
+  font-size: 6rem;
+  color: var(--accent);
+  opacity: 0.2;
+  position: absolute;
+  top: -2.5rem;
+  left: 0;
+  line-height: 1;
+}
+
+/* ---- BG GRID ---- */
+.bg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line-c);
+  border: 1px solid var(--line-c);
+}
+.bg-item {
+  background: var(--bg);
+  padding: var(--s-6);
+  border-left: 2px solid transparent;
+  transition: border-color var(--d-base), background var(--d-base);
+}
+.bg-item:hover {
+  border-left-color: var(--accent);
+  background: var(--bg-2);
+}
+.bg-item__label {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--s-3);
+}
+.bg-item__text {
+  color: var(--fg-mute);
+  font-size: var(--t-sm);
+  line-height: var(--lh-loose);
+}
+
+/* ---- SITUATIONS ---- */
+.situations-list {
+  display: grid;
+  gap: 1px;
+  background: var(--line-c);
+  border: 1px solid var(--line-c);
+}
+.situation {
+  background: var(--bg);
+  padding: var(--s-5) var(--s-6);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-5);
+  border-left: 2px solid transparent;
+  transition: border-color var(--d-base), background var(--d-base);
+}
+.situation:hover {
+  border-left-color: var(--accent);
+  background: var(--bg-2);
+}
+.situation__num {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-wider);
+  color: var(--fg-mute);
+  min-width: 28px;
+  padding-top: 4px;
+}
+.situation__text {
+  font-family: var(--font-serif);
+  font-size: var(--t-lg);
+  font-weight: 300;
+  font-style: italic;
+  line-height: var(--lh-loose);
+  color: var(--fg-mute);
+}
+
+/* ---- RÄUME ---- */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line-c-strong);
+  border: 1px solid var(--line-c-strong);
+}
+.room-card {
+  background: var(--bg);
+  padding: var(--s-7) var(--s-6);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: var(--fg);
+  transition: background var(--d-base);
+}
+.room-card:hover { background: var(--bg-3); }
+
+/* ---- RESPONSIVE (page-specific) ---- */
+@media (max-width: 900px) {
+  .bg-grid { grid-template-columns: 1fr 1fr !important; }
+  .rooms-grid { grid-template-columns: 1fr !important; }
+  .sectionhead { grid-template-columns: 1fr !important; }
+  .sectionhead__meta { display: none; }
+}
+@media (max-width: 600px) {
+  .bg-grid { grid-template-columns: 1fr !important; }
+  .situation { gap: var(--s-3); }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#angebot" onclick="closeMenu()">Was ich tue</a>
+  <a href="#hintergrund" onclick="closeMenu()">Hintergrund</a>
+  <a href="#situationen" onclick="closeMenu()">Für wen</a>
+  <a href="visiblethink-ing.html">visiblethink.ing</a>
+  <a href="aiai-coach.html">aiai.coach</a>
+  <a href="#kontakt" class="menu-cta" onclick="closeMenu()">Kontakt</a>
+</div>
+
+<div class="page-content">
+
+<!-- ===================== STICKY NAV ===================== -->
+<nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">
+  <div class="site-nav__domains">
+    <a class="site-nav__brand" href="index.html">
+      <span class="d-dot" style="background:#D9FF00;"></span>
+      ludwig.fm
+    </a>
+    <a href="visiblethink-ing.html" class="nav-domain nav-hide-mobile">
+      <span class="d-dot" style="background:linear-gradient(135deg,#FF5B2E,#2E6BFF);"></span>visiblethink.ing
+    </a>
+    <a href="aiai-coach.html" class="nav-domain nav-hide-mobile">
+      <span class="d-dot" style="background:linear-gradient(135deg,#FF8462,#FFB59B);"></span>aiai.coach
+    </a>
+  </div>
+  <div class="site-nav__links">
+    <a href="#angebot" class="nav-hide-mobile">Angebot</a>
+    <a href="#hintergrund" class="nav-hide-mobile">Hintergrund</a>
+    <a href="#situationen" class="nav-hide-mobile">Für wen</a>
+    <button class="theme-toggle nav-hide-mobile" id="themeToggle" aria-label="Hell/Dunkel umschalten">◐ Dunkel</button>
+    <a href="#kontakt" class="site-nav__cta">Kontakt →</a>
+    <button class="burger" id="burgerBtn" aria-label="Menü öffnen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section style="padding: var(--s-9) var(--gutter) var(--s-8); min-height: 92vh; display: flex; flex-direction: column; justify-content: flex-end;">
+  <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+
+    <div class="reveal t-eyebrow" style="margin-bottom: var(--s-6);">
+      <span class="accent">●</span>&nbsp;&nbsp;Gestaltung · Technologie · Führung
+    </div>
+
+    <h1 class="t-display reveal reveal-d1" style="font-size: clamp(3rem, 8vw, 8rem); max-width: 18ch; margin-bottom: var(--s-6);">
+      Ich mache sichtbar,<br>was Teams und Organisationen<br>
+      <span style="font-style: italic; color: var(--accent);">noch nicht sehen.</span>
+    </h1>
+
+    <p class="t-lead reveal reveal-d2" style="max-width: 56ch; margin-bottom: var(--s-7); color: var(--fg-mute);">
+      Seit 25 Jahren bin ich dort, wo Gestaltung und Technologie sich neu erfinden —
+      wo Technik, Inhalt, Form und Team zusammenfinden
+      und am Ende ein Publikum etwas davon hat.
+      Was ich hinterlasse, sind keine fertigen Designs, sondern Systeme:
+      Workflows, Erscheinungsbilder, Teams, die danach selbst weitermachen.
+    </p>
+
+    <div class="reveal reveal-d3" style="display: flex; gap: var(--s-7); padding-top: var(--s-6); border-top: 1px solid var(--line-c); flex-wrap: wrap;">
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight);">25+</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Jahre an der Schnittstelle</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight);">50</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Kreative geführt & entwickelt</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-serif); font-size: clamp(1.1rem, 2.5vw, 1.9rem); font-weight: 300; color: var(--accent); letter-spacing: var(--ls-tight); line-height: 1.2;">MDR · ZDF<br>SRF · KiKA</div>
+        <div class="t-eyebrow" style="margin-top: var(--s-2);">Sender</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee">
+  <div class="marquee__track">
+    <span>Visuelle Systeme</span><span>KI-Workflows</span><span>Teams aufstellen</span><span>Creative Leadership</span><span>Infografik</span><span>Broadcast Design</span>
+    <span>Visuelle Systeme</span><span>KI-Workflows</span><span>Teams aufstellen</span><span>Creative Leadership</span><span>Infografik</span><span>Broadcast Design</span>
+  </div>
+</div>
+
+<!-- ===================== WAS ICH TUE ===================== -->
+<section id="angebot" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">01 / Was ich tue</span>
+      <h2 class="sectionhead__title">Kreative Systeme bauen,<br><em style="font-style: italic;">die ohne mich laufen.</em></h2>
+      <span class="sectionhead__meta">3 Türen</span>
+    </div>
+
+    <p class="reveal" style="color: var(--fg-mute); max-width: 64ch; margin-bottom: var(--s-7); font-size: var(--t-md); line-height: var(--lh-loose);">
+      Erscheinungsbilder, KI-Workflows, Teams.
+      Das sind keine drei verschiedenen Dinge —
+      das ist ein einziges Profil: Ich baue kreative Strukturen,
+      die nach dem Projekt besser funktionieren als davor.
+    </p>
+
+    <div class="doors-grid reveal reveal-d1">
+
+      <div class="door">
+        <div class="door__num">01</div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Tür 01</div>
+        <h3 class="door__title">Visuelle Systeme &amp; Erscheinungsbilder</h3>
+        <p class="door__body">
+          Spielerische, unverwechselbare Erscheinungsbilder entwickeln.
+          Designsysteme aufbauen, die ein Team selbst weiterführen kann.
+          Infografik, Erklärgrafik, Corporate Design —
+          crossmedial gedacht, nicht kanalweise geflickt.
+        </p>
+        <div class="door__tags">
+          <span class="tag">Art Direction</span>
+          <span class="tag">Corporate Design</span>
+          <span class="tag">Infografik</span>
+          <span class="tag">Designsysteme</span>
+          <span class="tag">Echtzeit-3D</span>
+        </div>
+      </div>
+
+      <div class="door">
+        <div class="door__num">02</div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Tür 02</div>
+        <h3 class="door__title">KI-Workflows &amp; neue Tools</h3>
+        <p class="door__body">
+          Generative KI in reale Produktionsprozesse integrieren —
+          Bild, Video, Text, kleine Tools.
+          Nicht als Experiment, sondern als funktionierender Alltag.
+          Toolauswahl, Pilotierung, Training, Strategie.
+        </p>
+        <div class="door__tags">
+          <span class="tag">KI-Workshops</span>
+          <span class="tag">Workflow-Design</span>
+          <span class="tag">Toolauswahl & Strategie</span>
+          <span class="tag">Bild · Video · Text</span>
+        </div>
+      </div>
+
+      <div class="door">
+        <div class="door__num">03</div>
+        <div class="t-eyebrow" style="margin-bottom: var(--s-2);">Tür 03</div>
+        <h3 class="door__title">Teams aufstellen &amp; ausrichten</h3>
+        <p class="door__body">
+          Kreative Teams neu strukturieren. Für neue Aufgaben aufstellen.
+          Rollen klären, Talente entwickeln, Führungskräfte coachen.
+          Ich zeichne mit, bis die Struktur sichtbar wird —
+          und das Team danach selbst weitergeht.
+        </p>
+        <div class="door__tags">
+          <span class="tag">Teamstruktur</span>
+          <span class="tag">Führungskräfte-Coaching</span>
+          <span class="tag">Visual Strategy</span>
+          <span class="tag">Organisationsberatung</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== QUOTE ===================== -->
+<div class="quote-block reveal">
+  <blockquote>
+    Ein System, das nur funktioniert,<br>
+    wenn ich da bin —<br>
+    ist kein System.
+  </blockquote>
+</div>
+
+<!-- ===================== HINTERGRUND ===================== -->
+<section id="hintergrund" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">02 / Hintergrund</span>
+      <h2 class="sectionhead__title">Nicht geplant,<br><em style="font-style: italic;">aber konsequent.</em></h2>
+      <span class="sectionhead__meta">6 Felder</span>
+    </div>
+
+    <p class="reveal" style="color: var(--fg-mute); max-width: 64ch; margin-bottom: var(--s-7); font-size: var(--t-md); line-height: var(--lh-loose);">
+      Mein Weg war nie eine Karriereleiter. Eher ein Muster:
+      Immer dort sein, wo Gestaltung und Technologie sich gerade
+      neu sortieren — Echtzeit-3D, virtuelles Studio, generative KI.
+      Jedes Mal bevor es Mainstream wurde. Das war kein Glück.
+      Das war Instinkt, inzwischen trainiert.
+    </p>
+
+    <div class="bg-grid reveal reveal-d1">
+      <div class="bg-item">
+        <div class="bg-item__label">Teamleitung</div>
+        <div class="bg-item__text">50 Kreative. Künstlerisch und disziplinarisch. Umgebaut, neu ausgerichtet, entwickelt. Im Live-Betrieb, täglich.</div>
+      </div>
+      <div class="bg-item">
+        <div class="bg-item__label">Broadcast</div>
+        <div class="bg-item__text">MDR, ZDF, SRF, KiKA. Nachrichtengrafik, virtuelles Studio, Echtzeit-3D. Auf Sendung — nicht im Labor.</div>
+      </div>
+      <div class="bg-item">
+        <div class="bg-item__label">Digitale Prozesse</div>
+        <div class="bg-item__text">Produktionsprozesse von Grund auf neu gedacht: Informationseingang, Automation, Verarbeitung, Qualitätssicherung — crossmedial, crossfunktional, gewerkschaftsübergreifend.</div>
+      </div>
+      <div class="bg-item">
+        <div class="bg-item__label">Generative KI</div>
+        <div class="bg-item__text">Seit 2022 produktiv im Einsatz — Bild, Video, Text, Tools. Nicht theoretisch, sondern in der täglichen Produktion.</div>
+      </div>
+      <div class="bg-item">
+        <div class="bg-item__label">Neue Formate</div>
+        <div class="bg-item__text">Künstlerische Leitung bei MDRs erstem TikTok-Format: 5 Mio. Aufrufe, 169K Follower. Als Experiment gestartet — nicht als Erfolgsversprechen.</div>
+      </div>
+      <div class="bg-item">
+        <div class="bg-item__label">Lehre & Coaching</div>
+        <div class="bg-item__text">Fernseh-Akademie Mitteldeutschland. Hochschuldozent. Weil Wissen nichts wert ist, das man behält.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== SITUATIONEN ===================== -->
+<section id="situationen" style="padding: var(--s-9) var(--gutter); background: var(--bg-2);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">03 / Für wen</span>
+      <h2 class="sectionhead__title">Wenn Sie sich hier<br><em style="font-style: italic;">wiederfinden</em>, sollten wir reden.</h2>
+      <span class="sectionhead__meta">6 Situationen</span>
+    </div>
+
+    <div class="situations-list reveal reveal-d1">
+      <div class="situation">
+        <span class="situation__num">01</span>
+        <p class="situation__text">„Wir wollen KI in unserer Kreativabteilung einführen — aber ohne, dass das Team dabei verloren geht."</p>
+      </div>
+      <div class="situation">
+        <span class="situation__num">02</span>
+        <p class="situation__text">„Wir brauchen ein Erscheinungsbild mit echtem Charakter. Eines, das unser Team danach selbst weiterführen kann."</p>
+      </div>
+      <div class="situation">
+        <span class="situation__num">03</span>
+        <p class="situation__text">„Unsere Infografiken erklären nichts. Wir wissen, was wir sagen wollen — aber nicht wie."</p>
+      </div>
+      <div class="situation">
+        <span class="situation__num">04</span>
+        <p class="situation__text">„Wir bauen ein neues Format und brauchen jemanden, der Technik, Gestaltung und Inhalt gleichzeitig denkt."</p>
+      </div>
+      <div class="situation">
+        <span class="situation__num">05</span>
+        <p class="situation__text">„Wir kommen diskutierend nicht weiter. Kommen Sie — und zeichnen Sie mit uns."</p>
+      </div>
+      <div class="situation">
+        <span class="situation__num">06</span>
+        <p class="situation__text">„Wir haben ein kreatives Team. Aber wir wissen nicht, wie wir es für neue Aufgaben aufstellen."</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== DIE DREI RÄUME ===================== -->
+<section id="raeume" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="sectionhead reveal">
+      <span class="sectionhead__num">04 / Räume</span>
+      <h2 class="sectionhead__title">Drei Räume, ein Mensch.</h2>
+      <span class="sectionhead__meta">Übersicht</span>
+    </div>
+
+    <div class="rooms-grid reveal reveal-d1">
+
+      <div class="room-card" style="cursor: default;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="t-mono" style="color: var(--accent);">◆ DU BIST HIER</span>
+          <span style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: inline-block;"></span>
+        </div>
+        <h3 style="font-family: var(--font-serif); font-weight: 300; font-size: var(--t-2xl); letter-spacing: var(--ls-tight); margin-top: var(--s-7);">
+          ludwig.fm
+        </h3>
+        <span class="t-mono" style="color: var(--fg-mute);">Mensch & Anker</span>
+        <p class="t-body" style="color: var(--fg-mute); margin-top: auto;">
+          Dieser Raum. Wer ich bin, was ich tue — und wie wir ins Gespräch kommen.
+        </p>
+      </div>
+
+      <a href="visiblethink-ing.html" class="room-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="t-mono" style="color: var(--fg-mute);">→ Methode</span>
+          <span style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF5B2E, #2E6BFF, #FF7AC6); display: inline-block;"></span>
+        </div>
+        <h3 style="font-family: var(--font-serif); font-weight: 300; font-size: var(--t-2xl); letter-spacing: var(--ls-tight); margin-top: var(--s-7);">
+          visiblethink.ing
+        </h3>
+        <span class="t-mono" style="color: var(--fg-mute);">Strategie sichtbar machen</span>
+        <p class="t-body" style="color: var(--fg-mute); margin-top: auto;">
+          Live Strategic Prototyping, Visual Strategy Canvas, Change Architecture. Für Teams, die mit Komplexität ringen.
+        </p>
+      </a>
+
+      <a href="aiai-coach.html" class="room-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="t-mono" style="color: var(--fg-mute);">→ Buchbar</span>
+          <span style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF8462, #FFB59B); display: inline-block;"></span>
+        </div>
+        <h3 style="font-family: var(--font-serif); font-weight: 300; font-size: var(--t-2xl); letter-spacing: var(--ls-tight); margin-top: var(--s-7);">
+          aiai.coach
+        </h3>
+        <span class="t-mono" style="color: var(--fg-mute);">KI-Schulungen & Workshops</span>
+        <p class="t-body" style="color: var(--fg-mute); margin-top: auto;">
+          Drei Kurse: Kollege KI, Neue Werkzeuge, Visueller Journalismus mit KI. Für Mediengestalter und Kreative.
+        </p>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+</div><!-- /page-content -->
+
+<div class="footer-reveal">
+<!-- ===================== KONTAKT / CTA ===================== -->
+<div class="cta-zone reveal">
+<section id="kontakt" style="padding: var(--s-9) var(--gutter);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); align-items: start;">
+      <div class="reveal-d1">
+        <h2 class="t-display" style="font-size: clamp(2.5rem, 5vw, 5rem); margin-bottom: var(--s-5); line-height: var(--lh-tight);">
+          Kein Formular.<br>
+          <span style="font-style: italic; color: var(--accent);">Ein Gespräch.</span>
+        </h2>
+      </div>
+      <div class="reveal-d2" style="display: flex; flex-direction: column; gap: var(--s-4);">
+        <span class="t-eyebrow"><span class="accent">●</span>&nbsp;&nbsp;Kontakt</span>
+        <a href="mailto:hallo@visiblethink.ing" style="font-family: var(--font-serif); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 300; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 8px; color: var(--fg); letter-spacing: var(--ls-snug);">
+          hallo@visiblethink.ing
+        </a>
+        <p style="color: var(--fg-mute); max-width: 50ch; font-size: var(--t-sm); line-height: var(--lh-loose);">
+          Ich nehme pro Jahr eine überschaubare Zahl von Projekten an. Ob Ihres dazu passt, finden wir in einem kurzen Gespräch heraus.
+        </p>
+        <div style="display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-2);">
+          <a href="mailto:hallo@visiblethink.ing" class="btn btn--primary">Schreiben Sie mir →</a>
+          <a href="visiblethink-ing.html" class="btn btn--ghost">visiblethink.ing</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /cta-zone -->
+
+<!-- ===================== FOOTER ZONE ===================== -->
+<footer class="footer-zone">
+  <div class="sitefoot">
+    <div class="sitefoot__col">
+      <div class="t-eyebrow" style="margin-bottom: var(--s-3);">Drei Räume, ein Mensch</div>
+      <h3 style="font-family: var(--font-serif); font-weight: 300; font-size: var(--t-2xl); letter-spacing: var(--ls-tight); margin: var(--s-3) 0;">Denis Ludwig</h3>
+      <p style="max-width: 32ch; color: var(--fg-mute); font-size: var(--t-sm);">
+        Gestaltung · Technologie · Führung.<br>
+        25+ Jahre für MDR, ZDF, SRF &amp; KiKA.<br>
+        Leipzig, Deutschland.
+      </p>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Räume</h4>
+      <ul>
+        <li><a href="index.html" style="color: var(--accent);">ludwig.fm ·</a></li>
+        <li><a href="visiblethink-ing.html">visiblethink.ing</a></li>
+        <li><a href="aiai-coach.html">aiai.coach</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Kontakt</h4>
+      <ul>
+        <li><a href="mailto:hallo@visiblethink.ing">hallo@visiblethink.ing</a></li>
+        <li><a href="https://visiblethink.ing">visiblethink.ing</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__col">
+      <h4>Standort</h4>
+      <ul>
+        <li>Leipzig, Deutschland</li>
+        <li>Sachsen · DACH</li>
+        <li><a href="mailto:hallo@visiblethink.ing">Termin anfragen</a></li>
+      </ul>
+    </div>
+    <div class="sitefoot__legal">
+      <span>© 2026 Denis Ludwig — ludwig.fm</span>
+      <span>Impressum · Datenschutz</span>
+    </div>
+  </div>
+</footer>
+</div><!-- /footer-reveal -->
+
+<script>
+/* ---- SCROLL REVEAL ---- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ---- STICKY NAV — CSS-class approach ---- */
+const nav = document.getElementById('siteNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ---- THEME TOGGLE ---- */
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+const saved = localStorage.getItem('lm-theme') || 'dark';
+root.setAttribute('data-theme', saved);
+themeToggle.textContent = saved === 'dark' ? '◐ Dunkel' : '◑ Hell';
+
+themeToggle.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('lm-theme', next);
+  themeToggle.textContent = next === 'dark' ? '◐ Dunkel' : '◑ Hell';
+});
+
+/* ---- ACTIVE NAV LINKS ---- */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.site-nav__links a[href^="#"]');
+const linkObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => linkObserver.observe(s));
+
+/* ---- BURGER MENU ---- */
+const burgerBtn = document.getElementById('burgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+let menuOpen = false;
+
+function openMenu() {
+  menuOpen = true;
+  mobileMenu.style.display = 'flex';
+  setTimeout(() => mobileMenu.classList.add('open'), 10);
+  burgerBtn.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  mobileMenu.setAttribute('aria-hidden', 'false');
+}
+
+function closeMenu() {
+  menuOpen = false;
+  mobileMenu.classList.remove('open');
+  setTimeout(() => { mobileMenu.style.display = 'none'; }, 300);
+  burgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+  mobileMenu.setAttribute('aria-hidden', 'true');
+}
+
+burgerBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+</script>
+</body>
+</html>
